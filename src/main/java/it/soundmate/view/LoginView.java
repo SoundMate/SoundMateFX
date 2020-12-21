@@ -1,25 +1,32 @@
 package it.soundmate.view;
 
+import it.soundmate.bean.LoginBean;
 import it.soundmate.constants.Style;
 import it.soundmate.controller.LoginController;
+import it.soundmate.model.User;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
+import javafx.stage.Stage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 
-public class LoginView extends BorderPane {
+public class LoginView extends Pane {
 
     private final Logger logger = LoggerFactory.getLogger(LoginView.class);
-    private final LoginController loginController = new LoginController();
+    private LoginController loginController;
+    private LoginBean loginBean;
+    private final BorderPane borderPane = new BorderPane();
 
     //UI Elements
     private TextField emailTextField;
@@ -39,9 +46,13 @@ public class LoginView extends BorderPane {
         buildBottomPane(bottom);
 
         //Setup BorderPane
-        this.setLeft(left);
-        this.setRight(right);
-        this.setBottom(bottom);
+        this.borderPane.setLeft(left);
+        this.borderPane.setRight(right);
+        this.borderPane.setBottom(bottom);
+    }
+
+    public BorderPane getBorderPane(){
+        return this.borderPane;
     }
 
     private void buildBottomPane(HBox bottom) {
@@ -101,15 +112,8 @@ public class LoginView extends BorderPane {
     }
 
     private void addBackground() {
-        /*
-         * BackgroundSize Doc:
-         * BackgroundSize(double width, double height, boolean widthAsPercentage, boolean heightAsPercentage,
-         * boolean contain, boolean cover)
-         * */
-        BackgroundSize bSize = new BackgroundSize(BackgroundSize.AUTO, BackgroundSize.AUTO, false, false, false, true);
         Image background = new Image("soundmate/images/bg.png");
-        BackgroundImage backgroundImage = new BackgroundImage(background, BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.CENTER, bSize);
-        this.setBackground(new Background(backgroundImage));
+        UIUtils.setBackgroundPane(background, this.borderPane);
     }
 
     private ImageView logoImage() {
@@ -121,12 +125,25 @@ public class LoginView extends BorderPane {
         return imageView;
     }
 
+    protected LoginView getLoginView(){
+        return this;
+    }
+
     private class LoginAction implements EventHandler<ActionEvent> {
         @Override
         public void handle(ActionEvent event) {
             logger.info("Login Action Button");
-            if (loginController.checkFields(emailTextField.getText(), passwordField.getText())) {
+            loginBean = new LoginBean(emailTextField.getText(), passwordField.getText());
+            loginController = new LoginController(loginBean);
+            User loggedUser = loginController.login(loginBean);
+            if (loggedUser != null) {
                 logger.info("Fields Okay");
+                logger.info("Logged in: {} {}", loggedUser.getFirstName(), loggedUser.getLastName());
+                Parent profileScreen = new ProfileView(loggedUser).getBorderPane();
+                Stage stage = (Stage) emailTextField.getScene().getWindow();
+                Scene scene = new Scene(profileScreen, 800, 600);
+                stage.setScene(scene);
+                stage.show();
             } else {
                 logger.info("One or more fields are empty");
                 errorLabel.setVisible(true);

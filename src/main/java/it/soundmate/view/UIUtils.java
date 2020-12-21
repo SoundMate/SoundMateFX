@@ -4,6 +4,7 @@ import it.soundmate.constants.Style;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.scene.control.Button;
+import javafx.scene.image.Image;
 import javafx.scene.layout.*;
 
 
@@ -34,5 +35,16 @@ public class UIUtils {
         button.setStyle(Style.BTN_STYLE_1);
         button.addEventHandler(ActionEvent.ACTION, eventHandler);
         pane.getChildren().add(button);
+    }
+
+    public static void setBackgroundPane(Image image, Pane pane) {
+        /*
+         * BackgroundSize Doc:
+         * BackgroundSize(double width, double height, boolean widthAsPercentage, boolean heightAsPercentage,
+         * boolean contain, boolean cover)
+         * */
+        BackgroundSize bSize = new BackgroundSize(BackgroundSize.AUTO, BackgroundSize.AUTO, false, false, false, true);
+        BackgroundImage backgroundImage = new BackgroundImage(image, BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.CENTER, bSize);
+        pane.setBackground(new Background(backgroundImage));
     }
 }

@@ -8,7 +8,7 @@ import javafx.stage.Stage;
 
 public class SoundmateMain extends Application {
     public void start(Stage primaryStage) {
-        Parent loginScreen = new LoginView();
+        Parent loginScreen = new LoginView().getBorderPane();
         Scene loginScene = new Scene(loginScreen,800,600);
         primaryStage.setScene(loginScene);
         primaryStage.show();
