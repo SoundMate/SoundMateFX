@@ -156,6 +156,11 @@ public class LoginView extends Pane {
         @Override
         public void handle(ActionEvent event) {
             logger.info("Join Action Button");
+            Stage stage = (Stage) borderPane.getScene().getWindow();
+            Parent registerView = new ChooseRegisterView().getBorderPane();
+            Scene scene = new Scene(registerView, 800, 600);
+            stage.setScene(scene);
+            stage.show();
         }
     }
 }

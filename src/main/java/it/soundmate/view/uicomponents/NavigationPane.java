@@ -1,13 +1,17 @@
 package it.soundmate.view.uicomponents;
 
+import it.soundmate.view.LoginView;
 import it.soundmate.view.UIUtils;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Pos;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
+import javafx.stage.Stage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -78,6 +82,11 @@ public class NavigationPane extends Pane {
         @Override
         public void handle(ActionEvent event) {
             logger.info("Logout Clicked");
+            Stage stage = (Stage) vBox.getScene().getWindow();
+            Parent loginView = new LoginView().getBorderPane();
+            Scene scene = new Scene(loginView, 800, 600);
+            stage.setScene(scene);
+            stage.show();
         }
     }
 }
