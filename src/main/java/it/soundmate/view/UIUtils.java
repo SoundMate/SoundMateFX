@@ -37,7 +37,7 @@ public class UIUtils {
         pane.getChildren().add(button);
     }
 
-    public static void setBackgroundPane(Image image, Pane pane) {
+    public static void setBackgroundImagePane(Image image, Pane pane) {
         /*
          * BackgroundSize Doc:
          * BackgroundSize(double width, double height, boolean widthAsPercentage, boolean heightAsPercentage,
@@ -46,5 +46,9 @@ public class UIUtils {
         BackgroundSize bSize = new BackgroundSize(BackgroundSize.AUTO, BackgroundSize.AUTO, false, false, false, true);
         BackgroundImage backgroundImage = new BackgroundImage(image, BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.CENTER, bSize);
         pane.setBackground(new Background(backgroundImage));
+    }
+
+    public static void setBackgroundPane(String color, Pane pane) {
+        pane.setStyle("-fx-background-color: "+color+";");
     }
 }

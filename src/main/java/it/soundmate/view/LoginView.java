@@ -4,6 +4,7 @@ import it.soundmate.bean.LoginBean;
 import it.soundmate.constants.Style;
 import it.soundmate.controller.LoginController;
 import it.soundmate.model.User;
+import it.soundmate.view.main.MainView;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
@@ -113,7 +114,7 @@ public class LoginView extends Pane {
 
     private void addBackground() {
         Image background = new Image("soundmate/images/bg.png");
-        UIUtils.setBackgroundPane(background, this.borderPane);
+        UIUtils.setBackgroundImagePane(background, this.borderPane);
     }
 
     private ImageView logoImage() {
@@ -139,9 +140,9 @@ public class LoginView extends Pane {
             if (loggedUser != null) {
                 logger.info("Fields Okay");
                 logger.info("Logged in: {} {}", loggedUser.getFirstName(), loggedUser.getLastName());
-                Parent profileScreen = new ProfileView(loggedUser).getBorderPane();
+                Parent mainScreen = MainView.getInstance(loggedUser).getBorderPane();
                 Stage stage = (Stage) emailTextField.getScene().getWindow();
-                Scene scene = new Scene(profileScreen, 800, 600);
+                Scene scene = new Scene(mainScreen, 800, 600);
                 stage.setScene(scene);
                 stage.show();
             } else {
