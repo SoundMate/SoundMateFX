@@ -14,7 +14,7 @@ public class UIUtils {
 
     private UIUtils(){}
 
-    public static void addSizedRegion(VBox vBox, int verticalSize, int horizontalSize) {
+    public static void addSizedRegion(Pane vBox, int verticalSize, int horizontalSize) {
         Region sizedRegion = new Region();
         sizedRegion.setPrefHeight(verticalSize);
         sizedRegion.setPrefWidth(horizontalSize);
@@ -35,6 +35,14 @@ public class UIUtils {
     public static void addStyledButton(String text, EventHandler<ActionEvent> eventHandler, Pane pane) {
         Button button = new Button(text);
         button.setStyle(Style.BTN_STYLE_1);
+        button.addEventHandler(ActionEvent.ACTION, eventHandler);
+        pane.getChildren().add(button);
+    }
+
+    public static void addStyledButtonWidth(String text, EventHandler<ActionEvent> eventHandler, Pane pane, double width) {
+        Button button = new Button(text);
+        button.setStyle(Style.BTN_STYLE_1);
+        button.setPrefWidth(width);
         button.addEventHandler(ActionEvent.ACTION, eventHandler);
         pane.getChildren().add(button);
     }
