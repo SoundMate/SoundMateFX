@@ -4,6 +4,8 @@ import it.soundmate.constants.Style;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.scene.control.Button;
+import javafx.scene.control.Label;
+import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.layout.*;
 
@@ -50,5 +52,15 @@ public class UIUtils {
 
     public static void setBackgroundPane(String color, Pane pane) {
         pane.setStyle("-fx-background-color: "+color+";");
+    }
+
+    public static VBox textFieldWithLabel(String label) {
+        VBox labelAndTextfield = new VBox();
+        Label labelTop = new Label(label);
+        TextField textField = new TextField();
+        textField.setStyle(Style.TEXT_FIELD);
+        labelTop.setStyle(Style.TEXTFIELD_LABEL);
+        labelAndTextfield.getChildren().addAll(labelTop, textField);
+        return labelAndTextfield;
     }
 }

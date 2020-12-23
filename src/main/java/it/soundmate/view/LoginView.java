@@ -5,6 +5,7 @@ import it.soundmate.constants.Style;
 import it.soundmate.controller.LoginController;
 import it.soundmate.model.User;
 import it.soundmate.view.main.MainView;
+import it.soundmate.view.registerview.ChooseRegisterView;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;

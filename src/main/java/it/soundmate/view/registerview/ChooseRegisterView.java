@@ -1,6 +1,9 @@
-package it.soundmate.view;
+package it.soundmate.view.registerview;
 
 import it.soundmate.constants.Style;
+import it.soundmate.model.UserType;
+import it.soundmate.view.LoginView;
+import it.soundmate.view.UIUtils;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
@@ -97,6 +100,11 @@ public class ChooseRegisterView extends Pane {
         @Override
         public void handle(ActionEvent event) {
             logger.info("Register Band Click");
+            Stage stage = (Stage) borderPane.getScene().getWindow();
+            Parent registerView = new RegisterView(UserType.BAND_MANAGER).getMainBorderPane();
+            Scene scene = new Scene(registerView, 800, 600);
+            stage.setScene(scene);
+            stage.show();
         }
     }
 
@@ -104,6 +112,11 @@ public class ChooseRegisterView extends Pane {
         @Override
         public void handle(ActionEvent event) {
             logger.info("Register Band Room Click");
+            Stage stage = (Stage) borderPane.getScene().getWindow();
+            Parent registerView = new RegisterView(UserType.BAND_ROOM_MANAGER).getMainBorderPane();
+            Scene scene = new Scene(registerView, 800, 600);
+            stage.setScene(scene);
+            stage.show();
         }
     }
 
@@ -111,6 +124,11 @@ public class ChooseRegisterView extends Pane {
         @Override
         public void handle(ActionEvent event) {
             logger.info("Register Solo Click");
+            Stage stage = (Stage) borderPane.getScene().getWindow();
+            Parent registerView = new RegisterView(UserType.SOLO).getMainBorderPane();
+            Scene scene = new Scene(registerView, 800, 600);
+            stage.setScene(scene);
+            stage.show();
         }
     }
 
