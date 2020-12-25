@@ -39,6 +39,13 @@ public class UIUtils {
         pane.getChildren().add(button);
     }
 
+    public static Button createStyledButton(String text, EventHandler<ActionEvent> eventHandler) {
+        Button button = new Button(text);
+        button.setStyle(Style.BTN_STYLE_1);
+        button.addEventHandler(ActionEvent.ACTION, eventHandler);
+        return button;
+    }
+
     public static void addStyledButtonWidth(String text, EventHandler<ActionEvent> eventHandler, Pane pane, double width) {
         Button button = new Button(text);
         button.setStyle(Style.BTN_STYLE_1);

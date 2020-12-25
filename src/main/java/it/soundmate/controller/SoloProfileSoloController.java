@@ -13,4 +13,7 @@ public class SoloProfileSoloController {
         return solo.getInstrument();
     }
 
+    public boolean addGenre(String s, Solo soloUser) {
+        return soloDao.addGenreToSolo(s, soloUser);
+    }
 }

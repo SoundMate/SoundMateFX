@@ -1,7 +1,6 @@
 package it.soundmate.controller;
 
 import it.soundmate.database.SoloDao;
-import it.soundmate.database.UserDao;
 import it.soundmate.model.BandManager;
 import it.soundmate.model.RoomRenter;
 import it.soundmate.model.Solo;
@@ -15,6 +14,7 @@ public class ProfileController {
         return soloDao.getSoloByUser(user);
     }
 
+    /*
     public BandManager getBandManagerFromUser(User user){
         return null;
     }
@@ -22,4 +22,5 @@ public class ProfileController {
     public RoomRenter getRoomRenterFromUser(User user){
         return null;
     }
+    */
 }

@@ -1,33 +1,36 @@
 package it.soundmate.view.profiles;
 
 import it.soundmate.constants.Style;
+import it.soundmate.controller.SoloProfileSoloController;
 import it.soundmate.model.Solo;
-import it.soundmate.model.User;
 import it.soundmate.utils.Cache;
 import it.soundmate.view.UIUtils;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
-import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.control.TextInputDialog;
 import javafx.scene.image.Image;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.ImagePattern;
-import javafx.scene.paint.Paint;
 import javafx.scene.shape.Circle;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.util.List;
+import java.util.Optional;
 
 public class SoloProfileSoloView extends Pane {
 
     private static final Logger logger = LoggerFactory.getLogger(SoloProfileSoloView.class);
     private final Solo soloUser;
+    private final SoloProfileSoloController soloProfileSoloController = new SoloProfileSoloController();
+
+    //UI
+    private HBox favGenresHBoxList;
+    private Button addGenreBtn;
 
     public VBox getSoloVBox() {
         return soloVBox;
@@ -50,15 +53,15 @@ public class SoloProfileSoloView extends Pane {
         favGenresSectionHBox.setPadding(new Insets(25));
 
         VBox favGenresVBox = new VBox(); //Vbox for title and list of genres
-        HBox favGenresHBox = new HBox(); //List of genres
+        this.favGenresHBoxList = new HBox(); //List of genres
 
         favGenresVBox.setAlignment(Pos.BOTTOM_LEFT);
         favGenresVBox.setPrefWidth(USE_COMPUTED_SIZE);
         favGenresVBox.setPrefHeight(USE_COMPUTED_SIZE);
 
-        favGenresHBox.setAlignment(Pos.CENTER_LEFT);
-        favGenresHBox.setPrefHeight(USE_COMPUTED_SIZE);
-        favGenresHBox.setPrefWidth(USE_COMPUTED_SIZE);
+        favGenresHBoxList.setAlignment(Pos.CENTER_LEFT);
+        favGenresHBoxList.setPrefHeight(USE_COMPUTED_SIZE);
+        favGenresHBoxList.setPrefWidth(USE_COMPUTED_SIZE);
 
         Label favGenreLabel = new Label("Favourite Genres");
         favGenreLabel.setStyle(Style.MID_LABEL);
@@ -68,13 +71,14 @@ public class SoloProfileSoloView extends Pane {
                 Label genreLabel = new Label(favGenre);
                 genreLabel.setPadding(new Insets(5));
                 genreLabel.setStyle(Style.FAVGENRE_LABEL);
-                favGenresHBox.getChildren().add(genreLabel);
-                UIUtils.addSizedRegion(favGenresHBox, 10,10);
+                favGenresHBoxList.getChildren().add(genreLabel);
+                UIUtils.addSizedRegion(favGenresHBoxList, 10,10);
             }
         }
-        UIUtils.addStyledButton("Add +", new AddGenreAction(), favGenresHBox);
+        this.addGenreBtn = UIUtils.createStyledButton("Add +", new AddGenreAction());
+        favGenresHBoxList.getChildren().add(this.addGenreBtn);
 
-        favGenresVBox.getChildren().addAll(favGenreLabel, favGenresHBox); //Vbox for title and list of genres
+        favGenresVBox.getChildren().addAll(favGenreLabel, favGenresHBoxList); //Vbox for title and list of genres
         favGenresVBox.setSpacing(15);
 
         favGenresSectionHBox.getChildren().add(favGenresVBox);  //Main hbox
@@ -168,6 +172,7 @@ public class SoloProfileSoloView extends Pane {
         return instrumentSection;
     }
 
+
     private static class AddInstrumentAction implements EventHandler<ActionEvent> {
         @Override
         public void handle(ActionEvent event) {
@@ -179,7 +184,33 @@ public class SoloProfileSoloView extends Pane {
         @Override
         public void handle(ActionEvent event) {
             logger.info("Add Genre Clicked");
+            Optional<String> result = favGenreDialog();
+            result.ifPresent(s -> logger.info("User input genre: {}", s));
+            if (result.isPresent() && soloProfileSoloController.addGenre(result.get(), soloUser)) {
+                logger.info("Added new genre to solo user: {} {}; {}",soloUser.getFirstName(), soloUser.getLastName(), result.get());
+                updateUI(result.get());
+            } else {
+                logger.info("Error adding genre");
+            }
         }
+
+        private Optional<String> favGenreDialog() {
+            TextInputDialog dialog = new TextInputDialog();
+            dialog.setTitle("Favourite Genres");
+            dialog.setHeaderText("Add a new favourite genre");
+            dialog.setContentText("Enter a genre:");
+            return dialog.showAndWait();
+        }
+
+        private void updateUI(String newGenre) {
+            Label newGenreLabel = new Label(newGenre);
+            newGenreLabel.setStyle(Style.FAVGENRE_LABEL);
+            newGenreLabel.setPadding(new Insets(5));
+            favGenresHBoxList.getChildren().add(newGenreLabel);
+            UIUtils.addSizedRegion(favGenresHBoxList, 10,10);
+            addGenreBtn.toFront();
+        }
+
     }
 
     private class EditProfileAction implements EventHandler<ActionEvent> {

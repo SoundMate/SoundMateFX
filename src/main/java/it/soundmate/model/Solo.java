@@ -46,7 +46,7 @@ public class Solo extends User {
         this.bands.addAll(bands);
     }
 
-    public ArrayList<Band> getBands() {
+    public List<Band> getBands() {
         return bands;
     }
 
