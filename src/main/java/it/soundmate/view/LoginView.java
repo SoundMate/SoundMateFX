@@ -137,7 +137,7 @@ public class LoginView extends Pane {
             logger.info("Login Action Button");
             loginBean = new LoginBean(emailTextField.getText(), passwordField.getText());
             loginController = new LoginController(loginBean);
-            User loggedUser = loginController.login(loginBean);
+            User loggedUser = loginController.login();
             if (loggedUser != null) {
                 logger.info("Fields Okay");
                 logger.info("Logged in: {} {}", loggedUser.getFirstName(), loggedUser.getLastName());

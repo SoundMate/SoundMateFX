@@ -8,8 +8,8 @@ import it.soundmate.model.UserType;
 
 public class RegisterController {
 
-    private RegisterBean registerBean;
-    private UserDao userDao = UserDao.getInstance();
+    private final RegisterBean registerBean;
+    private final UserDao userDao = UserDao.getInstance();
 
     public RegisterController(RegisterBean registerBean) {
         this.registerBean = registerBean;
@@ -45,7 +45,7 @@ public class RegisterController {
         if (userDao.registerUser(this.registerBean.getEmail(), this.registerBean.getPassword(), this.registerBean.getFirstName(), this.registerBean.getLastName(), type)){
             LoginBean loginBean = new LoginBean(this.registerBean.getEmail(), this.registerBean.getPassword());
             LoginController loginController = new LoginController(loginBean);
-            return loginController.login(loginBean);
+            return loginController.login();
         }
         else return null;
     }

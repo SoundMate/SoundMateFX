@@ -28,7 +28,7 @@ public class NavigationPane extends Pane {
 
     public static NavigationPane getInstance(){
         if (instance == null) {
-            return new NavigationPane();
+            instance = new NavigationPane();
         }
         return instance;
     }
