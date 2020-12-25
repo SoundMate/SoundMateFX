@@ -8,11 +8,14 @@ package it.soundmate.database;
 
 import it.soundmate.model.Solo;
 import it.soundmate.model.User;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.sql.Array;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -22,6 +25,7 @@ public class SoloDao implements Dao<Solo> {
 
     private static SoloDao instance = null;
     private UserDao userDao = UserDao.getInstance();
+    private static final Logger logger = LoggerFactory.getLogger(SoloDao.class);
 
     public static SoloDao getInstance() {
         if (instance == null) {
@@ -56,7 +60,11 @@ public class SoloDao implements Dao<Solo> {
                     List<String> favGenresList = Arrays.asList(favGenresArray);
                     soloUser.setFavouriteGenres(favGenresList);
                 }
-                if (instruments != null) soloUser.setInstrument(Arrays.asList((String[]) instruments.getArray()));
+                if (instruments != null) {
+                    List<String> instrumentList = Arrays.asList((String[]) instruments.getArray());
+                    logger.info("Instrument List : {}", instrumentList);
+                    soloUser.setInstrument(new ArrayList<>(instrumentList));
+                }
                 if (bands != null) {
                     Integer[] bandIDs = (Integer[]) bands.getArray();
                     for (Integer bandID : bandIDs) {

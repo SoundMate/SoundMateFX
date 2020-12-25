@@ -46,6 +46,10 @@ public class Solo extends User {
         this.bands.addAll(bands);
     }
 
+    public ArrayList<Band> getBands() {
+        return bands;
+    }
+
     public List<String> getFavouriteGenres() {
         return favouriteGenres;
     }

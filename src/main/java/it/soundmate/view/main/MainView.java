@@ -11,18 +11,11 @@ import javafx.scene.layout.Pane;
 public class MainView extends Pane {
 
 
-    private static MainView instance = null;
     private final BorderPane borderPane;
     private final NavigationPane navigationPane = NavigationPane.getInstance();
     private final NavigationAction navigationAction = new NavigationAction();
     private User loggedUser;
 
-    public static MainView getInstance(User user){
-        if (instance == null) {
-            instance = new MainView(user);
-        }
-        return instance;
-    }
 
     public MainView(User loggedUser) {
         this.loggedUser = loggedUser;

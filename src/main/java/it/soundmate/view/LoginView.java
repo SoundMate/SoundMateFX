@@ -141,7 +141,7 @@ public class LoginView extends Pane {
             if (loggedUser != null) {
                 logger.info("Fields Okay");
                 logger.info("Logged in: {} {}", loggedUser.getFirstName(), loggedUser.getLastName());
-                Parent mainScreen = MainView.getInstance(loggedUser).getBorderPane();
+                Parent mainScreen = new MainView(loggedUser).getBorderPane();
                 Stage stage = (Stage) emailTextField.getScene().getWindow();
                 Scene scene = new Scene(mainScreen, 800, 600);
                 stage.setScene(scene);

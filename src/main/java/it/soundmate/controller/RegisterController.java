@@ -45,7 +45,9 @@ public class RegisterController {
         if (userDao.registerUser(this.registerBean.getEmail(), this.registerBean.getPassword(), this.registerBean.getFirstName(), this.registerBean.getLastName(), type)){
             LoginBean loginBean = new LoginBean(this.registerBean.getEmail(), this.registerBean.getPassword());
             LoginController loginController = new LoginController(loginBean);
-            return loginController.login();
+            User registeredUser = loginController.login();
+            userDao.registerSoloFromUsers(registeredUser.getUserID());
+            return registeredUser;
         }
         else return null;
     }

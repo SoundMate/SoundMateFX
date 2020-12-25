@@ -19,7 +19,7 @@ public class LoginController {
     public User login(){
         if (checkFields()){
             User loggedUser = UserDao.getInstance().getByEmailAndPassword(loginBean.getEmail(), loginBean.getPassword());
-            if (loggedUser.getProfilePic() != null) {
+            if (loggedUser.getProfilePic() != null && !Cache.getInstance().checkProfilePicInCache(loggedUser)) {
                 if (Cache.getInstance().saveProfilePicToCache(loggedUser)){
                     logger.info("Saved Profile Pic to Cache");
                 } else {

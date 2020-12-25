@@ -55,4 +55,10 @@ public class Cache {
             return null;
         }
     }
+
+    public boolean checkProfilePicInCache(User user) {
+        String cacheName = buildProfilePicCacheName(user);
+        File fileTest = new File(cacheName);
+        return fileTest.exists();
+    }
 }
