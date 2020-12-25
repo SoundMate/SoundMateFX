@@ -2,6 +2,7 @@ package it.soundmate.view.main;
 
 import it.soundmate.constants.Style;
 import it.soundmate.model.User;
+import it.soundmate.utils.Cache;
 import it.soundmate.view.UIUtils;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -12,10 +13,13 @@ import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.ImagePattern;
 import javafx.scene.shape.Circle;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class ProfileView extends Pane {
 
     private final VBox profileVBox;
+    private static final Logger logger = LoggerFactory.getLogger(ProfileView.class);
 
     public ProfileView(User user){
         this.profileVBox = new VBox();
@@ -35,9 +39,12 @@ public class ProfileView extends Pane {
         if (user.getProfilePic() == null) {
             profileImg = new Image("soundmate/images/user-default.png");
         } else {
-            //profileImg = new Image(Cache.getInstance().getProfilePicFromCache(user));
-            //TODO: Get from Cache
-            profileImg = new Image("soundmate/images/user-default.png");
+            if (Cache.getInstance().getProfilePicFromCache(user) != null){
+                profileImg = new Image(Cache.getInstance().getProfilePicFromCache(user));
+            } else {
+                profileImg = new Image("soundmate/images/user-default.png");
+                logger.info("Unable to load from cache");
+            }
         }
         profilePic.setFill(new ImagePattern(profileImg));
 

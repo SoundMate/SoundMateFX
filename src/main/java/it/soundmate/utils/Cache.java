@@ -21,24 +21,29 @@ public class Cache {
     }
 
     public String buildProfilePicCacheName(User user) {
-        return "../../resources/soundmate/userCache/" + user.getUserID() + "_profilePic.png";
+        return "src/main/resources/soundmate/userCache/" + user.getUserID() + "_profilePic.png";
     }
 
     public boolean saveProfilePicToCache(User user) {
         String cacheName = buildProfilePicCacheName(user);
         try {
-            InputStream inputStream = user.getProfilePic();
-            BufferedImage bufferedImage = ImageIO.read(inputStream);
-            File file = new File(cacheName);
-            ImageIO.write(bufferedImage, "png", file);
-            return true;
+            InputStream initialStream = user.getProfilePic();
+            byte[] buffer = new byte[initialStream.available()];
+            if (initialStream.read(buffer) > 0){
+                File targetFile = new File(cacheName);
+                try (OutputStream outStream = new FileOutputStream(targetFile)) {
+                    outStream.write(buffer);
+                }
+                return true;
+            }
+            return false;
         } catch (IOException e) {
             logger.info(e.getMessage());
             return false;
         }
     }
 
-    public InputStream getProfilePicFromCache(User user){
+    public InputStream getProfilePicFromCache(User user) {
         String cacheName = buildProfilePicCacheName(user);
         try {
             BufferedImage bufferedImage = ImageIO.read(new File(cacheName));
