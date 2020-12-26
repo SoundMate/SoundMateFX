@@ -1,0 +1,148 @@
+/*
+ * Copyright (c) 2020.
+ * This file was created by Soundmate organization Lorenzo Pantano & Matteo D'Alessandro
+ * Last Modified: 04/12/20, 15:36
+ */
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    padding: 0;
+    font-family: 'Montserrat', sans-serif;
+}
+
+.main {
+    background-image: url("../../resources/it/soundmate/images/background-register-web.png");
+    width: 100%;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.main-img {
+    margin: 2em auto;
+    width: 180px;
+    height: 160px;
+}
+
+.common-form {
+    background-color: #202020;
+    color: white;
+    font-weight: 500;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-evenly;
+    padding: 2em;
+    margin: auto 15vw;
+}
+
+.specific-form {
+    background-color: #202020;
+    color: white;
+    font-weight: 500;
+    display: flex;
+    justify-content: center;
+    padding: 2em;
+    margin: 2em 15vw;
+}
+
+.specific-form-band-room {
+    background-color: #202020;
+    color: white;
+    font-weight: 500;
+    display: flex;
+    justify-content: center;
+    padding: 2em;
+    margin: 2em 10vw;
+}
+
+.text-field-style {
+    border-radius: 10px;
+    width: 350px;
+    height: 40px;
+    padding-left: 15px;
+    font-weight: bold;
+    font-size: 18px;
+    font-family: 'Montserrat', sans-serif;
+    color: black;
+    background-color: #8c8c8c;
+}
+
+.profile-pic-wrapper {
+    display: flex;
+    width: 175px;
+    height: 175px;
+    flex-direction: column;
+    justify-content: space-around;
+}
+
+.profile-pic {
+    width: 100%;
+    height: 100%;
+}
+
+.btn {
+    border-radius: 10px;
+    background-color: #00B540;
+    color: white;
+    padding: 10px;
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 500;
+}
+
+.field {
+    display: flex;
+    flex-direction: column;
+    margin: 1em 1em;
+}
+
+.field label {
+    margin-bottom: 5px;
+}
+
+.email-and-password {
+    display: flex;
+    flex-direction: row;
+    margin: auto 0em;
+}
+
+.names {
+    display: flex;
+}
+
+.band-name-form {
+    background-color: transparent;
+    border: none;
+    text-align: center;
+    font-weight: bold;
+    color: #8c8c8c;
+    font-size: 24px;
+    font-family: 'Montserrat', sans-serif;
+}
+
+.band-name-form:focus {
+    background-color: transparent;
+    border: none;
+    outline: none;
+    text-align: center;
+    font-weight: bold;
+    font-family: 'Montserrat', sans-serif;
+    color: white;
+    font-size: 24px;
+}
+
+.continue-btn {
+    width: 400px;
+    margin: 0;
+    position: relative;
+    bottom: 2.5%;
+    left: 50%;
+    -ms-transform: translate(-50%, -50%);
+    transform: translate(-50%, -50%);
+}

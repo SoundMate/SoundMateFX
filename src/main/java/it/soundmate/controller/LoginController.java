@@ -9,8 +9,10 @@ import org.slf4j.LoggerFactory;
 
 public class LoginController {
 
-    private final LoginBean loginBean;
+    private LoginBean loginBean;
     private static final Logger logger = LoggerFactory.getLogger(LoginController.class);
+
+    public LoginController(){}
 
     public LoginController(LoginBean loginBean) {
         this.loginBean = loginBean;
@@ -34,6 +36,10 @@ public class LoginController {
 
     private boolean checkFields() {
         return !loginBean.getEmail().isEmpty() && !loginBean.getPassword().isEmpty();
+    }
+
+    public void setLoginBean(LoginBean loginBean) {
+        this.loginBean = loginBean;
     }
 }
 

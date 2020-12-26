@@ -27,8 +27,9 @@ public class Connector {
     public Connector(){
         String url = "jdbc:postgresql://localhost/SoundmateDB";
         try {
+            Class.forName("org.postgresql.Driver");  //Senza questo Login Web non funziona
             this.connection = DriverManager.getConnection(url, "postgres", "soundmate");
-        } catch (SQLException sqlException) {
+        } catch (SQLException | ClassNotFoundException sqlException) {
             sqlException.printStackTrace();
         }
     }
