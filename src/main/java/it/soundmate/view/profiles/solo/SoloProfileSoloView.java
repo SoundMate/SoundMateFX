@@ -1,10 +1,11 @@
-package it.soundmate.view.profiles;
+package it.soundmate.view.profiles.solo;
 
 import it.soundmate.constants.Style;
 import it.soundmate.controller.SoloProfileSoloController;
 import it.soundmate.model.Solo;
 import it.soundmate.utils.Cache;
 import it.soundmate.view.UIUtils;
+import it.soundmate.view.main.ProfileView;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
@@ -27,6 +28,14 @@ public class SoloProfileSoloView extends Pane {
     private static final Logger logger = LoggerFactory.getLogger(SoloProfileSoloView.class);
     private final Solo soloUser;
     private final SoloProfileSoloController soloProfileSoloController = new SoloProfileSoloController();
+    private static SoloProfileSoloView instance = null;
+
+    public static SoloProfileSoloView getInstance(Solo solo) {
+        if (instance == null) {
+            instance = new SoloProfileSoloView(solo);
+        }
+        return instance;
+    }
 
     //UI
     private HBox favGenresHBoxList;
@@ -279,6 +288,7 @@ public class SoloProfileSoloView extends Pane {
         @Override
         public void handle(ActionEvent event) {
             logger.info("Edit Profile Info Clicked");
+            ProfileView.getInstance(soloUser).setProfilePage(new EditProfileSolo(soloUser).getEditProfileVBox());
         }
     }
 

@@ -14,14 +14,14 @@ public class MainView extends Pane {
     private final BorderPane borderPane;
     private final NavigationPane navigationPane = NavigationPane.getInstance();
     private final NavigationAction navigationAction = new NavigationAction();
-    private User loggedUser;
+    private final User loggedUser;
 
 
     public MainView(User loggedUser) {
         this.loggedUser = loggedUser;
         this.borderPane = new BorderPane();
         this.borderPane.setLeft(navigationPane.getvBox());
-        this.borderPane.setCenter(new ProfileView(loggedUser).getProfileVBox());
+        this.borderPane.setCenter(ProfileView.getInstance(loggedUser).getProfileVBox());
         this.setNavigationAction();
     }
 
@@ -43,7 +43,7 @@ public class MainView extends Pane {
                 this.borderPane.setCenter(new MessagesView().getMessagesVBox());
                 break;
             case PROFILE:
-                this.borderPane.setCenter(new ProfileView(this.loggedUser).getProfileVBox());
+                this.borderPane.setCenter(ProfileView.getInstance(this.loggedUser).getProfileVBox());
                 break;
             case SETTINGS:
                 this.borderPane.setCenter(new SettingsView().getSettingsVBox());

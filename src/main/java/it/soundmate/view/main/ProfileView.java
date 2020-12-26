@@ -3,7 +3,7 @@ import it.soundmate.controller.ProfileController;
 import it.soundmate.model.Solo;
 import it.soundmate.model.User;
 import it.soundmate.view.UIUtils;
-import it.soundmate.view.profiles.SoloProfileSoloView;
+import it.soundmate.view.profiles.solo.SoloProfileSoloView;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import org.slf4j.Logger;
@@ -13,6 +13,14 @@ public class ProfileView extends Pane {
 
     private final VBox profileVBox;
     private static final Logger logger = LoggerFactory.getLogger(ProfileView.class);
+    private static ProfileView instance = null;
+
+    public static ProfileView getInstance(User user) {
+        if (instance == null) {
+            instance = new ProfileView(user);
+        }
+        return instance;
+    }
 
     public ProfileView(User user){
         ProfileController profileController = new ProfileController();
@@ -21,7 +29,7 @@ public class ProfileView extends Pane {
         switch (user.getUserType()) {
             case SOLO:
                 Solo solo = profileController.getSoloFromUser(user);
-                this.profileVBox.getChildren().add(new SoloProfileSoloView(solo).getSoloVBox());
+                this.profileVBox.getChildren().add(SoloProfileSoloView.getInstance(solo).getSoloVBox());
                 break;
             case BAND_ROOM_MANAGER:
             case BAND_MANAGER:
@@ -34,5 +42,11 @@ public class ProfileView extends Pane {
 
     public VBox getProfileVBox(){
         return this.profileVBox;
+    }
+
+    public void setProfilePage(Pane profilePage) {
+        this.profileVBox.getChildren().set(0, profilePage);
+        logger.info("Removed all children");
+        logger.info("Added profile page");
     }
 }
