@@ -31,6 +31,10 @@ public class SoloProfileSoloView extends Pane {
     //UI
     private HBox favGenresHBoxList;
     private Button addGenreBtn;
+    private HBox bandsList;
+    private HBox mediaList;
+    private Button searchBandsBtn;
+    private Button manageMediaBtn;
 
     public VBox getSoloVBox() {
         return soloVBox;
@@ -43,7 +47,65 @@ public class SoloProfileSoloView extends Pane {
         this.soloUser = solo;
         HBox userInfoHBox = buildUserInfoHBox();
         HBox favGenresHBox = buildFavGenresHBox();
-        this.soloVBox.getChildren().addAll(userInfoHBox, favGenresHBox);
+        HBox bandsSection = buildBandsSection();
+        HBox mediaSection = buildMediaSection();
+        this.soloVBox.getChildren().addAll(userInfoHBox, favGenresHBox, bandsSection, mediaSection);
+    }
+
+    private HBox buildMediaSection() {
+        HBox mediaSection = new HBox();
+        mediaSection.setPadding(new Insets(25));
+        mediaSection.setAlignment(Pos.BOTTOM_CENTER);
+
+        VBox titleAndList = new VBox();
+        titleAndList.setAlignment(Pos.BOTTOM_LEFT);
+        titleAndList.setSpacing(10);
+
+        Label mediaTitleLabel = new Label("Photos");
+        mediaTitleLabel.setStyle(Style.MID_LABEL);
+        titleAndList.getChildren().add(mediaTitleLabel);
+
+        if (this.soloUser.getPhotos() != null && !this.soloUser.getPhotos().isEmpty()) {
+            //TODO: Display Band List (Add children to this.bandsList)
+        } else {
+            Label defaultString = new Label("Add photos in the manage media section");
+            defaultString.setStyle(Style.LOW_LABEL);
+            titleAndList.getChildren().add(defaultString);
+        }
+
+        this.manageMediaBtn = UIUtils.createStyledButton("Manage Media", new ManageMediaAction());
+        mediaSection.getChildren().add(titleAndList);
+        UIUtils.addRegion(null, mediaSection);
+        mediaSection.getChildren().add(this.manageMediaBtn);
+        return mediaSection;
+    }
+
+    private HBox buildBandsSection() {
+        HBox bandsSection = new HBox();
+        bandsSection.setPadding(new Insets(25));
+        bandsSection.setAlignment(Pos.BOTTOM_CENTER);
+
+        VBox titleAndList = new VBox();
+        titleAndList.setAlignment(Pos.BOTTOM_LEFT);
+        titleAndList.setSpacing(10);
+
+        Label bandTitleLabel = new Label("Bands");
+        bandTitleLabel.setStyle(Style.MID_LABEL);
+        titleAndList.getChildren().add(bandTitleLabel);
+
+        if (this.soloUser.getBands() != null && !this.soloUser.getBands().isEmpty()) {
+            //TODO: Display Band List (Add children to this.bandsList)
+        } else {
+            Label defaultString = new Label("Search for a Band and send request to join");
+            defaultString.setStyle(Style.LOW_LABEL);
+            titleAndList.getChildren().add(defaultString);
+        }
+
+        this.searchBandsBtn = UIUtils.createStyledButton("Search Bands", new SearchBandAction());
+        bandsSection.getChildren().add(titleAndList);
+        UIUtils.addRegion(null, bandsSection);
+        bandsSection.getChildren().add(this.searchBandsBtn);
+        return bandsSection;
     }
 
     private HBox buildFavGenresHBox() {
@@ -217,6 +279,20 @@ public class SoloProfileSoloView extends Pane {
         @Override
         public void handle(ActionEvent event) {
             logger.info("Edit Profile Info Clicked");
+        }
+    }
+
+    private class SearchBandAction implements EventHandler<ActionEvent> {
+        @Override
+        public void handle(ActionEvent event) {
+            logger.info("Search Bands Clicked");
+        }
+    }
+
+    private class ManageMediaAction implements EventHandler<ActionEvent> {
+        @Override
+        public void handle(ActionEvent event) {
+            logger.info("Manage Media Clicked");
         }
     }
 }
