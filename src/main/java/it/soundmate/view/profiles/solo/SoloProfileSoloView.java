@@ -40,7 +40,6 @@ public class SoloProfileSoloView extends Pane {
     //UI
     private HBox favGenresHBoxList;
     private Button addGenreBtn;
-    private Button manageMediaBtn;
 
     public VBox getSoloVBox() {
         return soloVBox;
@@ -72,17 +71,17 @@ public class SoloProfileSoloView extends Pane {
         titleAndList.getChildren().add(mediaTitleLabel);
 
         if (this.soloUser.getPhotos() != null && !this.soloUser.getPhotos().isEmpty()) {
-            //TODO: Display Band List (Add children to this.bandsList)
+            //TODO: Display Photo List (Add children to this.photoList)
         } else {
             Label defaultString = new Label("Add photos in the manage media section");
             defaultString.setStyle(Style.LOW_LABEL);
             titleAndList.getChildren().add(defaultString);
         }
 
-        this.manageMediaBtn = UIUtils.createStyledButton("Manage Media", new ManageMediaAction());
+        Button manageMediaBtn = UIUtils.createStyledButton("Manage Media", new ManageMediaAction());
         mediaSection.getChildren().add(titleAndList);
         UIUtils.addRegion(null, mediaSection);
-        mediaSection.getChildren().add(this.manageMediaBtn);
+        mediaSection.getChildren().add(manageMediaBtn);
         return mediaSection;
     }
 
