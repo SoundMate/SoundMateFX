@@ -11,6 +11,7 @@ import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
@@ -31,15 +32,60 @@ public class EditProfileSolo extends Pane {
     private Button removeProfilePicBtn;
     private Button backBtn;
 
+
+    private final TextField updateEmailTextField = new TextField();
+    private final TextField updatePassTextField = new TextField();
+    private final TextField updateFirstNameTextField = new TextField();
+    private final TextField updateLastNameTextField = new TextField();
+
     public EditProfileSolo(Solo solo){
         this.solo = solo;
         this.editProfileVBox = new VBox();
         this.editProfileVBox.setPadding(new Insets(25));
+        this.editProfileVBox.setAlignment(Pos.CENTER);
+
+
         HBox profilePicSection = buildProfilePicSection();
         this.backBtn = UIUtils.createStyledButton("Back", new BackAction());
-        this.editProfileVBox.getChildren().add(this.backBtn);
+        this.backBtn.setPadding(new Insets(0, 25, 0, 25));
         UIUtils.addSizedRegion(this.editProfileVBox, 25, 25);
         this.editProfileVBox.getChildren().add(profilePicSection);
+        VBox updateInfoVBox = buildUpdateInfoVBox();
+        this.editProfileVBox.getChildren().add(updateInfoVBox);
+        this.editProfileVBox.getChildren().add(this.backBtn);
+    }
+
+    private VBox buildUpdateInfoVBox() {
+        VBox updateInfoVBox = new VBox();
+        updateInfoVBox.setPadding(new Insets(25));
+        updateInfoVBox.setAlignment(Pos.CENTER_LEFT);
+        updateInfoVBox.setSpacing(20);
+
+        HBox updateEmailHBox = buildSingleUpdateInfoHBox("Email", this.solo.getEmail(), updateEmailTextField);
+        HBox updatePasswordHBox = buildSingleUpdateInfoHBox("Password", "********", updatePassTextField);
+        HBox updateFirstNameHBox = buildSingleUpdateInfoHBox("First Name", this.solo.getFirstName(), updateFirstNameTextField);
+        HBox updateLastNameHBox = buildSingleUpdateInfoHBox("Last Name", this.solo.getLastName(), updateLastNameTextField);
+
+        updateInfoVBox.getChildren().addAll(updateEmailHBox, updatePasswordHBox, updateFirstNameHBox, updateLastNameHBox);
+        return updateInfoVBox;
+    }
+
+    private HBox buildSingleUpdateInfoHBox(String label, String content, TextField textField) {
+        HBox updateSingleHBox = new HBox();
+        updateSingleHBox.setAlignment(Pos.CENTER_LEFT);
+        updateSingleHBox.setSpacing(10);
+
+        Label updateLabel = new Label(label+": ");
+        updateLabel.setStyle(Style.MID_LABEL);
+        Label contentLabel = new Label(content);
+        contentLabel.setStyle(Style.MID_LABEL);
+
+        updateSingleHBox.getChildren().addAll(updateLabel, contentLabel);
+        UIUtils.addRegion(null, updateSingleHBox);
+        textField.setStyle(Style.TEXT_FIELD);
+        Button button = UIUtils.createStyledButton("Update", new UpdateInfoAction(label));
+        updateSingleHBox.getChildren().addAll(textField, button);
+        return updateSingleHBox;
     }
 
     private HBox buildProfilePicSection() {
@@ -105,6 +151,35 @@ public class EditProfileSolo extends Pane {
         public void handle(ActionEvent event) {
             logger.info("Back clicked");
             ProfileView.getInstance(solo).setProfilePage(SoloProfileSoloView.getInstance(solo).getSoloVBox());
+        }
+    }
+
+    private class UpdateInfoAction implements EventHandler<ActionEvent> {
+
+        private String updateType;
+
+        public UpdateInfoAction(String updateType){
+            this.updateType = updateType;
+        }
+
+        @Override
+        public void handle(ActionEvent event) {
+            switch (updateType) {
+                case "Email":
+                    logger.info("Update Email Clicked: {}", updateEmailTextField.getText());
+                    break;
+                case "Password":
+                    logger.info("Update Password Clicked: {}", updatePassTextField.getText());
+                    break;
+                case "First Name":
+                    logger.info("Update First Name Clicked: {}", updateFirstNameTextField.getText());
+                    break;
+                case "Last Name":
+                    logger.info("Update Last Name Clicked: {}", updateLastNameTextField.getText());
+                    break;
+                default:
+                    logger.info("Error: Button Undetected");
+            }
         }
     }
 }

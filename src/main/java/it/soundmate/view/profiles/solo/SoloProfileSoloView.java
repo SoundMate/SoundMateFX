@@ -40,9 +40,6 @@ public class SoloProfileSoloView extends Pane {
     //UI
     private HBox favGenresHBoxList;
     private Button addGenreBtn;
-    private HBox bandsList;
-    private HBox mediaList;
-    private Button searchBandsBtn;
     private Button manageMediaBtn;
 
     public VBox getSoloVBox() {
@@ -110,10 +107,12 @@ public class SoloProfileSoloView extends Pane {
             titleAndList.getChildren().add(defaultString);
         }
 
-        this.searchBandsBtn = UIUtils.createStyledButton("Search Bands", new SearchBandAction());
+        //private HBox bandsList;
+        //private HBox mediaList;
+        Button searchBandsBtn = UIUtils.createStyledButton("Search Bands", new SearchBandAction());
         bandsSection.getChildren().add(titleAndList);
         UIUtils.addRegion(null, bandsSection);
-        bandsSection.getChildren().add(this.searchBandsBtn);
+        bandsSection.getChildren().add(searchBandsBtn);
         return bandsSection;
     }
 

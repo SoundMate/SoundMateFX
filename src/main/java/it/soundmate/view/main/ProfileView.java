@@ -46,7 +46,6 @@ public class ProfileView extends Pane {
 
     public void setProfilePage(Pane profilePage) {
         this.profileVBox.getChildren().set(0, profilePage);
-        logger.info("Removed all children");
-        logger.info("Added profile page");
+        logger.info("Profile Page Set");
     }
 }
