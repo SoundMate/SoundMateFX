@@ -301,6 +301,7 @@ public class SoloProfileSoloView extends Pane {
         @Override
         public void handle(ActionEvent event) {
             logger.info("Manage Media Clicked");
+            ProfileView.getInstance(soloUser).setProfilePage(new ManageMediaSolo(soloUser).getManageMediaVBox());
         }
     }
 }

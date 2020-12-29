@@ -48,4 +48,5 @@ public class ProfileView extends Pane {
         this.profileVBox.getChildren().set(0, profilePage);
         logger.info("Profile Page Set");
     }
+
 }

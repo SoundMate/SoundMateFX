@@ -127,10 +127,6 @@ public class LoginView extends Pane {
         return imageView;
     }
 
-    protected LoginView getLoginView(){
-        return this;
-    }
-
     private class LoginAction implements EventHandler<ActionEvent> {
         @Override
         public void handle(ActionEvent event) {
