@@ -5,8 +5,10 @@ import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.control.RadioButton;
 import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
 
 
@@ -70,12 +72,27 @@ public class UIUtils {
     }
 
     public static VBox textFieldWithLabel(String label) {
-        VBox labelAndTextfield = new VBox();
+        VBox labelAndTextField = new VBox();
         Label labelTop = new Label(label);
         TextField textField = new TextField();
         textField.setStyle(Style.TEXT_FIELD);
         labelTop.setStyle(Style.TEXTFIELD_LABEL);
-        labelAndTextfield.getChildren().addAll(labelTop, textField);
-        return labelAndTextfield;
+        labelAndTextField.getChildren().addAll(labelTop, textField);
+        return labelAndTextField;
+    }
+
+    public static Button createIconButton(String icon, EventHandler<ActionEvent> handler) {
+        Button btn = new Button();
+        Image iconImg = new Image(icon);
+        btn.setGraphic(new ImageView(iconImg));
+        btn.setOnAction(handler);
+        btn.setStyle(Style.BTN_STYLE_1);
+        return btn;
+    }
+
+    public static RadioButton createRadioButton(String text) {
+        RadioButton radioButton = new RadioButton(text);
+        radioButton.setStyle(Style.RADIO_BTN);
+        return radioButton;
     }
 }
