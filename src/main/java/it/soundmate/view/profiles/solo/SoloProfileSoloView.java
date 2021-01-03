@@ -139,7 +139,7 @@ public class SoloProfileSoloView extends Pane {
             for (String favGenre : this.soloUser.getFavouriteGenres()) {
                 Label genreLabel = new Label(favGenre);
                 genreLabel.setPadding(new Insets(5));
-                genreLabel.setStyle(Style.FAVGENRE_LABEL);
+                genreLabel.setStyle(Style.FAV_GENRE_LABEL);
                 favGenresHBoxList.getChildren().add(genreLabel);
                 UIUtils.addSizedRegion(favGenresHBoxList, 10,10);
             }
@@ -273,7 +273,7 @@ public class SoloProfileSoloView extends Pane {
 
         private void updateUI(String newGenre) {
             Label newGenreLabel = new Label(newGenre);
-            newGenreLabel.setStyle(Style.FAVGENRE_LABEL);
+            newGenreLabel.setStyle(Style.FAV_GENRE_LABEL);
             newGenreLabel.setPadding(new Insets(5));
             favGenresHBoxList.getChildren().add(newGenreLabel);
             UIUtils.addSizedRegion(favGenresHBoxList, 10,10);

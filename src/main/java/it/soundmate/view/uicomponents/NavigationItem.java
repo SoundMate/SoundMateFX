@@ -27,7 +27,7 @@ public class NavigationItem extends StackPane {
         iconImgView.setFitHeight(20);
         iconImgView.setPreserveRatio(true);
         Label label = new Label(text);
-        label.setStyle(Style.TEXTFIELD_LABEL);
+        label.setStyle(Style.TEXT_FIELD_LABEL);
         this.hBox.getChildren().addAll(iconImgView, label);
         this.getChildren().add(hBox);
         isSelected = selected;

@@ -76,7 +76,7 @@ public class UIUtils {
         Label labelTop = new Label(label);
         TextField textField = new TextField();
         textField.setStyle(Style.TEXT_FIELD);
-        labelTop.setStyle(Style.TEXTFIELD_LABEL);
+        labelTop.setStyle(Style.TEXT_FIELD_LABEL);
         labelAndTextField.getChildren().addAll(labelTop, textField);
         return labelAndTextField;
     }

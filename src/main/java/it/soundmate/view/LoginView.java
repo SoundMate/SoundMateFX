@@ -88,7 +88,7 @@ public class LoginView extends Pane {
 
     private void addTextFieldWithLabel(VBox vBox, String label) {
         Label labelField = new Label(label);
-        labelField.setStyle(Style.TEXTFIELD_LABEL);
+        labelField.setStyle(Style.TEXT_FIELD_LABEL);
         labelField.setPadding(new Insets(10,0,5,0));
         TextField textField;
         if (label.equals("Email")) {

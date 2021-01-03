@@ -80,14 +80,14 @@ public class RegisterView extends Pane {
         HBox nameHBox = new HBox();
         //First Name
         Label firstNameLabel = new Label("First Name");
-        firstNameLabel.setStyle(Style.TEXTFIELD_LABEL);
+        firstNameLabel.setStyle(Style.TEXT_FIELD_LABEL);
         this.firstName.setStyle(Style.TEXT_FIELD);
         this.firstName.setPrefWidth(USE_COMPUTED_SIZE);
         VBox firstNameVBox = new VBox();
         firstNameVBox.getChildren().addAll(firstNameLabel, this.firstName);
         //Last Name
         Label lastNameLabel = new Label("Last Name");
-        lastNameLabel.setStyle(Style.TEXTFIELD_LABEL);
+        lastNameLabel.setStyle(Style.TEXT_FIELD_LABEL);
         this.lastName.setStyle(Style.TEXT_FIELD);
         this.lastName.setPrefWidth(USE_COMPUTED_SIZE);
         VBox lastNameVBox = new VBox();
@@ -101,7 +101,7 @@ public class RegisterView extends Pane {
         HBox credentialHBox = new HBox();
         //Email
         Label emailLabel = new Label("Email");
-        emailLabel.setStyle(Style.TEXTFIELD_LABEL);
+        emailLabel.setStyle(Style.TEXT_FIELD_LABEL);
         this.email.setStyle(Style.TEXT_FIELD);
         this.email.setPrefWidth(USE_COMPUTED_SIZE);
         VBox emailVBox = new VBox();
@@ -109,7 +109,7 @@ public class RegisterView extends Pane {
 
         //Password
         Label passLabel = new Label("Password");
-        passLabel.setStyle(Style.TEXTFIELD_LABEL);
+        passLabel.setStyle(Style.TEXT_FIELD_LABEL);
         this.password.setStyle(Style.TEXT_FIELD);
         this.password.setPrefWidth(USE_COMPUTED_SIZE);
         VBox passVBox = new VBox();
@@ -142,8 +142,8 @@ public class RegisterView extends Pane {
                 bandOrRoomName.setPromptText("Band Room Name...");
                 bandOrRoomLabel = new Label("Band Room Name");
             }
-            bandOrRoomLabel.setStyle(Style.TEXTFIELD_LABEL);
-            bandOrRoomName.setStyle(Style.TEXTFIELD_REGISTER);
+            bandOrRoomLabel.setStyle(Style.TEXT_FIELD_LABEL);
+            bandOrRoomName.setStyle(Style.TEXT_FIELD_REGISTER);
             vBox.getChildren().addAll(bandOrRoomLabel,bandOrRoomName);
         }
         return vBox;

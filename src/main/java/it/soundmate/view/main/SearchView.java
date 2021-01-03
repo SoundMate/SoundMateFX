@@ -1,6 +1,8 @@
 package it.soundmate.view.main;
 
 import it.soundmate.constants.Style;
+import it.soundmate.controller.SearchController;
+import it.soundmate.model.User;
 import it.soundmate.view.UIUtils;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
@@ -18,6 +20,7 @@ import java.util.List;
 public class SearchView extends Pane {
 
     private static final Logger logger = LoggerFactory.getLogger(SearchView.class);
+    private final SearchController searchController = new SearchController();
 
     public BorderPane getSearchBorderPane() {
         return searchBorderPane;
@@ -28,6 +31,8 @@ public class SearchView extends Pane {
     private final Button searchBtn = new Button();
     private final Button searchOnMapBtn = new Button();
     private final List<RadioButton> filters = new ArrayList<>();
+    private final ScrollPane resultsScrollPane = new ScrollPane();
+    private final VBox resultsVBox = new VBox();
 
     public SearchView(){
         this.searchBorderPane = new BorderPane();
@@ -35,8 +40,16 @@ public class SearchView extends Pane {
 
         Node top = buildTopSearchBar();
         this.searchBorderPane.setTop(top);
-        ScrollPane resultsScrollPane = new ScrollPane();
         this.searchBorderPane.setCenter(resultsScrollPane);
+
+        this.resultsScrollPane.setStyle("-fx-background: #232323; -fx-background-color: #232323; -fx-border-color: #232323");
+        this.resultsScrollPane.setContent(this.resultsVBox);
+        this.resultsScrollPane.setPrefViewportWidth(Region.USE_COMPUTED_SIZE);
+        this.resultsScrollPane.setPrefViewportHeight(Region.USE_COMPUTED_SIZE);
+        this.resultsVBox.setPadding(new Insets(25));
+        this.resultsVBox.setAlignment(Pos.CENTER);
+        this.resultsVBox.setPrefHeight(USE_COMPUTED_SIZE);
+        this.resultsVBox.setPrefWidth(USE_COMPUTED_SIZE);
     }
 
     private Node buildTopSearchBar() {
@@ -103,7 +116,28 @@ public class SearchView extends Pane {
     private class SearchAction implements EventHandler<ActionEvent> {
         @Override
         public void handle(ActionEvent event) {
+            if (!resultsVBox.getChildren().isEmpty()) {  //Rimuove label precedenti tipo "No results Found" quando si fa una nuova ricerca
+                resultsVBox.getChildren().remove(0);
+            }
             logger.info("Search Clicked");
+            if (searchTextField.getText().isEmpty()) {  //Se la textfield è vuota non fa nessuna ricerca
+                logger.error("Empty text fields");
+                searchTextField.setPromptText("Try to search for Musicians, Bands or Rooms...");
+                return;
+            }
+
+            Label loadingLabel = new Label("Loading results...");
+            loadingLabel.setStyle(Style.LOW_LABEL);
+            resultsVBox.getChildren().add(loadingLabel);
+
+            List<User> results = searchController.performSearch(searchTextField.getText(), filters);
+            logger.info("Done Search");
+            if (results == null || results.isEmpty()) {
+                Label noResultsLabel = new Label("No Results Found");
+                noResultsLabel.setStyle(Style.MID_LABEL);
+                resultsVBox.getChildren().remove(loadingLabel);
+                resultsVBox.getChildren().add(noResultsLabel);
+            }
         }
     }
 }
