@@ -40,7 +40,7 @@ public class MainView extends Pane {
                 this.borderPane.setCenter(new SearchView().getSearchBorderPane());
                 break;
             case MESSAGES:
-                this.borderPane.setCenter(new MessagesView().getMessagesVBox());
+                this.borderPane.setCenter(new MessagesView(this.loggedUser).getMessagesBorderPane());
                 break;
             case PROFILE:
                 this.borderPane.setCenter(ProfileView.getInstance(this.loggedUser).getProfileVBox());
