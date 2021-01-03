@@ -6,6 +6,7 @@ import it.soundmate.model.Solo;
 import it.soundmate.utils.Cache;
 import it.soundmate.view.UIUtils;
 import it.soundmate.view.main.ProfileView;
+import it.soundmate.view.uicomponents.InstrumentGraphics;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
@@ -14,6 +15,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextInputDialog;
 import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
@@ -213,11 +215,17 @@ public class SoloProfileSoloView extends Pane {
 
                 Label instrumentLabel = new Label(instrument);
                 instrumentLabel.setStyle(Style.MID_LABEL);
+                instrumentLabel.setPadding(new Insets(10, 0, 0, 0));
 
-                Circle instrumentCircle = new Circle();
-                instrumentCircle.setRadius(25);
-
-                instrumentVBox.getChildren().addAll(instrumentCircle, instrumentLabel);
+                ImageView instrumentImageView = new ImageView();
+                instrumentImageView.setFitWidth(32);
+                instrumentImageView.setFitHeight(32);
+                for (InstrumentGraphics instrumentGraphics : InstrumentGraphics.values()) {
+                    if (instrument.equals(instrumentGraphics.getName())) {
+                        instrumentImageView.setImage(instrumentGraphics.getSource());
+                    }
+                }
+                instrumentVBox.getChildren().addAll(instrumentImageView, instrumentLabel);
                 instrumentList.getChildren().add(instrumentVBox);
             }
         }
