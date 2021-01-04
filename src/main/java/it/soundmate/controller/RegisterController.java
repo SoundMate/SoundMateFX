@@ -8,12 +8,14 @@ import it.soundmate.model.UserType;
 
 public class RegisterController {
 
-    private final RegisterBean registerBean;
+    private RegisterBean registerBean;
     private final UserDao userDao = UserDao.getInstance();
 
     public RegisterController(RegisterBean registerBean) {
         this.registerBean = registerBean;
     }
+
+    public RegisterController(){};
 
     public boolean checkFields(UserType userType){
         if (userType == UserType.SOLO) {
@@ -41,8 +43,11 @@ public class RegisterController {
             default:
                 type = 0;
         }
+        if (!checkFields(userType)) {
+            return null;
+        }
         //If registering is ok --> Login and return the new user
-        if (userDao.registerUser(this.registerBean.getEmail(), this.registerBean.getPassword(), this.registerBean.getFirstName(), this.registerBean.getLastName(), type)){
+        if (userDao.registerUser(this.registerBean.getEmail(), this.registerBean.getPassword(), this.registerBean.getFirstName(), this.registerBean.getLastName(), this.registerBean.getBandName(), this.registerBean.getBandOrRoomName(), type)){
             LoginBean loginBean = new LoginBean(this.registerBean.getEmail(), this.registerBean.getPassword());
             LoginController loginController = new LoginController(loginBean);
             User registeredUser = loginController.login();
@@ -51,4 +56,5 @@ public class RegisterController {
         }
         else return null;
     }
+
 }

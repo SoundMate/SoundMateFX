@@ -34,7 +34,7 @@ public class MainView extends Pane {
     protected void navigateToPage(NavigationItem item) {
         switch (item.getType()) {
             case HOME:
-                this.borderPane.setCenter(new HomeView().getHomeVBox());
+                this.borderPane.setCenter(new HomeView(loggedUser).getHomeBorderPane());
                 break;
             case SEARCH:
                 this.borderPane.setCenter(SearchView.getInstance().getContentVBox());

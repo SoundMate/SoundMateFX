@@ -77,7 +77,7 @@ public class UserDao implements Dao<User> {
         return null;
     }
 
-    public boolean registerUser(String email, String password, String firstName, String lastName, int type) {
+    public boolean registerUser(String email, String password, String firstName, String lastName, String bandName, String bandOrRoomName, int type) {
         String query = "insert into \"Users\" (email, password, \"firstName\", \"lastName\", type) values (?,?,?,?,?);";
         try (PreparedStatement preparedStatement = Connector.getInstance().getConnection().prepareStatement(query)) {
             preparedStatement.setString(1, email);

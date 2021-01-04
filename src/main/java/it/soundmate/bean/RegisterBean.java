@@ -7,6 +7,10 @@ public class RegisterBean {
     private String email;
     private String password;
     private String bandOrRoomName;
+    private String bandName;
+    private String bandRoomName;
+
+    public RegisterBean(){}
 
     public RegisterBean(String firstName, String lastName, String email, String password) {
         this.firstName = firstName;
@@ -61,5 +65,21 @@ public class RegisterBean {
 
     public void setBandOrRoomName(String bandOrRoomName) {
         this.bandOrRoomName = bandOrRoomName;
+    }
+
+    public String getBandRoomName() {
+        return bandRoomName;
+    }
+
+    public void setBandRoomName(String bandRoomName) {
+        this.bandRoomName = bandRoomName;
+    }
+
+    public String getBandName() {
+        return bandName;
+    }
+
+    public void setBandName(String bandName) {
+        this.bandName = bandName;
     }
 }
