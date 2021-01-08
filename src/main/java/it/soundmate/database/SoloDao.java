@@ -39,10 +39,6 @@ public class SoloDao implements Dao<Solo> {
         return null;
     }
 
-    @Override
-    public Solo getByEmailAndPassword(String email, String password) {
-        return null;
-    }
 
     public Solo getSoloByUser(User user) {
         Solo soloUser = new Solo(user);

@@ -14,7 +14,7 @@ public class BandManager extends User {
     private ArrayList<Band> managedBands;
 
     public BandManager(User user) {
-        super(user.getUserID(), user.getEmail(), user.getFirstName(), user.getLastName(), user.getPassword(), user.getProfilePic(), UserType.BAND_MANAGER);
+        super(user.getUserID(), user.getEmail(), user.getPassword(), user.getEncodedImg(), UserType.BAND_MANAGER);
     }
 
     public BandManager(User user, List<Band> bands) {

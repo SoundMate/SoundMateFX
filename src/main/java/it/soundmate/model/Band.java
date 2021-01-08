@@ -9,14 +9,13 @@ package it.soundmate.model;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Band {
+public class Band extends User {
 
     private int bandID;
     private ArrayList<String> genres;
     private ArrayList<Solo> members;
     private ArrayList<String> socials;
     private String bandName;
-    //private Song songPreviews;
 
     public Band(int bandID){
         this.bandID = bandID;
@@ -27,6 +26,10 @@ public class Band {
         this.genres = (ArrayList<String>) genres;
         this.socials = (ArrayList<String>) socials;
         this.members = (ArrayList<Solo>) members;
+    }
+
+    public int getBandID() {
+        return bandID;
     }
 
     public List<String> getGenres() {

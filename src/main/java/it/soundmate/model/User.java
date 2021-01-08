@@ -6,65 +6,35 @@
 
 package it.soundmate.model;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.io.File;
-import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
 public class User {
 
+
     private int userID;
     private String email;
-    private String firstName;
-    private String lastName;
     private String password;
+    private String encodedImg;
     private ArrayList<File> photos;
-    private InputStream profilePic;
     private UserType userType;
-    //video
 
     public User(){}
 
-    public User(int userID, String email, String firstName, String lastName, String password, InputStream profilePic, UserType userType) {
+    public User(int userID, String email, String password, String encodedImg, UserType userType) {
         this.userID = userID;
         this.email = email;
-        this.firstName = firstName;
-        this.lastName = lastName;
         this.password = password;
-        this.profilePic = profilePic;
         this.userType = userType;
+        this.encodedImg = encodedImg;
     }
 
     public int getUserID() {
         return userID;
-    }
-
-    public void setUserID(int userID) {
-        this.userID = userID;
-    }
-
-    public String getFirstName() {
-        return firstName;
-    }
-
-    public void setFirstName(String firstName) {
-        this.firstName = firstName;
-    }
-
-    public String getLastName() {
-        return lastName;
-    }
-
-    public void setLastName(String lastName) {
-        this.lastName = lastName;
-    }
-
-    public InputStream getProfilePic() {
-        return profilePic;
-    }
-
-    public void setProfilePic(InputStream profilePic) {
-        this.profilePic = profilePic;
     }
 
     public String getEmail() {
@@ -87,25 +57,20 @@ public class User {
         return photos;
     }
 
-    public void uploadPhoto(File photo) {
-        this.photos.add(photo);
-    }
-
-    public void removePhoto(File photo) {
-        for (File currentPhoto: this.photos) {
-            if (currentPhoto.equals(photo)) {
-                this.photos.remove(currentPhoto);
-                break;
-            }
-        }
-    }
-
     public UserType getUserType() {
         return userType;
     }
 
     public void setUserType(UserType userType) {
         this.userType = userType;
+    }
+
+    public String getEncodedImg() {
+        return encodedImg;
+    }
+
+    public void setEncodedImg(String encodedImg) {
+        this.encodedImg = encodedImg;
     }
 
 }

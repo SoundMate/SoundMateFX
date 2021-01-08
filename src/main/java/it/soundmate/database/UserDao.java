@@ -6,16 +6,15 @@
 
 package it.soundmate.database;
 
-import it.soundmate.model.Band;
-import it.soundmate.model.BandManager;
-import it.soundmate.model.User;
-import it.soundmate.model.UserType;
+import it.soundmate.bean.registerbeans.RegisterSoloBean;
+import it.soundmate.database.dbexceptions.BannedAccountException;
+import it.soundmate.database.dbexceptions.DuplicatedEmailException;
+import it.soundmate.model.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.InputStream;
-import java.sql.Array;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -24,7 +23,13 @@ public class UserDao implements Dao<User> {
 
     /*Singleton*/
 
+    private final Connector connector = Connector.getInstance();
+    private final DBServices dbServices = DBServices.getInstance();
+    private static final Logger log = LoggerFactory.getLogger(UserDao.class);
     private static UserDao instance = null;
+    private static final String ACC_BANNED_ERR = "\t ***** THIS ACCOUNT HAS BEEN BANNED *****";
+    private static final String EMAIL_EXISTS_ERR = "\t ***** THIS EMAIL ALREADY EXISTS *****";
+    private static final String ERR_INSERT = "Error inserting user";
 
     public static UserDao getInstance() {
         if (instance == null) {
@@ -38,124 +43,96 @@ public class UserDao implements Dao<User> {
         return null;
     }
 
-    @Override
-    public User getByEmailAndPassword(String email, String password) {
-        String query = "select * from \"Users\" where email=? and password=?;";
-        ResultSet result;
-        try (PreparedStatement preparedStatement = Connector.getInstance().getConnection().prepareStatement(query)) {
+
+    public int registerSolo(RegisterSoloBean registerSoloBean) {
+        log.info("Registering Solo In DATABASE");
+        ResultSet resultSet;
+        int soloID = 0;
+
+        if (dbServices.checkIfBanned(registerSoloBean.getEmail())){
+            log.error(ACC_BANNED_ERR);
+            throw new BannedAccountException(ACC_BANNED_ERR);
+        } else if (dbServices.checkEmailBoolean(registerSoloBean.getEmail())){
+            log.error(EMAIL_EXISTS_ERR);
+            throw new DuplicatedEmailException(EMAIL_EXISTS_ERR);
+        } else {
+
+            String sql = "WITH ins1 AS (\n" + "INSERT INTO registered_users (email, password, user_type)\n" +
+                    "VALUES (?, ?, ?)\n"+" -- ON CONFLICT DO NOTHING -- optional addition in Postgres 9.5+\n" +
+                    "RETURNING id AS sample_id\n"+"), ins2 AS (\n"+"INSERT INTO users (id)\n" +
+                    "SELECT sample_id FROM ins1\n"+")\n"+"INSERT INTO solo (id, first_name, last_name)\n" +
+                    "SELECT sample_id, ?, ? FROM ins1;";
+
+            try (Connection conn = connector.getConnection();
+                 PreparedStatement preparedStatement = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
+
+                preparedStatement.setString(1, registerSoloBean.getEmail());
+                preparedStatement.setString(2, registerSoloBean.getPassword());
+                preparedStatement.setString(3, registerSoloBean.getUserType().toString());
+                preparedStatement.setString(4, registerSoloBean.getFirstName());
+                preparedStatement.setString(5, registerSoloBean.getLastName());
+
+
+                int rowAffected = preparedStatement.executeUpdate();
+                if (rowAffected == 1) {
+                    resultSet = preparedStatement.getGeneratedKeys();
+                    if (resultSet.next())
+                        return resultSet.getInt(1);
+                }
+            } catch (SQLException ex) {
+                throw new RepositoryException(ERR_INSERT, ex);
+            }
+        }
+        return soloID; //If soloID == 0 --> Error ??
+    }
+
+    public User login(String email, String password){
+        log.info("Logging in User {}", email);
+        ResultSet resultSet;
+        String sql = "SELECT id ,user_type FROM registered_users WHERE email = ? AND password = ?;";
+        try(Connection conn = connector.getConnection();
+            PreparedStatement preparedStatement = conn.prepareStatement(sql)){
             preparedStatement.setString(1, email);
             preparedStatement.setString(2, password);
-            result = preparedStatement.executeQuery();
-            User user = new User();
-            while (result.next()) {
-                user.setFirstName(result.getString("firstName"));
-                user.setLastName(result.getString("lastName"));
-                user.setEmail(result.getString("email"));
-                user.setUserID(result.getInt("id"));
-                InputStream profilePicBytes = result.getBinaryStream("profile_pic");
-                if (profilePicBytes != null) {
-                    user.setProfilePic(profilePicBytes);
-                }
-                switch (result.getInt("type")) {
-                    case 1:
-                        user.setUserType(UserType.SOLO);
-                        break;
-                    case 2:
-                        user.setUserType(UserType.BAND_MANAGER);
-                        break;
-                    case 3:
-                        user.setUserType(UserType.BAND_ROOM_MANAGER);
-                        break;
-                    default:
-                        return null;
+            resultSet = preparedStatement.executeQuery();
+
+            while (resultSet.next()){
+                String userType = resultSet.getString("user_type");
+                log.info("Logging in with user type {}", userType);
+                if (userType.equals(UserType.SOLO.toString())) {
+                    return this.loginSolo(resultSet.getInt("id"));
                 }
             }
-            return user;
-        } catch (SQLException e) {
-            e.printStackTrace();
+        } catch (SQLException sqlException){
+            throw new RepositoryException("Error: DB not responding! \n Check stacktrace for details");
         }
-        return null;
+        return null; //Error
     }
 
-    public boolean registerUser(String email, String password, String firstName, String lastName, String bandName, String bandOrRoomName, int type) {
-        String query = "insert into \"Users\" (email, password, \"firstName\", \"lastName\", type) values (?,?,?,?,?);";
-        try (PreparedStatement preparedStatement = Connector.getInstance().getConnection().prepareStatement(query)) {
-            preparedStatement.setString(1, email);
-            preparedStatement.setString(2, password);
-            preparedStatement.setString(3, firstName);
-            preparedStatement.setString(4, lastName);
-            preparedStatement.setInt(5,type);
-            //executeUpdate returns the numbers of affected row
-            return preparedStatement.executeUpdate() == 1;
-        } catch (SQLException sqlException) {
-            sqlException.printStackTrace();
-            return false;
-        }
-    }
-
-    public boolean registerSoloFromUsers(int id) {
-        String query = "insert into \"Solos\" (\"userID\") values (?)";
-        try (PreparedStatement preparedStatement = Connector.getInstance().getConnection().prepareStatement(query)) {
+    public Solo loginSolo(int id) {
+        log.info("Logging in Solo User ID: {}", id);
+        ResultSet resultSet;
+        String sql = "SELECT solo.id, email, password, first_name, last_name, encoded_profile_img FROM registered_users " +
+                "JOIN solo ON solo.id = registered_users.id JOIN users u on registered_users.id = u.id WHERE solo.id=?;";
+        try(Connection conn = connector.getConnection();
+            PreparedStatement preparedStatement = conn.prepareStatement(sql, ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_UPDATABLE)){
             preparedStatement.setInt(1, id);
-            //executeUpdate returns the numbers of affected row
-            return preparedStatement.executeUpdate() == 1;
-        } catch (SQLException sqlException) {
-            sqlException.printStackTrace();
-            return false;
-        }
-    }
+            resultSet = preparedStatement.executeQuery();
 
-    public boolean registerBand(String name) {
-        String query = "insert into \"Bands\" (band_name) values (?)";
-        try (PreparedStatement preparedStatement = Connector.getInstance().getConnection().prepareStatement(query)) {
-            preparedStatement.setString(1, name);
-            //executeUpdate returns the numbers of affected row
-            return preparedStatement.executeUpdate() == 1;
-        } catch (SQLException sqlException) {
-            sqlException.printStackTrace();
-            return false;
-        }
-    }
+            if (resultSet.next()){
+                String email = resultSet.getString("email");
+                String password = resultSet.getString("password");
+                String encodedImg = resultSet.getString("encoded_profile_img");
+                User user = new User(id, email, password, encodedImg, UserType.SOLO);
+                log.info("Returning Solo User {} {}", resultSet.getString("first_name"), resultSet.getString("last_name"));
+                return new Solo(user, resultSet.getString("first_name"), resultSet.getString("last_name"));
+            }
 
-    public boolean registerBandManager(int id, String name) {
-        String query = "insert into \"BandManagers\" (\"userID\", bands) values (?,?)";
-        try (PreparedStatement preparedStatement = Connector.getInstance().getConnection().prepareStatement(query)) {
-            String[] nameArray = {name};
-            Array bandNameArray = Connector.getInstance().getConnection().createArrayOf("text", nameArray);
-            preparedStatement.setInt(1, id);
-            preparedStatement.setArray(2, bandNameArray);
-            //executeUpdate returns the numbers of affected row
-            return preparedStatement.executeUpdate() == 1;
-        } catch (SQLException sqlException) {
+        } catch (SQLException sqlException){
             sqlException.printStackTrace();
-            return false;
+            throw new RepositoryException("Error: DB not responding! \n Check stacktrace for details");
         }
-    }
-
-    public boolean registerBandRoomManager(int id, String name) {
-        String query = "insert into \"BandRoomManager\" (\"userid\", bandroomname) values (?,?)";
-        try (PreparedStatement preparedStatement = Connector.getInstance().getConnection().prepareStatement(query)) {
-            preparedStatement.setInt(1, id);
-            preparedStatement.setString(2, name);
-            //executeUpdate returns the numbers of affected row
-            return preparedStatement.executeUpdate() == 1;
-        } catch (SQLException sqlException) {
-            sqlException.printStackTrace();
-            return false;
-        }
-    }
-
-    public boolean saveProfilePicForUser(InputStream inputStream, int userID) {
-        String query;
-        query = "update \"Users\" set profile_pic = (?) where id = (?);";
-        try (PreparedStatement preparedStatement = Connector.getInstance().getConnection().prepareStatement(query)){
-            preparedStatement.setBinaryStream(1, inputStream);
-            preparedStatement.setInt(2, userID);
-            return preparedStatement.executeUpdate() == 1;
-        } catch (SQLException sqlException) {
-            sqlException.printStackTrace();
-            return false;
-        }
+        return null; //Error
     }
 
 

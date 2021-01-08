@@ -24,7 +24,7 @@
 
 
 <%@ page contentType="text/html;charset=UTF-8"%>
-<jsp:useBean id="registerBean" scope="request" class="it.soundmate.bean.RegisterBean"/>
+<jsp:useBean id="registerBean" scope="request" class="it.soundmate.bean.registerbeans.RegisterBean"/>
 <jsp:useBean id="registerController" scope="request" class="it.soundmate.controller.RegisterController"/>
 <jsp:setProperty name="registerBean" property="*"/>
 <jsp:useBean id="user" scope="session" class="it.soundmate.model.User"/>
@@ -42,7 +42,7 @@
                         </div>
 <%
                 } else {
-                    user = registerController.registerUser(UserType.BAND_ROOM_MANAGER);
+                    user = registerController.registerUser(UserType.ROOM_RENTER);
                     if (user != null) {
                         //Forward to page with user parameters
                     } else {

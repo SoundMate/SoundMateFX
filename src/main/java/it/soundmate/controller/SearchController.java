@@ -24,12 +24,15 @@ public class SearchController {
             results.addAll(this.searchEngine.searchByName(searchString));
         } else {
             if (filterValues[0]) {
+                logger.info("Searching solos...");
                 results.addAll(this.searchEngine.searchSolos(searchString));
             }
             if (filterValues[1]) {
-                //results.addAll(this.searchEngine.searchBands(searchString));
+                logger.info("Searching bands...");
+                results.addAll(this.searchEngine.searchBands(searchString));
             }
             if (filterValues[2]) {
+                logger.info("Searching rooms...");
                 results.addAll(this.searchEngine.searchRooms(searchString));
             }
         }

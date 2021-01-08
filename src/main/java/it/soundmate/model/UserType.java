@@ -7,7 +7,28 @@
 package it.soundmate.model;
 
 public enum UserType {
-    SOLO,
-    BAND_MANAGER,
-    BAND_ROOM_MANAGER
+    BAND {
+        @Override
+        public String toString() {
+            return "BAND";
+        }
+    },
+    BAND_MANAGER {
+        @Override
+        public String toString() {
+            return "BAND_MANAGER";
+        }
+    },
+    ROOM_RENTER {
+        @Override
+        public String toString() {
+            return "ROOM_RENTER";
+        }
+    },
+    SOLO {
+        @Override
+        public String toString() {
+            return "SOLO";
+        }
+    }
 }

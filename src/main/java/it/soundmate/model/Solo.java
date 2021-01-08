@@ -12,21 +12,31 @@ import java.util.List;
 public class Solo extends User {
 
     private ArrayList<String> favouriteGenres = new ArrayList<>();
+    private String firstName;
+    private String lastName;
     private int age;
     private ArrayList<String> instrument = new ArrayList<>();
     private ArrayList<Band> bands = new ArrayList<>();
 
 
     public Solo(User user) {
-        super(user.getUserID(), user.getEmail(), user.getFirstName(), user.getLastName(), user.getPassword(), user.getProfilePic(), UserType.SOLO);
+        super(user.getUserID(), user.getEmail(), user.getPassword(), user.getEncodedImg(), UserType.SOLO);
     }
 
-    public Solo(User user, List<String> favouriteGenres, int age, List<String> instrument, List<Band> bands) {
+    public Solo(User user, String firstName, String lastName, List<String> favouriteGenres, int age, List<String> instrument, List<Band> bands) {
         this(user);
+        this.firstName = firstName;
+        this.lastName = lastName;
         this.favouriteGenres.addAll(favouriteGenres);
         this.age = age;
         this.instrument.addAll(instrument);
         this.bands.addAll(bands);
+    }
+
+    public Solo(User user, String firstName, String lastName) {
+        this(user);
+        this.firstName = firstName;
+        this.lastName = lastName;
     }
 
     public void joinBand(Band band){
@@ -78,4 +88,19 @@ public class Solo extends User {
         this.instrument = (ArrayList<String>) instrument;
     }
 
+    public String getFirstName() {
+        return firstName;
+    }
+
+    public void setFirstName(String firstName) {
+        this.firstName = firstName;
+    }
+
+    public String getLastName() {
+        return lastName;
+    }
+
+    public void setLastName(String lastName) {
+        this.lastName = lastName;
+    }
 }

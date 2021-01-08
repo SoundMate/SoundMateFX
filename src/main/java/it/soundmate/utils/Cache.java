@@ -1,3 +1,9 @@
+/*
+ * Copyright (c) 2021.
+ * Created by Lorenzo Pantano on 08/01/21, 13:36
+ * Last edited: 08/01/21, 13:36
+ */
+
 package it.soundmate.utils;
 
 import it.soundmate.model.User;
@@ -24,10 +30,9 @@ public class Cache {
         return "src/main/resources/soundmate/userCache/" + user.getUserID() + "_profilePic.png";
     }
 
-    public boolean saveProfilePicToCache(User user) {
+    public boolean saveProfilePicToCache(User user, File image) {
         String cacheName = buildProfilePicCacheName(user);
-        try {
-            InputStream initialStream = user.getProfilePic();
+        try (InputStream initialStream = new FileInputStream(image)) {
             byte[] buffer = new byte[initialStream.available()];
             if (initialStream.read(buffer) > 0){
                 File targetFile = new File(cacheName);

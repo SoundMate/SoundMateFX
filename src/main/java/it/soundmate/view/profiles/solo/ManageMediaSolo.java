@@ -12,34 +12,33 @@ import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.layout.HBox;
-import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ManageMediaSolo extends Pane {
+public class ManageMediaSolo extends VBox {
 
     private static final Logger logger = LoggerFactory.getLogger(ManageMediaSolo.class);
+    private final ProfileView profileView;
     protected final Solo soloUser;
 
-    private VBox manageMediaVBox;
     private Button backBtn;
     private HBox photosHBox;
     private HBox videosHBox;
 
-    public ManageMediaSolo(Solo soloUser) {
+    public ManageMediaSolo(Solo soloUser, ProfileView profileView) {
         this.soloUser = soloUser;
+        this.profileView = profileView;
 
-        this.manageMediaVBox = new VBox();
-        this.manageMediaVBox.setPadding(new Insets(25));
+        this.setPadding(new Insets(25));
 
         Label title = new Label("Manage Media for "+soloUser.getFirstName() + " "+soloUser.getLastName());
         title.setStyle(Style.PROFILE_NAME);
 
         this.photosHBox = buildPhotosHBox(soloUser);
-        this.videosHBox = buildVideosHBox(soloUser);
+        this.videosHBox = buildVideosHBox();
 
         Label photosTitle = new Label("Photos");
         photosTitle.setStyle(Style.MID_LABEL);
@@ -49,11 +48,11 @@ public class ManageMediaSolo extends Pane {
         videosTitle.setStyle(Style.MID_LABEL);
 
         this.backBtn = UIUtils.createStyledButton("Back", new BackAction());
-        this.manageMediaVBox.getChildren().addAll(title, photosTitle, this.photosHBox, videosTitle, this.videosHBox, this.backBtn);
+        this.getChildren().addAll(title, photosTitle, this.photosHBox, videosTitle, this.videosHBox, this.backBtn);
 
     }
 
-    private HBox buildVideosHBox(Solo soloUser) {
+    private HBox buildVideosHBox() {
         HBox videosList = new HBox();
         videosList.setAlignment(Pos.CENTER_LEFT);
         videosList.setSpacing(10);
@@ -66,11 +65,13 @@ public class ManageMediaSolo extends Pane {
 
     private HBox buildPhotosHBox(Solo soloUser) {
 
+        logger.info("Photos of {} should be displayed", soloUser.getFirstName());
+
         HBox photosList = new HBox();
         photosList.setAlignment(Pos.CENTER_LEFT);
         photosList.setSpacing(10);
 
-        List<PhotoUIElement> photoUIElementList = buildUIFromPhotos(soloUser);
+        List<PhotoUIElement> photoUIElementList = buildUIFromPhotos();
         if (photoUIElementList.isEmpty()) {
             Label addPhotosLabel = new Label("Add Photos");
             addPhotosLabel.setStyle(Style.LOW_LABEL);
@@ -84,26 +85,15 @@ public class ManageMediaSolo extends Pane {
 
     }
 
-    private List<PhotoUIElement> buildUIFromPhotos(Solo soloUser) {
-       /*
-          Molto probabilmente va modificato il tipo di photos nelle classi User Solo ecc..
-          da File a InputStream.
-          1 perché nel db vengono salvate così
-          2 perché così è più facile costruire la Image di javafx che ha un costruttore new Image(inputstream)
-       */
-        List<PhotoUIElement> photoUIElementList = new ArrayList<>();
-        return photoUIElementList;
-    }
-
-    public VBox getManageMediaVBox() {
-        return manageMediaVBox;
+    private List<PhotoUIElement> buildUIFromPhotos() {
+        return new ArrayList<>();
     }
 
     private class BackAction implements EventHandler<ActionEvent> {
         @Override
         public void handle(ActionEvent event) {
             logger.info("Back clicked");
-            ProfileView.getInstance(soloUser).setProfilePage(SoloProfileSoloView.getInstance(soloUser).getSoloVBox());
+            profileView.setProfilePage(new SoloProfileSoloView(soloUser, profileView));
         }
     }
 

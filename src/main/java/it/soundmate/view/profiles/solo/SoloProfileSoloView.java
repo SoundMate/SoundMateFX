@@ -17,7 +17,6 @@ import javafx.scene.control.TextInputDialog;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
-import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.ImagePattern;
 import javafx.scene.shape.Circle;
@@ -25,38 +24,25 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import java.util.Optional;
 
-public class SoloProfileSoloView extends Pane {
+public class SoloProfileSoloView extends VBox {
 
     private static final Logger logger = LoggerFactory.getLogger(SoloProfileSoloView.class);
     private final Solo soloUser;
     private final SoloProfileSoloController soloProfileSoloController = new SoloProfileSoloController();
-    private static SoloProfileSoloView instance = null;
-
-    public static SoloProfileSoloView getInstance(Solo solo) {
-        if (instance == null) {
-            instance = new SoloProfileSoloView(solo);
-        }
-        return instance;
-    }
+    private final ProfileView profileView;
 
     //UI
     private HBox favGenresHBoxList;
     private Button addGenreBtn;
 
-    public VBox getSoloVBox() {
-        return soloVBox;
-    }
-
-    private final VBox soloVBox;
-
-    public SoloProfileSoloView(Solo solo) {
-        this.soloVBox = new VBox();
+    public SoloProfileSoloView(Solo solo, ProfileView profileView) {
         this.soloUser = solo;
+        this.profileView = profileView;
         HBox userInfoHBox = buildUserInfoHBox();
         HBox favGenresHBox = buildFavGenresHBox();
         HBox bandsSection = buildBandsSection();
         HBox mediaSection = buildMediaSection();
-        this.soloVBox.getChildren().addAll(userInfoHBox, favGenresHBox, bandsSection, mediaSection);
+        this.getChildren().addAll(userInfoHBox, favGenresHBox, bandsSection, mediaSection);
     }
 
     private HBox buildMediaSection() {
@@ -73,7 +59,7 @@ public class SoloProfileSoloView extends Pane {
         titleAndList.getChildren().add(mediaTitleLabel);
 
         if (this.soloUser.getPhotos() != null && !this.soloUser.getPhotos().isEmpty()) {
-            //TODO: Display Photo List (Add children to this.photoList)
+            //Display Photo List (Add children to this.photoList)
         } else {
             Label defaultString = new Label("Add photos in the manage media section");
             defaultString.setStyle(Style.LOW_LABEL);
@@ -101,7 +87,7 @@ public class SoloProfileSoloView extends Pane {
         titleAndList.getChildren().add(bandTitleLabel);
 
         if (this.soloUser.getBands() != null && !this.soloUser.getBands().isEmpty()) {
-            //TODO: Display Band List (Add children to this.bandsList)
+            //Display Band List (Add children to this.bandsList)
         } else {
             Label defaultString = new Label("Search for a Band and send request to join");
             defaultString.setStyle(Style.LOW_LABEL);
@@ -167,15 +153,10 @@ public class SoloProfileSoloView extends Pane {
         Circle profilePic = new Circle();
         profilePic.setRadius(65);
         Image profileImg;
-        if (this.soloUser.getProfilePic() == null) {
+        if (this.soloUser.getEncodedImg() == null) {
             profileImg = new Image("soundmate/images/user-default.png");
         } else {
-            if (Cache.getInstance().getProfilePicFromCache(this.soloUser) != null){
-                profileImg = new Image(Cache.getInstance().getProfilePicFromCache(this.soloUser));
-            } else {
-                profileImg = new Image("soundmate/images/user-default.png");
-                logger.info("Unable to load from cache");
-            }
+            profileImg = new Image(Cache.getInstance().getProfilePicFromCache(this.soloUser));
         }
         profilePic.setFill(new ImagePattern(profileImg));
 
@@ -294,7 +275,7 @@ public class SoloProfileSoloView extends Pane {
         @Override
         public void handle(ActionEvent event) {
             logger.info("Edit Profile Info Clicked");
-            ProfileView.getInstance(soloUser).setProfilePage(new EditProfileSolo(soloUser).getEditProfileVBox());
+            profileView.setProfilePage(new EditProfileSolo(soloUser, profileView));
         }
     }
 
@@ -309,7 +290,7 @@ public class SoloProfileSoloView extends Pane {
         @Override
         public void handle(ActionEvent event) {
             logger.info("Manage Media Clicked");
-            ProfileView.getInstance(soloUser).setProfilePage(new ManageMediaSolo(soloUser).getManageMediaVBox());
+            profileView.setProfilePage(new ManageMediaSolo(soloUser, profileView));
         }
     }
 }

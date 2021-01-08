@@ -83,7 +83,7 @@ public class NavigationPane extends Pane {
         public void handle(ActionEvent event) {
             logger.info("Logout Clicked");
             Stage stage = (Stage) vBox.getScene().getWindow();
-            Parent loginView = new LoginView().getBorderPane();
+            Parent loginView = new LoginView();
             Scene scene = new Scene(loginView, 800, 600);
             stage.setScene(scene);
             stage.show();

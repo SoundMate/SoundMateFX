@@ -1,3 +1,9 @@
+/*
+ * Copyright (c) 2021.
+ * Created by Lorenzo Pantano on 08/01/21, 12:08
+ * Last edited: 08/01/21, 12:03
+ */
+
 package it.soundmate.view;
 
 import it.soundmate.bean.LoginBean;
@@ -22,13 +28,20 @@ import javafx.stage.Stage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+ * Login View
+ *
+ * Classe View di interazione con l'utente in ambiente desktop.
+ * L'esecuzione del caso d'uso "Login" viene delegata al controller "LoginController",
+ * Il passaggio di dati tra la LoginView e il LoginController viene fatto attraverso
+ * la classe LoginBean.
+ * */
 
-public class LoginView extends Pane {
+public class LoginView extends BorderPane {
 
     private final Logger logger = LoggerFactory.getLogger(LoginView.class);
     private LoginController loginController;
     private LoginBean loginBean;
-    private final BorderPane borderPane = new BorderPane();
 
     //UI Elements
     private TextField emailTextField;
@@ -48,14 +61,11 @@ public class LoginView extends Pane {
         buildBottomPane(bottom);
 
         //Setup BorderPane
-        this.borderPane.setLeft(left);
-        this.borderPane.setRight(right);
-        this.borderPane.setBottom(bottom);
+        this.setLeft(left);
+        this.setRight(right);
+        this.setBottom(bottom);
     }
 
-    public BorderPane getBorderPane(){
-        return this.borderPane;
-    }
 
     private void buildBottomPane(HBox bottom) {
         bottom.setPadding(new Insets(0,0,50,0));
@@ -115,7 +125,7 @@ public class LoginView extends Pane {
 
     private void addBackground() {
         Image background = new Image("soundmate/images/bg.png");
-        UIUtils.setBackgroundImagePane(background, this.borderPane);
+        UIUtils.setBackgroundImagePane(background, this);
     }
 
     private ImageView logoImage() {
@@ -134,9 +144,12 @@ public class LoginView extends Pane {
             loginBean = new LoginBean(emailTextField.getText(), passwordField.getText());
             loginController = new LoginController(loginBean);
             User loggedUser = loginController.login();
+
+            //View Update (qua o nel controller?)
+
             if (loggedUser != null) {
                 logger.info("Fields Okay");
-                logger.info("Logged in: {} {}", loggedUser.getFirstName(), loggedUser.getLastName());
+                logger.info("Logged in: {} {}", loggedUser.getEmail(), loggedUser.getPassword());
                 Parent mainScreen = new MainView(loggedUser).getBorderPane();
                 Stage stage = (Stage) emailTextField.getScene().getWindow();
                 Scene scene = new Scene(mainScreen, 800, 600);
@@ -153,7 +166,7 @@ public class LoginView extends Pane {
         @Override
         public void handle(ActionEvent event) {
             logger.info("Join Action Button");
-            Stage stage = (Stage) borderPane.getScene().getWindow();
+            Stage stage = (Stage) emailTextField.getScene().getWindow();
             Parent registerView = new ChooseRegisterView().getBorderPane();
             Scene scene = new Scene(registerView, 800, 600);
             stage.setScene(scene);

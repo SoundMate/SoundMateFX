@@ -26,7 +26,7 @@ public class MessagesView extends Pane {
     private final TabPane messagesTabPane;
 
     public MessagesView(User user){
-        Node top = buildTopNode(user);
+        Node top = buildTopNode();
         Node bottom = buildBottomNode();
         this.messagesTabPane = buildTabPane(user);
 
@@ -40,6 +40,7 @@ public class MessagesView extends Pane {
     }
 
     private TabPane buildTabPane(User user) {
+        logger.info("Messages for {}", user.getEmail());
         TabPane tabPane = new TabPane();
         tabPane.setPrefWidth(USE_COMPUTED_SIZE);
         tabPane.setPrefHeight(USE_COMPUTED_SIZE);
@@ -65,8 +66,8 @@ public class MessagesView extends Pane {
     }
 
 
-    private Node buildTopNode(User user) {
-        Label title = new Label("Messages for "+user.getFirstName()+" "+user.getLastName());
+    private Node buildTopNode() {
+        Label title = new Label("Messages");
         title.setStyle(Style.HEADER_TEXT);
         title.setPadding(new Insets(25, 0, 25, 15));
         return title;

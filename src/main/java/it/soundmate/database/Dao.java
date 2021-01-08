@@ -8,5 +8,4 @@ package it.soundmate.database;
 
 public interface Dao<T> {
     T getByID(long id);
-    T getByEmailAndPassword(String email, String password);
 }

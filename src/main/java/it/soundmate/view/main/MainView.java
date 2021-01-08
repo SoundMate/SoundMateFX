@@ -1,5 +1,6 @@
 package it.soundmate.view.main;
 
+import it.soundmate.exceptions.NavigationException;
 import it.soundmate.model.User;
 import it.soundmate.view.uicomponents.NavigationItem;
 import it.soundmate.view.uicomponents.NavigationPane;
@@ -21,7 +22,7 @@ public class MainView extends Pane {
         this.loggedUser = loggedUser;
         this.borderPane = new BorderPane();
         this.borderPane.setLeft(navigationPane.getvBox());
-        this.borderPane.setCenter(ProfileView.getInstance(loggedUser).getProfileVBox());
+        this.borderPane.setCenter(new ProfileView(loggedUser).getProfileVBox());
         this.setNavigationAction();
     }
 
@@ -43,13 +44,13 @@ public class MainView extends Pane {
                 this.borderPane.setCenter(new MessagesView(this.loggedUser).getMessagesBorderPane());
                 break;
             case PROFILE:
-                this.borderPane.setCenter(ProfileView.getInstance(this.loggedUser).getProfileVBox());
+                this.borderPane.setCenter(new ProfileView(this.loggedUser).getProfileVBox());
                 break;
             case SETTINGS:
                 this.borderPane.setCenter(new SettingsView().getSettingsVBox());
                 break;
             default:
-                throw new RuntimeException();
+                throw new NavigationException("Unable to determine navigation page");
         }
     }
 

@@ -11,9 +11,9 @@ import javafx.scene.layout.StackPane;
 
 public class NavigationItem extends StackPane {
 
-    private NavigationType type;
+    private final NavigationType type;
     private boolean isSelected;
-    private HBox hBox;
+    private final HBox hBox;
 
     public NavigationItem (String text, String imgName, boolean selected, NavigationType navigationType) {
         this.setAlignment(Pos.CENTER);

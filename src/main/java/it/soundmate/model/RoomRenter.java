@@ -15,7 +15,7 @@ public class RoomRenter extends User {
 
 
     public RoomRenter(User user) {
-        super(user.getUserID(), user.getEmail(), user.getFirstName(), user.getLastName(), user.getPassword(), user.getProfilePic(), UserType.BAND_ROOM_MANAGER);
+        super(user.getUserID(), user.getEmail(), user.getPassword(), user.getEncodedImg(),UserType.ROOM_RENTER);
     }
 
     public String getAddress() {

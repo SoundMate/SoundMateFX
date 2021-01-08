@@ -1,6 +1,9 @@
 package it.soundmate.view.registerview;
 
-import it.soundmate.bean.RegisterBean;
+import it.soundmate.bean.registerbeans.RegisterBandBean;
+import it.soundmate.bean.registerbeans.RegisterBean;
+import it.soundmate.bean.registerbeans.RegisterRenterBean;
+import it.soundmate.bean.registerbeans.RegisterSoloBean;
 import it.soundmate.constants.Style;
 import it.soundmate.controller.RegisterController;
 import it.soundmate.model.User;
@@ -27,6 +30,7 @@ public class RegisterView extends Pane {
 
     private final BorderPane mainBorderPane;
     private TextField bandOrRoomName;
+    private TextField address;
     private TextField firstName = new TextField();
     private TextField lastName = new TextField();
     private TextField email = new TextField();
@@ -183,7 +187,7 @@ public class RegisterView extends Pane {
                 registerLabel.setStyle(Style.HEADER_TEXT);
                 top.getChildren().add(registerLabel);
                 break;
-            case BAND_ROOM_MANAGER:
+            case ROOM_RENTER:
                 registerLabel = new Label("Band Room Registration");
                 registerLabel.setStyle(Style.HEADER_TEXT);
                 top.getChildren().add(registerLabel);
@@ -221,27 +225,36 @@ public class RegisterView extends Pane {
             RegisterBean registerBean = determineRegisterBean(userType);
             RegisterController registerController = new RegisterController(registerBean);
             User user;
-            if (registerController.checkFields(userType)) {
-                user = registerController.registerUser(userType);
-                if (user == null){
-                    logger.info("Error in registration");
-                    return;
+            if (registerBean != null) {
+                if (registerBean.checkFields()) {
+                    user = registerController.registerUser();
+                    if (user == null){
+                        logger.info("Error in registration");
+                        return;
+                    }
+                    Stage stage = (Stage) mainBorderPane.getScene().getWindow();
+                    Parent profileView = new MainView(user).getBorderPane();
+                    Scene scene = new Scene(profileView, 800, 600);
+                    stage.setScene(scene);
+                    stage.show();
+                } else {
+                    logger.info("Some fields are empty");
                 }
-                Stage stage = (Stage) mainBorderPane.getScene().getWindow();
-                Parent profileView = new MainView(user).getBorderPane();
-                Scene scene = new Scene(profileView, 800, 600);
-                stage.setScene(scene);
-                stage.show();
             } else {
-                logger.info("Some fields are empty");
+                logger.info("Error in registration, unable to create Register Bean");
             }
         }
 
         private RegisterBean determineRegisterBean(UserType userType) {
-            if (userType == UserType.SOLO) {
-                return new RegisterBean(firstName.getText(), lastName.getText(), email.getText(), password.getText());
-            } else {
-                return new RegisterBean(firstName.getText(), lastName.getText(), email.getText(), password.getText(), bandOrRoomName.getText());
+            switch (userType) {
+                case SOLO:
+                    return new RegisterSoloBean(email.getText(), password.getText(), firstName.getText(), lastName.getText());
+                case BAND:
+                    return new RegisterBandBean(email.getText(), password.getText(), bandOrRoomName.getText());
+                case ROOM_RENTER:
+                    return new RegisterRenterBean(email.getText(), password.getText(), address.getText(), bandOrRoomName.getText());
+                default:
+                    return null;
             }
         }
 

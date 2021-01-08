@@ -1,8 +1,11 @@
 package it.soundmate.view.profiles.solo;
 
 import it.soundmate.constants.Style;
+import it.soundmate.controller.EditProfileSoloController;
+import it.soundmate.exceptions.UpdateException;
 import it.soundmate.model.Solo;
 import it.soundmate.utils.Cache;
+import it.soundmate.utils.ImagePicker;
 import it.soundmate.view.UIUtils;
 import it.soundmate.view.main.ProfileView;
 import javafx.event.ActionEvent;
@@ -14,45 +17,46 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.layout.HBox;
-import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.ImagePattern;
 import javafx.scene.shape.Circle;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.File;
+import java.io.IOException;
 
-public class EditProfileSolo extends Pane {
+
+public class EditProfileSolo extends VBox {
 
     private static final Logger logger = LoggerFactory.getLogger(EditProfileSolo.class);
+    private final ProfileView profileView;
+    private final EditProfileSoloController editProfileSoloController = new EditProfileSoloController();
 
-    private final VBox editProfileVBox;
     private final Solo solo;
-    private Button updateProfilePicBtn;
-    private Button removeProfilePicBtn;
-    private Button backBtn;
 
 
     private final TextField updateEmailTextField = new TextField();
     private final TextField updatePassTextField = new TextField();
     private final TextField updateFirstNameTextField = new TextField();
     private final TextField updateLastNameTextField = new TextField();
+    private Circle profilePicImg;
 
-    public EditProfileSolo(Solo solo){
+    public EditProfileSolo(Solo solo, ProfileView profileView){
         this.solo = solo;
-        this.editProfileVBox = new VBox();
-        this.editProfileVBox.setPadding(new Insets(25));
-        this.editProfileVBox.setAlignment(Pos.CENTER);
+        this.profileView = profileView;
+        this.setPadding(new Insets(25));
+        this.setAlignment(Pos.CENTER);
 
 
         HBox profilePicSection = buildProfilePicSection();
-        this.backBtn = UIUtils.createStyledButton("Back", new BackAction());
-        this.backBtn.setPadding(new Insets(0, 25, 0, 25));
-        UIUtils.addSizedRegion(this.editProfileVBox, 25, 25);
-        this.editProfileVBox.getChildren().add(profilePicSection);
+        Button backBtn = UIUtils.createStyledButton("Back", new BackAction());
+        backBtn.setPadding(new Insets(0, 25, 0, 25));
+        UIUtils.addSizedRegion(this, 25, 25);
+        this.getChildren().add(profilePicSection);
         VBox updateInfoVBox = buildUpdateInfoVBox();
-        this.editProfileVBox.getChildren().add(updateInfoVBox);
-        this.editProfileVBox.getChildren().add(this.backBtn);
+        this.getChildren().add(updateInfoVBox);
+        this.getChildren().add(backBtn);
     }
 
     private VBox buildUpdateInfoVBox() {
@@ -94,11 +98,11 @@ public class EditProfileSolo extends Pane {
         profilePicSection.setAlignment(Pos.CENTER);
 
         //Profile Pic
-        Circle profilePicImg = new Circle();
+        this.profilePicImg = new Circle();
         profilePicImg.setRadius(65);
-        if (this.solo.getProfilePic() != null && Cache.getInstance().checkProfilePicInCache(solo)) {
-            Image profilePic = new Image(Cache.getInstance().getProfilePicFromCache(solo));
-            profilePicImg.setFill(new ImagePattern(profilePic));
+        if (this.solo.getEncodedImg() != null) {
+            Image image = new Image(Cache.getInstance().getProfilePicFromCache(this.solo));
+            profilePicImg.setFill(new ImagePattern(image));
         } else {
             Image profilePic = new Image("soundmate/images/user-default.png");
             profilePicImg.setFill(new ImagePattern(profilePic));
@@ -119,23 +123,34 @@ public class EditProfileSolo extends Pane {
         updateProfilePicButtons.setPrefWidth(USE_COMPUTED_SIZE);
         updateProfilePicButtons.setPadding(new Insets(10));
         updateProfilePicButtons.setSpacing(10);
-        this.updateProfilePicBtn = UIUtils.createStyledButton("Update Profile Pic", new UpdateProfilePicAction());
-        this.removeProfilePicBtn = UIUtils.createStyledButton("Remove Profile Pic", new RemoveProfilePicAction());
-        updateProfilePicButtons.getChildren().addAll(this.updateProfilePicBtn, this.removeProfilePicBtn);
+        Button updateProfilePicBtn = UIUtils.createStyledButton("Update Profile Pic", new UpdateProfilePicAction());
+        Button removeProfilePicBtn = UIUtils.createStyledButton("Remove Profile Pic", new RemoveProfilePicAction());
+        updateProfilePicButtons.getChildren().addAll(updateProfilePicBtn, removeProfilePicBtn);
 
         UIUtils.addRegion(null, profilePicSection);
         profilePicSection.getChildren().add(updateProfilePicButtons);
         return profilePicSection;
     }
 
-    public VBox getEditProfileVBox() {
-        return editProfileVBox;
-    }
 
     private class UpdateProfilePicAction implements EventHandler<ActionEvent> {
         @Override
         public void handle(ActionEvent event) {
             logger.info("Update profile pic clicked");
+            ImagePicker imagePicker = new ImagePicker();
+            File chosenImage = imagePicker.chooseImage(profilePicImg);
+            if (chosenImage != null && Cache.getInstance().saveProfilePicToCache(solo, chosenImage)) {
+                //Saved to Cache
+                //Save to DB
+                try {
+                    editProfileSoloController.updateProfilePic(solo, chosenImage);
+                } catch (UpdateException ue) {
+                    logger.info("Error updating profile picture (UpdateException)");
+                } catch (IOException ioe) {
+                    logger.info("Error updating profile picture in model (IOException)");
+                }
+                profilePicImg.setFill(new ImagePattern(new Image(Cache.getInstance().getProfilePicFromCache(solo))));
+            }
         }
     }
 
@@ -150,13 +165,13 @@ public class EditProfileSolo extends Pane {
         @Override
         public void handle(ActionEvent event) {
             logger.info("Back clicked");
-            ProfileView.getInstance(solo).setProfilePage(SoloProfileSoloView.getInstance(solo).getSoloVBox());
+            profileView.setProfilePage(new SoloProfileSoloView(solo, profileView));
         }
     }
 
     private class UpdateInfoAction implements EventHandler<ActionEvent> {
 
-        private String updateType;
+        private final String updateType;
 
         public UpdateInfoAction(String updateType){
             this.updateType = updateType;

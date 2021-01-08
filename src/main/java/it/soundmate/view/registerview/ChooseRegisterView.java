@@ -113,7 +113,7 @@ public class ChooseRegisterView extends Pane {
         public void handle(ActionEvent event) {
             logger.info("Register Band Room Click");
             Stage stage = (Stage) borderPane.getScene().getWindow();
-            Parent registerView = new RegisterView(UserType.BAND_ROOM_MANAGER).getMainBorderPane();
+            Parent registerView = new RegisterView(UserType.ROOM_RENTER).getMainBorderPane();
             Scene scene = new Scene(registerView, 800, 600);
             stage.setScene(scene);
             stage.show();
@@ -137,7 +137,7 @@ public class ChooseRegisterView extends Pane {
         public void handle(MouseEvent event) {
             logger.info("Back Pressed");
             Stage stage = (Stage) vBox.getScene().getWindow();
-            Parent loginView = new LoginView().getBorderPane();
+            Parent loginView = new LoginView();
             Scene scene = new Scene(loginView, 800, 600);
             stage.setScene(scene);
             stage.show();

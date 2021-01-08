@@ -2,7 +2,6 @@ package it.soundmate.utils;
 
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.paint.ImagePattern;
 import javafx.scene.shape.Circle;
 import javafx.stage.FileChooser;
 import java.io.File;
@@ -25,13 +24,9 @@ public class ImagePicker {
     }
 
     public File chooseImage(Circle circle) {
-        File file = this.fileChooser.showOpenDialog(circle.getScene().getWindow());
-        if (file != null) {
-            Image chosenImage = new Image(file.toURI().toString());
-            circle.setFill(new ImagePattern(chosenImage));
-            return file;
-        } else return null;
+        return this.fileChooser.showOpenDialog(circle.getScene().getWindow());
     }
+
 
     private void configureFileChooser(FileChooser fileChooser) {
         fileChooser.setTitle("Choose an image for your band profile");
