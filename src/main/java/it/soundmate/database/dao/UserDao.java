@@ -1,19 +1,22 @@
 /*
- * Copyright (c) 2020.
- * This file was created by Soundmate organization Lorenzo Pantano & Matteo D'Alessandro
- * Last Modified: 11/12/20, 15:42
+ * Copyright (c) 2021.
+ * Created by Lorenzo Pantano on 08/01/21, 21:51
+ * Last edited: 08/01/21, 20:19
  */
 
-package it.soundmate.database;
+package it.soundmate.database.dao;
 
+import it.soundmate.bean.registerbeans.RegisterBean;
 import it.soundmate.bean.registerbeans.RegisterSoloBean;
+import it.soundmate.database.Connector;
+import it.soundmate.database.DBServices;
+import it.soundmate.database.dbexceptions.RepositoryException;
 import it.soundmate.database.dbexceptions.BannedAccountException;
 import it.soundmate.database.dbexceptions.DuplicatedEmailException;
 import it.soundmate.model.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.InputStream;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -37,12 +40,6 @@ public class UserDao implements Dao<User> {
         }
         return instance;
     }
-
-    @Override
-    public User getByID(long id) {
-        return null;
-    }
-
 
     public int registerSolo(RegisterSoloBean registerSoloBean) {
         log.info("Registering Solo In DATABASE");
@@ -228,5 +225,25 @@ public class UserDao implements Dao<User> {
         } catch (SQLException e) {
             return null;
         }
+    }
+
+    @Override
+    public int register(RegisterBean registerBean) {
+        return 0;
+    }
+
+    @Override
+    public int update(User user) {
+        return 0;
+    }
+
+    @Override
+    public int delete(User user) {
+        return 0;
+    }
+
+    @Override
+    public User get(int id) {
+        return null;
     }
 }

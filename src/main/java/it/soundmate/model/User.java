@@ -6,9 +6,6 @@
 
 package it.soundmate.model;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
@@ -31,6 +28,17 @@ public class User {
         this.password = password;
         this.userType = userType;
         this.encodedImg = encodedImg;
+    }
+    /*
+    * To be used for search methods
+    * Avoiding to create unnecessary fields to be accessible
+    * to other users (password)
+    * */
+    public User(int userID, String email, String encodedImg, UserType userType) {
+        this.userID = userID;
+        this.email = email;
+        this.encodedImg = encodedImg;
+        this.userType = userType;
     }
 
     public int getUserID() {

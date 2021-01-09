@@ -1,6 +1,6 @@
 package it.soundmate.controller;
 
-import it.soundmate.model.SearchEngine;
+import it.soundmate.model.SearchModel;
 import it.soundmate.model.User;
 import javafx.scene.control.RadioButton;
 import org.slf4j.Logger;
@@ -11,29 +11,29 @@ import java.util.List;
 public class SearchController {
 
     private static final Logger logger = LoggerFactory.getLogger(SearchController.class);
-    private final SearchEngine searchEngine;
+    private final SearchModel searchModel;
 
     public SearchController() {
-        this.searchEngine = new SearchEngine();
+        this.searchModel = new SearchModel();
     }
 
     public List<User> performSearch(String searchString, List<RadioButton> filters) {
         List<User> results = new ArrayList<>();
         boolean[] filterValues = getFilterValues(filters);
         if (filtersAllTrue(filterValues) || filtersAllFalse(filterValues)) {
-            results.addAll(this.searchEngine.searchByName(searchString));
+            results.addAll(this.searchModel.searchByName(searchString));
         } else {
             if (filterValues[0]) {
                 logger.info("Searching solos...");
-                results.addAll(this.searchEngine.searchSolos(searchString));
+                results.addAll(this.searchModel.searchSolos(searchString));
             }
             if (filterValues[1]) {
                 logger.info("Searching bands...");
-                results.addAll(this.searchEngine.searchBands(searchString));
+                results.addAll(this.searchModel.searchBands(searchString));
             }
             if (filterValues[2]) {
                 logger.info("Searching rooms...");
-                results.addAll(this.searchEngine.searchRooms(searchString));
+                results.addAll(this.searchModel.searchRooms(searchString));
             }
         }
         return results;

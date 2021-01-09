@@ -1,6 +1,7 @@
 package it.soundmate.database;
 
 
+import it.soundmate.database.dbexceptions.RepositoryException;
 import it.soundmate.utils.ImgBase64Repo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

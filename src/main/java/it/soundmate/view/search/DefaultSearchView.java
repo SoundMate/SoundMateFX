@@ -144,6 +144,10 @@ public class DefaultSearchView extends Pane {
                 noResultsLabel.setStyle(Style.MID_LABEL);
                 resultsVBox.getChildren().remove(loadingLabel);
                 resultsVBox.getChildren().add(noResultsLabel);
+            } else {
+                for (User user : results) {
+                    logger.info("Found User: {} {}", user.getEmail(),user.getUserID());
+                }
             }
         }
     }

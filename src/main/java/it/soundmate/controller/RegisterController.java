@@ -3,7 +3,7 @@ package it.soundmate.controller;
 import it.soundmate.bean.registerbeans.RegisterBandBean;
 import it.soundmate.bean.registerbeans.RegisterBean;
 import it.soundmate.bean.registerbeans.RegisterSoloBean;
-import it.soundmate.database.UserDao;
+import it.soundmate.database.dao.UserDao;
 import it.soundmate.database.dbexceptions.DBException;
 import it.soundmate.model.User;
 import org.slf4j.Logger;

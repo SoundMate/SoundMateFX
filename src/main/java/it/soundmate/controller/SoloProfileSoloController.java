@@ -1,6 +1,6 @@
 package it.soundmate.controller;
 
-import it.soundmate.database.SoloDao;
+import it.soundmate.database.dao.SoloDao;
 import it.soundmate.model.Solo;
 
 import java.util.List;
@@ -14,6 +14,6 @@ public class SoloProfileSoloController {
     }
 
     public boolean addGenre(String s, Solo soloUser) {
-        return soloDao.addGenreToSolo(s, soloUser);
+        return false;
     }
 }

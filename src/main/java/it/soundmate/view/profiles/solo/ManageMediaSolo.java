@@ -56,7 +56,7 @@ public class ManageMediaSolo extends VBox {
         HBox videosList = new HBox();
         videosList.setAlignment(Pos.CENTER_LEFT);
         videosList.setSpacing(10);
-        //TODO: Pick videos from user's database
+        //Pick videos from user's database
 
         Button addVideosBtn = UIUtils.createStyledButton("Add Video", new AddVideoAction());
         videosList.getChildren().addAll(addVideosBtn);

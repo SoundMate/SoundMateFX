@@ -24,8 +24,4 @@ public class EditProfileSoloController {
         }
         solo.setEncodedImg(ImgBase64Repo.encode(image.toPath()));
     }
-
-    public void removeProfilePic(){
-        //TODO: Implement Remove profile picture (Set null on DB)
-    }
 }

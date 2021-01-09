@@ -11,12 +11,10 @@ import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
-import javafx.scene.layout.BorderPane;
-import javafx.scene.layout.HBox;
-import javafx.scene.layout.Pane;
-import javafx.scene.layout.VBox;
+import javafx.scene.layout.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
 
 public class MapSearchView extends Pane {
 
@@ -38,10 +36,14 @@ public class MapSearchView extends Pane {
         BorderPane borderPane = new BorderPane();
         UIUtils.setBackgroundPane("#232323", borderPane);
         Node top = buildTopNode();
-        //Node center = buildCenterNode();
+        Node center = buildCenterNode();
         borderPane.setTop(top);
-        //borderPane.setCenter(center);
+        borderPane.setCenter(center);
         return borderPane;
+    }
+
+    private Node buildCenterNode() {
+        return null;
     }
 
     private Node buildTopNode() {

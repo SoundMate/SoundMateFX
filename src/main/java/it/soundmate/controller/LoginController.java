@@ -1,7 +1,7 @@
 package it.soundmate.controller;
 
 import it.soundmate.bean.LoginBean;
-import it.soundmate.database.UserDao;
+import it.soundmate.database.dao.UserDao;
 import it.soundmate.model.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
