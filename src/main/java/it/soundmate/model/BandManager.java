@@ -1,45 +1,47 @@
-/*
- * Copyright (c) 2020.
- * This file was created by Soundmate organization Lorenzo Pantano & Matteo D'Alessandro
- * Last Modified: 12/12/20, 14:38
- */
-
 package it.soundmate.model;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class BandManager extends User {
 
-    private ArrayList<Band> managedBands;
+    private String firstName;
+    private String lastName;
+    private List<Band> managedBands;
+    private static final UserType userType = UserType.BAND_MANAGER;
 
-    public BandManager(User user) {
-        super(user.getUserID(), user.getEmail(), user.getPassword(), user.getEncodedImg(), UserType.BAND_MANAGER);
+    public BandManager(int id, String fName, String lName, String password){
+        super.setId(id);
+        this.setFirstName(fName);
+        this.setLastName(lName);
+        super.setPassword(password);
     }
 
-    public BandManager(User user, List<Band> bands) {
-        this(user);
-        this.managedBands = new ArrayList<>();
-        this.managedBands.addAll(bands);
+    public String getFirstName() {
+        return firstName;
     }
 
-    public void addBandManagement(Band band){
-        if (this.managedBands == null) {
-            this.managedBands = new ArrayList<>();
-        }
-        this.managedBands.add(band);
+    public void setFirstName(String firstName) {
+        this.firstName = firstName;
     }
 
-    public void removeBandManagement(Band band){
-        for (int i = 0; i < this.managedBands.size(); i++) {
-            if (band.equals(this.managedBands.get(i))) {
-                this.managedBands.remove(i);
-                break;
-            }
-        }
+    public String getLastName() {
+        return lastName;
     }
 
-    public List<Band> getManagedBands(){
+    public void setLastName(String lastName) {
+        this.lastName = lastName;
+    }
+
+    public List<Band> getManagedBands() {
         return managedBands;
+    }
+
+    public void setManagedBands(List<Band> managedBands) {
+        this.managedBands = managedBands;
+    }
+
+    @Override
+    public UserType getUserType() {
+        return userType;
     }
 }

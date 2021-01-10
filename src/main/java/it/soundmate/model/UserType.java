@@ -1,34 +1,19 @@
-/*
- * Copyright (c) 2020.
- * This file was created by Soundmate organization Lorenzo Pantano & Matteo D'Alessandro
- * Last Modified: 12/12/20, 14:41
- */
-
 package it.soundmate.model;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
+
 public enum UserType {
-    BAND {
-        @Override
-        public String toString() {
-            return "BAND";
-        }
-    },
-    BAND_MANAGER {
-        @Override
-        public String toString() {
-            return "BAND_MANAGER";
-        }
-    },
-    ROOM_RENTER {
-        @Override
-        public String toString() {
-            return "ROOM_RENTER";
-        }
-    },
-    SOLO {
-        @Override
-        public String toString() {
-            return "SOLO";
-        }
+    BAND, SOLO, BAND_MANAGER, ROOM_RENTER;
+
+    public static UserType returnUserType(String userType){
+        UserType[] userTypes = UserType.values();
+        return Arrays.stream(userTypes)
+                .filter(currentUser -> currentUser.toString().equals(userType))
+                .findFirst().get();
+
     }
+
 }
