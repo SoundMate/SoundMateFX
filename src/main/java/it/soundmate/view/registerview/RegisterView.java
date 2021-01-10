@@ -42,10 +42,9 @@ public class RegisterView extends Pane {
     public RegisterView(UserType userType) {
         this.mainBorderPane = new BorderPane();
         this.userType = userType;
-        VBox topVBox = new VBox();
 
         UIUtils.setBackgroundImagePane(new Image("soundmate/images/register-band-bg.png"), this.mainBorderPane);
-        topVBox = buildTopVBox(userType);
+        VBox topVBox = buildTopVBox();
         BorderPane centerBorderPane = buildCenterPane(userType);
         
         this.mainBorderPane.setCenter(centerBorderPane);
@@ -53,81 +52,21 @@ public class RegisterView extends Pane {
     }
 
     private BorderPane buildCenterPane(UserType userType) {
-        BorderPane borderPane = new BorderPane();
-        VBox leftVBox = buildLeftVBox(userType);
-        VBox rightVBox = buildRightVBox();
 
-        HBox centerHBox = new HBox();
-        UIUtils.setBackgroundPane("#232323", centerHBox);
-        centerHBox.setAlignment(Pos.CENTER);
-        centerHBox.getChildren().add(leftVBox);
-        UIUtils.addSizedRegion(centerHBox, 50,50);
-        centerHBox.getChildren().add(rightVBox);
-        centerHBox.setPadding(new Insets(50));
-        borderPane.setCenter(centerHBox);
-        return borderPane;
+        switch (userType){
+            case SOLO:
+                return new RegisterSoloView();
+            case BAND:
+                return new RegisterBandView();
+            case ROOM_RENTER:
+                return new RegisterRoomRenterView();
+            default:
+                logger.error("Error determining type of user");
+                //Throw exception
+                return null;
+        }
     }
 
-    private VBox buildRightVBox() {
-        VBox fieldsVBox = buildFields();
-        HBox buttonHBox = new HBox();
-        buttonHBox.setAlignment(Pos.CENTER);
-        UIUtils.addStyledButtonWidth("Register", new RegisterAction(), buttonHBox, 280);
-        fieldsVBox.setPrefWidth(USE_COMPUTED_SIZE);
-        fieldsVBox.getChildren().add(buttonHBox);
-        return fieldsVBox;
-    }
-
-    private VBox buildFields() {
-        VBox vBoxToReturn = new VBox();
-
-        HBox nameHBox = new HBox();
-        //First Name
-        Label firstNameLabel = new Label("First Name");
-        firstNameLabel.setStyle(Style.TEXT_FIELD_LABEL);
-        this.firstName.setStyle(Style.TEXT_FIELD);
-        this.firstName.setPrefWidth(USE_COMPUTED_SIZE);
-        VBox firstNameVBox = new VBox();
-        firstNameVBox.getChildren().addAll(firstNameLabel, this.firstName);
-        //Last Name
-        Label lastNameLabel = new Label("Last Name");
-        lastNameLabel.setStyle(Style.TEXT_FIELD_LABEL);
-        this.lastName.setStyle(Style.TEXT_FIELD);
-        this.lastName.setPrefWidth(USE_COMPUTED_SIZE);
-        VBox lastNameVBox = new VBox();
-        lastNameVBox.getChildren().addAll(lastNameLabel, this.lastName);
-
-        nameHBox.getChildren().addAll(firstNameVBox);
-        UIUtils.addSizedRegion(nameHBox, 20, 20);
-        nameHBox.getChildren().addAll(lastNameVBox);
-        vBoxToReturn.getChildren().add(nameHBox);
-
-        HBox credentialHBox = new HBox();
-        //Email
-        Label emailLabel = new Label("Email");
-        emailLabel.setStyle(Style.TEXT_FIELD_LABEL);
-        this.email.setStyle(Style.TEXT_FIELD);
-        this.email.setPrefWidth(USE_COMPUTED_SIZE);
-        VBox emailVBox = new VBox();
-        emailVBox.getChildren().addAll(emailLabel, this.email);
-
-        //Password
-        Label passLabel = new Label("Password");
-        passLabel.setStyle(Style.TEXT_FIELD_LABEL);
-        this.password.setStyle(Style.TEXT_FIELD);
-        this.password.setPrefWidth(USE_COMPUTED_SIZE);
-        VBox passVBox = new VBox();
-        passVBox.getChildren().addAll(passLabel, this.password);
-
-        credentialHBox.getChildren().add(emailVBox);
-        UIUtils.addSizedRegion(credentialHBox, 20, 20);
-        credentialHBox.getChildren().add(passVBox);
-        UIUtils.addSizedRegion(vBoxToReturn, 20, 20);
-        vBoxToReturn.getChildren().add(credentialHBox);
-        UIUtils.addSizedRegion(vBoxToReturn, 30, 30);
-        vBoxToReturn.setPadding(new Insets(25));
-        return vBoxToReturn;
-    }
 
     private VBox buildLeftVBox(UserType userType) {
         VBox vBox = new VBox();
@@ -153,7 +92,7 @@ public class RegisterView extends Pane {
         return vBox;
     }
 
-    private VBox buildTopVBox(UserType userType) {
+    private VBox buildTopVBox() {
         VBox top = new VBox();
         //Back img
         Image backImg = new Image("soundmate/icons/left-arrow-white.png");
@@ -174,28 +113,6 @@ public class RegisterView extends Pane {
         hBox.getChildren().add(logoImgView);
         top.getChildren().add(hBox);
         UIUtils.addSizedRegion(top, 50,0);
-        //Label
-        Label registerLabel;
-        switch (userType) {
-            case SOLO:
-               registerLabel = new Label("Solo Registration");
-               registerLabel.setStyle(Style.HEADER_TEXT);
-               top.getChildren().add(registerLabel);
-               break;
-            case BAND_MANAGER:
-                registerLabel = new Label("Band Manager Registration");
-                registerLabel.setStyle(Style.HEADER_TEXT);
-                top.getChildren().add(registerLabel);
-                break;
-            case ROOM_RENTER:
-                registerLabel = new Label("Band Room Registration");
-                registerLabel.setStyle(Style.HEADER_TEXT);
-                top.getChildren().add(registerLabel);
-                break;
-            default:
-                logger.info("Error in registration instance");
-                break;
-        }
         top.setPadding(new Insets(50,50,25,50));
         return top;
     }

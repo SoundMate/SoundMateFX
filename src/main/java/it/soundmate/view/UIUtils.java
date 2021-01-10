@@ -71,11 +71,11 @@ public class UIUtils {
         pane.setStyle("-fx-background-color: "+color+";");
     }
 
-    public static VBox textFieldWithLabel(String label) {
+    public static VBox textFieldWithLabel(String label, TextField textField) {
         VBox labelAndTextField = new VBox();
         Label labelTop = new Label(label);
-        TextField textField = new TextField();
         textField.setStyle(Style.TEXT_FIELD);
+        textField.setPrefWidth(Region.USE_COMPUTED_SIZE);
         labelTop.setStyle(Style.TEXT_FIELD_LABEL);
         labelAndTextField.getChildren().addAll(labelTop, textField);
         return labelAndTextField;
