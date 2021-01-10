@@ -29,8 +29,6 @@ public class RegisterSoloView extends BorderPane {
 
     public RegisterSoloView(){
         VBox fieldsVBox = buildFieldsVBox();
-
-        //HBox style and layout
         UIUtils.setBackgroundPane("#232323", fieldsVBox);
 
         //Label
@@ -43,11 +41,7 @@ public class RegisterSoloView extends BorderPane {
     }
 
     private VBox buildFieldsVBox() {
-        VBox fieldsVBox = new VBox();
-        fieldsVBox.setSpacing(10);
-        fieldsVBox.setAlignment(Pos.CENTER);
-        fieldsVBox.setPrefWidth(USE_COMPUTED_SIZE);
-        fieldsVBox.setPrefHeight(USE_COMPUTED_SIZE);
+        VBox fieldsVBox = RegisterView.styleVBoxFields();
 
         VBox emailVBox = UIUtils.textFieldWithLabel("Email", this.emailTextField);
         VBox passwordVBox = UIUtils.textFieldWithLabel("Password", this.passwordTextField);
@@ -66,10 +60,11 @@ public class RegisterSoloView extends BorderPane {
 
         //Button
         Button registerBtn = UIUtils.createStyledButton("Register", new RegisterAction());
-        registerBtn.setPrefWidth(150);
+        registerBtn.setPrefWidth(250);
         fieldsVBox.getChildren().addAll(emailAndPassword, names, registerBtn);
         return fieldsVBox;
     }
+
 
 
     private class RegisterAction implements EventHandler<ActionEvent> {

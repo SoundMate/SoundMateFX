@@ -55,10 +55,13 @@ public class RegisterView extends Pane {
 
         switch (userType){
             case SOLO:
+                logger.info("Building Solo Register View");
                 return new RegisterSoloView();
             case BAND:
+                logger.info("Building Band Register View");
                 return new RegisterBandView();
             case ROOM_RENTER:
+                logger.info("Building Room Renter Register View");
                 return new RegisterRoomRenterView();
             default:
                 logger.error("Error determining type of user");
@@ -115,6 +118,15 @@ public class RegisterView extends Pane {
         UIUtils.addSizedRegion(top, 50,0);
         top.setPadding(new Insets(50,50,25,50));
         return top;
+    }
+
+    public static VBox styleVBoxFields() {
+        VBox fieldsVBox = new VBox();
+        fieldsVBox.setSpacing(20);
+        fieldsVBox.setAlignment(Pos.CENTER);
+        fieldsVBox.setPrefWidth(USE_COMPUTED_SIZE);
+        fieldsVBox.setPrefHeight(USE_COMPUTED_SIZE);
+        return fieldsVBox;
     }
 
     public BorderPane getMainBorderPane() {

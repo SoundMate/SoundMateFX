@@ -101,7 +101,7 @@ public class ChooseRegisterView extends Pane {
         public void handle(ActionEvent event) {
             logger.info("Register Band Click");
             Stage stage = (Stage) borderPane.getScene().getWindow();
-            Parent registerView = new RegisterView(UserType.BAND_MANAGER).getMainBorderPane();
+            Parent registerView = new RegisterView(UserType.BAND).getMainBorderPane();
             Scene scene = new Scene(registerView, 800, 600);
             stage.setScene(scene);
             stage.show();

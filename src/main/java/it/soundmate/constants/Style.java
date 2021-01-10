@@ -12,7 +12,7 @@ public class Style {
     public static final String TEXT_FIELD_LABEL = "-fx-font-weight: bold; -fx-text-fill: white; -fx-font-size: 12";
     public static final String BLACK_BTN = "-fx-background-color: black; -fx-text-fill: white";
     public static final String REGISTER_BTN = "-fx-background-color: #00b540; -fx-text-fill: white; -fx-border-radius: 15px;-fx-background-radius: 15; -fx-font-weight: bold; -fx-font-size: 18; -fx-padding: 35px;";
-    public static final String TEXT_FIELD_REGISTER = "-fx-background-color: transparent; -fx-color: white;-fx-text-inner-color: white; -fx-text-fill: white;";
+    public static final String TEXT_FIELD_REGISTER = "-fx-background-color: transparent; -fx-color: white;-fx-text-inner-color: white; -fx-text-fill: white; -fx-font-weight: bold;";
     public static final String MID_LABEL = "-fx-text-fill: white; -fx-font-size: 14;";
     public static final String LOW_LABEL = "-fx-text-fill: #696969; -fx-font-size: 12;";
     public static final String HIGH_LABEL = "-fx-text-fill: white; -fx-font-size: 14; -fx-font-weight: bold;";
