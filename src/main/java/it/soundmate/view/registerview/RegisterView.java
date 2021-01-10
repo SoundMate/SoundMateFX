@@ -4,7 +4,6 @@ import it.soundmate.bean.registerbeans.RegisterBandBean;
 import it.soundmate.bean.registerbeans.RegisterBean;
 import it.soundmate.bean.registerbeans.RegisterRenterBean;
 import it.soundmate.bean.registerbeans.RegisterSoloBean;
-import it.soundmate.constants.Style;
 import it.soundmate.controller.RegisterController;
 import it.soundmate.model.User;
 import it.soundmate.model.UserType;
@@ -16,8 +15,6 @@ import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.Label;
-import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
@@ -29,12 +26,6 @@ import org.slf4j.LoggerFactory;
 public class RegisterView extends Pane {
 
     private final BorderPane mainBorderPane;
-    private TextField bandOrRoomName;
-    private TextField address;
-    private TextField firstName = new TextField();
-    private TextField lastName = new TextField();
-    private TextField email = new TextField();
-    private TextField password = new TextField();
     protected UserType userType;
 
     private final Logger logger = LoggerFactory.getLogger(RegisterView.class);
@@ -70,29 +61,14 @@ public class RegisterView extends Pane {
         }
     }
 
-
-    private VBox buildLeftVBox(UserType userType) {
-        VBox vBox = new VBox();
-        vBox.setAlignment(Pos.CENTER);
-        vBox.setPadding(new Insets(25));
-        vBox.setSpacing(20);
-
-        if (userType!= UserType.SOLO) {
-            bandOrRoomName = new TextField();
-            bandOrRoomName.setAlignment(Pos.CENTER);
-            Label bandOrRoomLabel;
-            if (userType == UserType.BAND_MANAGER) {
-                bandOrRoomName.setPromptText("Band Name...");
-                bandOrRoomLabel = new Label("Band Name");
-            } else {
-                bandOrRoomName.setPromptText("Band Room Name...");
-                bandOrRoomLabel = new Label("Band Room Name");
-            }
-            bandOrRoomLabel.setStyle(Style.TEXT_FIELD_LABEL);
-            bandOrRoomName.setStyle(Style.TEXT_FIELD_REGISTER);
-            vBox.getChildren().addAll(bandOrRoomLabel,bandOrRoomName);
-        }
-        return vBox;
+    public static HBox createEmailAndPasswordHBox(VBox emailVBox, VBox passwordVBox) {
+        HBox emailAndPassword = new HBox();
+        emailAndPassword.setAlignment(Pos.CENTER);
+        emailAndPassword.setSpacing(10);
+        emailAndPassword.setPrefWidth(USE_COMPUTED_SIZE);
+        emailAndPassword.setPrefHeight(USE_COMPUTED_SIZE);
+        emailAndPassword.getChildren().addAll(emailVBox, passwordVBox);
+        return emailAndPassword;
     }
 
     private VBox buildTopVBox() {
@@ -145,6 +121,7 @@ public class RegisterView extends Pane {
         }
     }
 
+    /*
     private class RegisterAction  implements EventHandler<ActionEvent>{
 
         @Override
@@ -188,4 +165,5 @@ public class RegisterView extends Pane {
         }
 
     }
+     */
 }

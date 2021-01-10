@@ -48,12 +48,7 @@ public class RegisterBandView extends BorderPane {
         this.bandNameTextField.setPrefWidth(250);
         this.bandNameTextField.setAlignment(Pos.CENTER);
 
-        HBox emailAndPassword = new HBox();
-        emailAndPassword.setAlignment(Pos.CENTER);
-        emailAndPassword.setSpacing(10);
-        emailAndPassword.setPrefWidth(USE_COMPUTED_SIZE);
-        emailAndPassword.setPrefHeight(USE_COMPUTED_SIZE);
-        emailAndPassword.getChildren().addAll(emailVBox, passwordVBox);
+        HBox emailAndPassword = RegisterView.createEmailAndPasswordHBox(emailVBox, passwordVBox);
 
         Button registerBtn = UIUtils.createStyledButton("Register", new RegisterAction());
         registerBtn.setPrefWidth(200);
