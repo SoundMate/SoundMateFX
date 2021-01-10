@@ -2,7 +2,7 @@ package it.soundmate.view.main;
 import it.soundmate.model.Solo;
 import it.soundmate.model.User;
 import it.soundmate.view.UIUtils;
-import it.soundmate.view.profiles.solo.SoloProfileSoloView;
+import it.soundmate.view.profiles.solo.SoloProfileView;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import org.slf4j.Logger;
@@ -18,7 +18,7 @@ public class ProfileView extends Pane {
         UIUtils.setBackgroundPane("#232323", this.profileVBox);
         switch (user.getUserType()) {
             case SOLO:
-                this.profileVBox.getChildren().add(new SoloProfileSoloView((Solo) user, this));
+                this.profileVBox.getChildren().add(new SoloProfileView((Solo) user, this));
                 break;
             case ROOM_RENTER:
             case BAND_MANAGER:

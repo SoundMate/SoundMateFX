@@ -11,11 +11,10 @@ import java.util.List;
 
 public class SearchModel {
 
-    private final Connector connector;
     private Connection connection;
 
     public SearchModel() {
-        this.connector = Connector.getInstance();
+        Connector connector = Connector.getInstance();
         try {
             this.connection = connector.getConnection();
         } catch (SQLException sqlException) {

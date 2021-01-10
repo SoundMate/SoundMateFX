@@ -15,6 +15,7 @@ public class Style {
     public static final String TEXT_FIELD_REGISTER = "-fx-background-color: transparent; -fx-color: white;-fx-text-inner-color: white; -fx-text-fill: white;";
     public static final String MID_LABEL = "-fx-text-fill: white; -fx-font-size: 14;";
     public static final String LOW_LABEL = "-fx-text-fill: #696969; -fx-font-size: 12;";
+    public static final String HIGH_LABEL = "-fx-text-fill: white; -fx-font-size: 14; -fx-font-weight: bold;";
     public static final String FAV_GENRE_LABEL = "-fx-text-fill: white; -fx-font-size: 12; -fx-background-color: #00b540; -fx-background-radius: 5;";
     public static final String RADIO_BTN = "-fx-text-fill: white; -fx-font-weight: bold;";
 

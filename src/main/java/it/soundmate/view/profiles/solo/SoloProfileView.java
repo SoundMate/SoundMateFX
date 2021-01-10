@@ -24,9 +24,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import java.util.Optional;
 
-public class SoloProfileSoloView extends VBox {
+public class SoloProfileView extends VBox {
 
-    private static final Logger logger = LoggerFactory.getLogger(SoloProfileSoloView.class);
+    private static final Logger logger = LoggerFactory.getLogger(SoloProfileView.class);
     private final Solo soloUser;
     private final SoloProfileSoloController soloProfileSoloController = new SoloProfileSoloController();
     private final ProfileView profileView;
@@ -35,7 +35,7 @@ public class SoloProfileSoloView extends VBox {
     private HBox favGenresHBoxList;
     private Button addGenreBtn;
 
-    public SoloProfileSoloView(Solo solo, ProfileView profileView) {
+    public SoloProfileView(Solo solo, ProfileView profileView) {
         this.soloUser = solo;
         this.profileView = profileView;
         HBox userInfoHBox = buildUserInfoHBox();

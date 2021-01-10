@@ -93,7 +93,7 @@ public class ManageMediaSolo extends VBox {
         @Override
         public void handle(ActionEvent event) {
             logger.info("Back clicked");
-            profileView.setProfilePage(new SoloProfileSoloView(soloUser, profileView));
+            profileView.setProfilePage(new SoloProfileView(soloUser, profileView));
         }
     }
 

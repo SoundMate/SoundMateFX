@@ -36,7 +36,7 @@ public class SearchSolo implements SearchEngine<Solo>, Runnable {
      * */
     @Override
     public List<Solo> searchForName(String name) {
-        String sql = "SELECT users.id, email, encoded_profile_img, first_name, last_name FROM users JOIN solo s on users.id = s.id JOIN registered_users ru on users.id = ru.id WHERE s.first_name LIKE ?";
+        String sql = "SELECT users.id, email, encoded_profile_img, first_name, last_name FROM users JOIN solo s on users.id = s.id JOIN registered_users ru on users.id = ru.id WHERE LOWER(s.first_name) LIKE LOWER(?)";
         ResultSet resultSet;
         List<Solo> soloResults = new ArrayList<>();
         try (PreparedStatement preparedStatement = this.connection.prepareStatement(sql)) {
