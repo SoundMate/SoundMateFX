@@ -3,6 +3,8 @@ package it.soundmate.database.dao;
 import it.soundmate.bean.registerbeans.RegisterRenterBean;
 import it.soundmate.database.Connector;
 import it.soundmate.database.dbexceptions.RepositoryException;
+import it.soundmate.model.RoomRenter;
+import it.soundmate.model.Solo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -68,4 +70,32 @@ public class RoomRenterDao {
             } return userID;
         }
     }
+
+    public RoomRenter getRenterByID(int id) {
+        ResultSet resultSet;
+        RoomRenter roomRenter = new RoomRenter();
+        String query = "SELECT email, password, encoded_profile_img, age, first_name, last_name\n" +
+                " FROM registered_users LEFT OUTER JOIN users ON (registered_users.id = users.id)\n" +
+                " INNER JOIN solo ON (registered_users.id = solo.id) WHERE registered_users.id = ?";
+
+        try (PreparedStatement preparedStatement = connector.getConnection()
+                .prepareStatement(query)) {
+
+            preparedStatement.setInt(1, id);
+            resultSet = preparedStatement.executeQuery();
+
+            while(resultSet.next()){
+                roomRenter.setId(id);
+                roomRenter.setEmail(resultSet.getString("email"));
+                roomRenter.setPassword(resultSet.getString("password"));
+                roomRenter.setEncodedImg(resultSet.getString("encoded_profile_img"));
+                roomRenter.setFirstName(resultSet.getString("first_name"));
+                roomRenter.setLastName(resultSet.getString("last_name"));
+            }
+        }catch (SQLException exc) {
+            throw new RepositoryException("Err Fetching User", exc);
+        }return roomRenter;
+    }
+
+
 }

@@ -3,6 +3,8 @@ package it.soundmate.database.dao;
 import it.soundmate.bean.registerbeans.RegisterBandBean;
 import it.soundmate.database.Connector;
 import it.soundmate.database.dbexceptions.RepositoryException;
+import it.soundmate.model.Band;
+import it.soundmate.model.Solo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -70,6 +72,33 @@ public class BandDao {
                 throw new RepositoryException(ERR_INSERT, ex);
             } return userID;
         }
+    }
+
+
+    public Band getBandByID(int id) {
+        ResultSet resultSet;
+        Band bandUser = new Band();
+        String query = "SELECT email, password, encoded_profile_img, band_name\n" +
+                " FROM registered_users LEFT OUTER JOIN users ON (registered_users.id = users.id)\n" +
+                " INNER JOIN band ON (registered_users.id = band.id) WHERE registered_users.id = ?";
+
+        try (PreparedStatement preparedStatement = connector.getConnection()
+                .prepareStatement(query)) {
+
+            preparedStatement.setInt(1, id);
+            resultSet = preparedStatement.executeQuery();
+
+            while(resultSet.next()){
+                bandUser.setId(id);
+                bandUser.setEmail(resultSet.getString("email"));
+                bandUser.setPassword(resultSet.getString("password"));
+                bandUser.setEncodedImg(resultSet.getString("encoded_profile_img"));
+                bandUser.setBandName(resultSet.getString("band_name"));
+
+            }
+        }catch (SQLException exc) {
+            throw new RepositoryException("Err Fetching User", exc);
+        }return bandUser;
     }
 
 
