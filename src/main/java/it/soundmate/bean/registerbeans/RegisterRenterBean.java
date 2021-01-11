@@ -1,20 +1,40 @@
 package it.soundmate.bean.registerbeans;
 
-import it.soundmate.model.User;
 import it.soundmate.model.UserType;
+
+import static it.soundmate.model.UserType.ROOM_RENTER;
 
 public class RegisterRenterBean extends RegisterBean {
 
+    private String firstName;
+    private String lastName;
     private String address;
-    private String name;
+
+    private static final UserType USER_TYPE = ROOM_RENTER;
 
 
-    public RegisterRenterBean(){}
 
-    public RegisterRenterBean(String email, String password, String address, String name) {
-        super(email, password, UserType.ROOM_RENTER);
+    public RegisterRenterBean(String email, String password, String firstName, String lastName, String address) {
+        super(email, password);
+        this.firstName = firstName;
+        this.lastName = lastName;
         this.address = address;
-        this.name = name;
+    }
+
+    public String getFirstName() {
+        return firstName;
+    }
+
+    public void setFirstName(String firstName) {
+        this.firstName = firstName;
+    }
+
+    public String getLastName() {
+        return lastName;
+    }
+
+    public void setLastName(String lastName) {
+        this.lastName = lastName;
     }
 
     public String getAddress() {
@@ -25,21 +45,15 @@ public class RegisterRenterBean extends RegisterBean {
         this.address = address;
     }
 
-    public String getName() {
-        return name;
-    }
 
-    public void setName(String name) {
-        this.name = name;
-    }
 
     @Override
     public boolean checkFields(){
-        return super.checkFields() && !this.address.isEmpty() && !this.name.isEmpty();
+        return super.checkFields() && !this.address.isEmpty() && !this.firstName.isEmpty() && !this.lastName.isEmpty();
     }
 
     @Override
-    public User registerUser() {
-        return null;
+    public UserType getUserType() {
+        return USER_TYPE;
     }
 }

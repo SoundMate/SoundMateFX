@@ -29,7 +29,7 @@
             </div>
 <%
         } else {
-            LoginController loginController = new LoginController(loginBean);
+            LoginController loginController = new LoginController(loginBean, userDao);
             user = loginController.login();
             if (user != null) {
 

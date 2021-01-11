@@ -29,7 +29,7 @@ public class Connector {
         return connection;
     }
 
-    public static Connector getInstance(final String host, final String user, final String password){
+    public static Connector getInstance(){
         if(instance == null){
             instance = new Connector();
         }

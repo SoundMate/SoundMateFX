@@ -27,7 +27,7 @@ public class Cache {
     }
 
     public String buildProfilePicCacheName(User user) {
-        return "src/main/resources/soundmate/userCache/" + user.getUserID() + "_profilePic.png";
+        return "src/main/resources/soundmate/userCache/" + user.getId() + "_profilePic.png";
     }
 
     public boolean saveProfilePicToCache(User user, File image) {

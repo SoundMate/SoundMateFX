@@ -1,18 +1,18 @@
 package it.soundmate.bean.registerbeans;
 
-import it.soundmate.controller.RegisterController;
-import it.soundmate.model.User;
+
 import it.soundmate.model.UserType;
+
+import static it.soundmate.model.UserType.SOLO;
 
 public class RegisterSoloBean extends RegisterBean {
 
     private String firstName;
     private String lastName;
-
-    public RegisterSoloBean(){}
+    private static final UserType USER_TYPE = SOLO;
 
     public RegisterSoloBean(String email, String password, String firstName, String lastName) {
-        super(email, password, UserType.SOLO);
+        super(email, password);
         this.firstName = firstName;
         this.lastName = lastName;
     }
@@ -39,9 +39,7 @@ public class RegisterSoloBean extends RegisterBean {
     }
 
     @Override
-    public User registerUser() {
-        RegisterController soloRegisterController = new RegisterController(this);
-        return soloRegisterController.registerUser();
+    public UserType getUserType() {
+        return USER_TYPE;
     }
-
 }

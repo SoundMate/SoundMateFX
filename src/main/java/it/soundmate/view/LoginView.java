@@ -6,9 +6,11 @@
 
 package it.soundmate.view;
 
+import it.soundmate.bean.LoggedBean;
 import it.soundmate.bean.LoginBean;
 import it.soundmate.constants.Style;
 import it.soundmate.controller.LoginController;
+import it.soundmate.database.dao.UserDao;
 import it.soundmate.model.User;
 import it.soundmate.view.main.MainView;
 import it.soundmate.view.registerview.ChooseRegisterView;
@@ -42,6 +44,7 @@ public class LoginView extends BorderPane {
     private final Logger logger = LoggerFactory.getLogger(LoginView.class);
     private LoginController loginController;
     private LoginBean loginBean;
+    private UserDao userDao;
 
     //UI Elements
     private TextField emailTextField;
@@ -142,8 +145,9 @@ public class LoginView extends BorderPane {
         public void handle(ActionEvent event) {
             logger.info("Login Action Button");
             loginBean = new LoginBean(emailTextField.getText(), passwordField.getText());
-            loginController = new LoginController(loginBean);
-            User loggedUser = loginController.login();
+            userDao = new UserDao();
+            loginController = new LoginController(loginBean, userDao);
+            User loggedUser = loginController.login(loginBean);
 
             //View Update (qua o nel controller?)
 

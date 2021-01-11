@@ -6,7 +6,7 @@
 
 package it.soundmate.controller;
 
-import it.soundmate.database.DBServices;
+import it.soundmate.database.dao.UserDao;
 import it.soundmate.exceptions.UpdateException;
 import it.soundmate.model.Solo;
 import it.soundmate.utils.ImgBase64Repo;
@@ -16,10 +16,10 @@ import java.io.IOException;
 
 public class EditProfileSoloController {
 
-    private final DBServices dbServices = DBServices.getInstance();
+    private final UserDao userDao;
 
     public void updateProfilePic(Solo solo, File image) throws IOException {
-        if (dbServices.uploadHandler(solo.getUserID(), image.toPath()) != 1) {
+        if (userDao.uploadHandler(solo.getId(), image.toPath()) != 1) {
             throw new UpdateException("Error updating profile pic");
         }
         solo.setEncodedImg(ImgBase64Repo.encode(image.toPath()));

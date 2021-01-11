@@ -55,11 +55,9 @@ public abstract class User {
 
     public abstract UserType getUserType();
 
-
     public List<File> getPhotos() {
         return photos;
     }
-
 
     public String getEncodedImg() {
         return encodedImg;

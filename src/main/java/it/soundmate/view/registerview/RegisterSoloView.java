@@ -7,6 +7,8 @@
 package it.soundmate.view.registerview;
 
 import it.soundmate.constants.Style;
+import it.soundmate.controller.RegisterController;
+import it.soundmate.database.Connector;
 import it.soundmate.view.UIUtils;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
@@ -26,6 +28,7 @@ public class RegisterSoloView extends BorderPane {
     private final TextField passwordTextField = new TextField();
     private final TextField firstNameTextField = new TextField();
     private final TextField lastNameTextField = new TextField();
+
 
     public RegisterSoloView(){
         VBox fieldsVBox = buildFieldsVBox();
@@ -70,7 +73,7 @@ public class RegisterSoloView extends BorderPane {
     private class RegisterAction implements EventHandler<ActionEvent> {
         @Override
         public void handle(ActionEvent event) {
-            //Controller qua
+//            RegisterController
         }
     }
 }
