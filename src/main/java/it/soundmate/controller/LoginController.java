@@ -25,10 +25,12 @@ public class LoginController {
     }
 
     public LoggedBean login(LoginBean loginBean){
-        if (!checkFields()) {
+        if (checkFields()) {
             return new LoggedBean();
-        }else
+        }else {
+            UserDao userDao = new UserDao();
             return userDao.login(loginBean);
+        }
     }
 
 
@@ -56,7 +58,7 @@ public class LoginController {
 
 
     private boolean checkFields() {
-        return ("".equals(loginBean.getEmail()) && "".equals(loginBean.getPassword()));
+        return ("".equals(loginBean.getEmail()) || "".equals(loginBean.getPassword()));
     }
 
     public void setLoginBean(LoginBean loginBean) {

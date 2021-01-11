@@ -125,10 +125,9 @@ public class SoloDao {
                 soloUser.setFirstName(resultSet.getString("first_name"));
                 soloUser.setLastName(resultSet.getString("last_name"));
             }
-            return soloUser;
         }catch (SQLException exc) {
-            throw new SQLException ("Fetch Error", exc);
-        }
+            throw new RepositoryException("Err Fetching User", exc);
+        }return soloUser;
     }
 
 }
