@@ -9,7 +9,7 @@ public class SoloProfileSoloController {
 
 
     public List<String> getSoloInstruments(Solo solo) {
-        return solo.getInstrument();
+        return solo.getInstruments();
     }
 
     public boolean addGenre(String s, Solo soloUser) {
