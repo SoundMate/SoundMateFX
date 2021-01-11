@@ -6,29 +6,18 @@
 
 package it.soundmate.model;
 
+import java.util.Arrays;
+
+
 public enum UserType {
-    BAND {
-        @Override
-        public String toString() {
-            return "BAND";
-        }
-    },
-    BAND_MANAGER {
-        @Override
-        public String toString() {
-            return "BAND_MANAGER";
-        }
-    },
-    ROOM_RENTER {
-        @Override
-        public String toString() {
-            return "ROOM_RENTER";
-        }
-    },
-    SOLO {
-        @Override
-        public String toString() {
-            return "SOLO";
-        }
+    BAND, SOLO, BAND_MANAGER, ROOM_RENTER;
+
+    public static UserType returnUserType(String userType){
+        UserType[] userTypes = UserType.values();
+        return Arrays.stream(userTypes)
+                .filter(currentUser -> currentUser.toString().equals(userType))
+                .findFirst().get();
+
     }
+
 }

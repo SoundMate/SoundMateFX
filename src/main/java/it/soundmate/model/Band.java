@@ -6,38 +6,26 @@
 
 package it.soundmate.model;
 
-import java.util.ArrayList;
 import java.util.List;
 
-public class Band extends User {
+import static it.soundmate.model.UserType.BAND;
 
-    private int bandID;
-    private ArrayList<String> genres;
-    private ArrayList<Solo> members;
-    private ArrayList<String> socials;
+public class Band extends User{
+
+    private List<Solo> members;
     private String bandName;
+    private List<String> genres;
+    private static final UserType userType = BAND;
 
-    public Band(int bandID){
-        this.bandID = bandID;
+
+    public Band(String bandName) {
+        this.bandName = bandName;
     }
 
-
-    public Band(List<String> genres, List<String> socials, List<Solo> members) {
-        this.genres = (ArrayList<String>) genres;
-        this.socials = (ArrayList<String>) socials;
-        this.members = (ArrayList<Solo>) members;
-    }
-
-    public int getBandID() {
-        return bandID;
-    }
-
-    public List<String> getGenres() {
-        return genres;
-    }
-
-    public void setGenres(List<String> genres) {
-        this.genres = (ArrayList<String>) genres;
+    public Band(int id, String bandName, String password){
+        super.setId(id);
+        this.setBandName(bandName);
+        super.setPassword(password);
     }
 
     public List<Solo> getMembers() {
@@ -45,15 +33,7 @@ public class Band extends User {
     }
 
     public void setMembers(List<Solo> members) {
-        this.members = (ArrayList<Solo>) members;
-    }
-
-    public List<String> getSocials() {
-        return socials;
-    }
-
-    public void setSocials(List<String> socials) {
-        this.socials = (ArrayList<String>) socials;
+        this.members = members;
     }
 
     public String getBandName() {
@@ -62,5 +42,18 @@ public class Band extends User {
 
     public void setBandName(String bandName) {
         this.bandName = bandName;
+    }
+
+    public List<String> getGenres() {
+        return genres;
+    }
+
+    public void setGenres(List<String> genres) {
+        this.genres = genres;
+    }
+
+    @Override
+    public UserType getUserType() {
+        return userType;
     }
 }

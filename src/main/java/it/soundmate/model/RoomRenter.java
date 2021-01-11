@@ -6,37 +6,53 @@
 
 package it.soundmate.model;
 
-import java.util.ArrayList;
+
+import java.util.List;
+
+import static it.soundmate.model.UserType.ROOM_RENTER;
+
 
 public class RoomRenter extends User {
 
-    private ArrayList<Room> rooms;
-    private String address;
+    private List<Room> rooms;
+    private String firstName;
+    private String lastName;
+    private static final UserType userType = ROOM_RENTER;
 
-
-    public RoomRenter(User user) {
-        super(user.getUserID(), user.getEmail(), user.getPassword(), user.getEncodedImg(),UserType.ROOM_RENTER);
+    public RoomRenter(int id, String fName, String lName, String password){
+        super.setId(id);
+        this.setFirstName(fName);
+        this.setLastName(lName);
+        super.setPassword(password);
     }
 
-    public String getAddress() {
-        return address;
+    public String getFirstName() {
+        return firstName;
     }
 
-    public void setAddress(String address) {
-        this.address = address;
+    public void setFirstName(String firstName) {
+        this.firstName = firstName;
     }
 
-    public void addRoom(Room room){
-        this.rooms.add(room);
-    }
-    public void removeRoom(Room room){
-        for (int i = 0; i < this.rooms.size(); i++) {
-            if (room.equals(this.rooms.get(i))) {
-                this.rooms.remove(i);
-                break;
-            }
-        }
+    public String getLastName() {
+        return lastName;
     }
 
+    public void setLastName(String lastName) {
+        this.lastName = lastName;
+    }
+
+    public List<Room> getRooms() {
+        return rooms;
+    }
+
+    public void setRooms(List<Room> rooms) {
+        this.rooms = rooms;
+    }
+
+    @Override
+    public UserType getUserType() {
+        return userType;
+    }
 
 }
