@@ -1,55 +1,120 @@
 package it.soundmate.controller;
 
-import it.soundmate.bean.registerbeans.RegisterBandBean;
-import it.soundmate.bean.registerbeans.RegisterBean;
-import it.soundmate.bean.registerbeans.RegisterSoloBean;
-import it.soundmate.database.dao.UserDao;
-import it.soundmate.database.dbexceptions.DBException;
-import it.soundmate.model.User;
+
+import it.soundmate.database.Connector;
+import it.soundmate.model.UserType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class RegisterController {
 
 
-    private static final Logger logger = LoggerFactory.getLogger(RegisterController.class);
-    private RegisterBean registerBean;
-    private final UserDao userDao = UserDao.getInstance();
+//    private static final Logger log = LoggerFactory.getLogger(RegisterController.class);
+//
+//    private final Connector connector;
+//    private String email;
+//    private String password;
+//    private UserType userType;
+//    private static final String ACC_BANNED_ERR = "\t ***** THIS ACCOUNT HAS BEEN BANNED *****";
+//    private static final String EMAIL_EXISTS_ERR = "\t ***** THIS EMAIL ALREADY EXISTS *****";
+//    private static final String ERR_INSERT = "Error inserting user";
+//
 
-    public RegisterController(RegisterBean registerBean) {
-        this.registerBean = registerBean;
-    }
+//    public RegisterController(Connector connector) {
+//        this.connector = connector;
+//    }
+//
+//
 
-    public RegisterController(){}
+//    public int registration(String email, String password, UserType userType){
+//
+//        ResultSet resultSet;
+//        int userID = 0;
+//        if (dbServices.checkIfBanned(email)){
+//            log.error(ACC_BANNED_ERR);
+//            return -1;
+//        }else if (dbServices.checkEmailBoolean(email)){
+//            log.error(EMAIL_EXISTS_ERR);
+//            return -2;
+//        }
+//        else {
+//
+//            String sql = "INSERT INTO registered_users (email, password, user_type) VALUES (?, ?, ?)";
+//
+//            try (Connection conn = connector.getConnection();
+//                 PreparedStatement pstmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
+//
+//                pstmt.setString(1, email);
+//                pstmt.setString(2, password);
+//                pstmt.setString(3, userType.toString());
+//
+//
+//                int rowAffected = pstmt.executeUpdate();
+//                if (rowAffected == 1) {
+//
+//                    resultSet = pstmt.getGeneratedKeys();
+//                    if (resultSet.next())
+//                        userID = resultSet.getInt(1);
+//                }
+//            } catch (SQLException ex) {
+//                throw new RepositoryException(ERR_INSERT, ex);
+//            } return userID;
+//        }
+//    }
 
-    public void setRegisterBean(RegisterBean registerBean) {
-        this.registerBean = registerBean;
-    }
 
-    public User registerUser() {
-        if (this.registerBean instanceof RegisterSoloBean) {
-            logger.info("Registering Solo User");
-            RegisterSoloBean registerSoloBean = (RegisterSoloBean) this.registerBean;
-            try {
-                int result = userDao.registerSolo(registerSoloBean);
-                if (result > 0) {
-                    return userDao.login(registerSoloBean.getEmail(), registerSoloBean.getPassword());
-                } else {
-                    logger.error("userDao.registerSolo returned {}", result);
-                    return null;
-                }
-            } catch (DBException e) {
-                logger.error("DATABASE EXCEPTION");
-                return null;
-            }
-        } else if (this.registerBean instanceof RegisterBandBean) {
-            logger.info("Band Registration");
-            return null;
-        } else {
-            //this.registerBean instanceof RegisterRenterBean
-            logger.info("Room Renter Registration");
-            return null;
-        }
-    }
+
+
+
+
+//    public int regiBandManController(BandManBean bandManBean){
+//
+//        ResultSet resultSet;
+//
+//        int userID = 0;
+//        if (dbServices.checkIfBanned(bandManBean.getEmail())){
+//            log.error(ACC_BANNED_ERR);
+//            return -1;
+//        }else if (dbServices.checkEmailBoolean(bandManBean.getEmail())){
+//            log.error(EMAIL_EXISTS_ERR);
+//            return -2;
+//        } else {
+//            String sql = " WITH ins1 AS (\n" +
+//                    "     INSERT INTO registered_users (email, password, user_type)\n" +
+//                    "         VALUES (?, ?, ?)\n" +
+//                    " -- ON     CONFLICT DO NOTHING         -- optional addition in Postgres 9.5+\n" +
+//                    "         RETURNING id AS sample_id\n" +
+//                    " ), ins2 AS (\n" +
+//                    "     INSERT INTO users (id, encoded_profile_img)\n" +
+//                    "         SELECT sample_id, ? FROM ins1\n" +
+//                    " )\n" +
+//                    "INSERT INTO solo (id, first_name, last_name)\n" +
+//                    "SELECT sample_id, ?, ? FROM ins1;";
+//
+//            try (Connection conn = connector.getConnection();
+//                 PreparedStatement pstmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
+//
+//                pstmt.setString(1, bandManBean.getEmail());
+//                pstmt.setString(2, bandManBean.getPassword());
+//                pstmt.setString(3, bandManBean.getUserType().toString());
+//                pstmt.setString(4, "bmIMG");
+//                pstmt.setString(5, bandManBean.getFirstName());
+//                pstmt.setString(6, bandManBean.getLastName());
+//
+//
+//                int rowAffected = pstmt.executeUpdate();
+//                if (rowAffected == 1) {
+//
+//                    resultSet = pstmt.getGeneratedKeys();
+//                    if (resultSet.next())
+//                        userID = resultSet.getInt(1);
+//                }
+//            } catch (SQLException ex) {
+//                throw new RepositoryException(ERR_INSERT, ex);
+//            } return userID;
+//        }
+//    }
 
 }
+
+

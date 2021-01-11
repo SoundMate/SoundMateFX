@@ -8,15 +8,13 @@ public abstract class RegisterBean {
 
     private String email;
     private String password;
-    private UserType userType;
 
-    public RegisterBean(){}
 
-    public RegisterBean(String email, String password, UserType userType){
+    public RegisterBean(String email, String password){
         this.email = email;
         this.password = password;
-        this.userType = userType;
     }
+
 
     public String getEmail() {
         return email;
@@ -34,22 +32,16 @@ public abstract class RegisterBean {
         this.password = password;
     }
 
-    public UserType getUserType() {
-        return userType;
-    }
-
-    public void setUserType(UserType userType) {
-        this.userType = userType;
-    }
+    public abstract UserType getUserType();
 
     /**
      * checkFields()
      * @return true if fields are not empty, false otherwise
      */
+
+    //??????
     public boolean checkFields() {
         return !this.email.isEmpty() && !this.password.isEmpty();
     }
-
-    public abstract User registerUser();
 
 }
