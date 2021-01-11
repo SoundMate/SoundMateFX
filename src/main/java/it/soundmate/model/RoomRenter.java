@@ -19,6 +19,10 @@ public class RoomRenter extends User {
     private String lastName;
     private static final UserType userType = ROOM_RENTER;
 
+
+    public RoomRenter() {
+    }
+
     public RoomRenter(int id, String fName, String lName, String password){
         super.setId(id);
         this.setFirstName(fName);

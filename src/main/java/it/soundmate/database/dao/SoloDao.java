@@ -103,8 +103,32 @@ public class SoloDao {
     }
 
 
-    public Solo getSoloByID(int id){
+    public Solo getSoloByID(int id) {
+        ResultSet resultSet;
+        Solo soloUser = new Solo();
+        String query = "SELECT email, password, encoded_profile_img, age, first_name, last_name\n" +
+        " FROM registered_users LEFT OUTER JOIN users ON (registered_users.id = users.id)\n" +
+        " INNER JOIN solo ON (registered_users.id = solo.id) WHERE registered_users.id = ?";
 
+        try (PreparedStatement preparedStatement = connector.getConnection()
+                                                .prepareStatement(query)) {
+
+            preparedStatement.setInt(1, id);
+            resultSet = preparedStatement.executeQuery();
+
+            while(resultSet.next()){
+                soloUser.setId(id);
+                soloUser.setEmail(resultSet.getString("email"));
+                soloUser.setPassword(resultSet.getString("password"));
+                soloUser.setAge(resultSet.getInt("age"));
+                soloUser.setEncodedImg(resultSet.getString("encoded_profile_img"));
+                soloUser.setFirstName(resultSet.getString("first_name"));
+                soloUser.setLastName(resultSet.getString("last_name"));
+            }
+            return soloUser;
+        }catch (SQLException exc) {
+            throw new SQLException ("Fetch Error", exc);
+        }
     }
 
 

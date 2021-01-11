@@ -17,6 +17,8 @@ public class Band extends User{
     private List<String> genres;
     private static final UserType userType = BAND;
 
+    public Band() {
+    }
 
     public Band(String bandName) {
         this.bandName = bandName;

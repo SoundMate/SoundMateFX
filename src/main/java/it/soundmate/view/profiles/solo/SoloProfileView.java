@@ -2,6 +2,7 @@ package it.soundmate.view.profiles.solo;
 
 import it.soundmate.constants.Style;
 import it.soundmate.controller.SoloProfileSoloController;
+import it.soundmate.database.dao.UserDao;
 import it.soundmate.model.Solo;
 import it.soundmate.utils.Cache;
 import it.soundmate.view.UIUtils;
@@ -123,8 +124,8 @@ public class SoloProfileView extends VBox {
         Label favGenreLabel = new Label("Favourite Genres");
         favGenreLabel.setStyle(Style.MID_LABEL);
 
-        if (this.soloUser.getFavouriteGenres() != null && !this.soloUser.getFavouriteGenres().isEmpty()) {
-            for (String favGenre : this.soloUser.getFavouriteGenres()) {
+        if (this.soloUser.getFavGenres() != null && !this.soloUser.getFavGenres().isEmpty()) {
+            for (String favGenre : this.soloUser.getFavGenres()) {
                 Label genreLabel = new Label(favGenre);
                 genreLabel.setPadding(new Insets(5));
                 genreLabel.setStyle(Style.FAV_GENRE_LABEL);
@@ -188,8 +189,8 @@ public class SoloProfileView extends VBox {
         instrumentList.setAlignment(Pos.CENTER);
         //Get solo instrument list and for every instrument add a circle with the corresponding icon
         //and label
-        if (this.soloUser.getInstrument() != null) {
-            for (String instrument : this.soloUser.getInstrument()) {
+        if (this.soloUser.getInstruments() != null) {
+            for (String instrument : this.soloUser.getInstruments()) {
                 VBox instrumentVBox = new VBox();
                 instrumentVBox.setAlignment(Pos.CENTER);
                 instrumentVBox.setPadding(new Insets(10));
@@ -275,7 +276,8 @@ public class SoloProfileView extends VBox {
         @Override
         public void handle(ActionEvent event) {
             logger.info("Edit Profile Info Clicked");
-            profileView.setProfilePage(new EditProfileSolo(soloUser, profileView));
+            UserDao userDao = new UserDao();
+            profileView.setProfilePage(new EditProfileSolo(soloUser, profileView, userDao));
         }
     }
 

@@ -21,7 +21,10 @@ public class  Solo extends User{
     private List<String> instruments;
     private static final UserType userType= SOLO;
 
-    public Solo(int id, String fName, String lName, int age,String email, String password) {
+    public Solo() {
+    }
+
+    public Solo(int id, String fName, String lName, int age, String email, String password) {
         super.setId(id);
         this.firstName = fName;
         this.lastName = lName;
