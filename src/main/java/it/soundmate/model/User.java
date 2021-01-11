@@ -17,6 +17,7 @@ public abstract class User {
     private String password;
     private String country;
     private List<File> photos;
+    private String encodedImg;
     private InputStream profilePic;
 
 
