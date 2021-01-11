@@ -17,7 +17,7 @@ public class LoginController {
 
     private LoginBean loginBean;
     private static final Logger logger = LoggerFactory.getLogger(LoginController.class);
-
+    private final UserDao userDao = new UserDao();
 
     public LoginController(LoginBean loginBean) {
         this.loginBean = loginBean;
@@ -28,8 +28,7 @@ public class LoginController {
         if (checkFields()) {
             return new LoggedBean();
         }else {
-            UserDao userDao = new UserDao();
-            return userDao.login(loginBean);
+            return this.userDao.login(loginBean);
         }
     }
 
@@ -37,19 +36,16 @@ public class LoginController {
 
 
     public Solo getFullSolo(int id){
-        UserDao userDao = new UserDao();
         SoloDao soloDao = new SoloDao(Connector.getInstance(), userDao);
         return soloDao.getSoloByID(id);
     }
 
     public Band getFullBand(int id){
-        UserDao userDao = new UserDao();
         BandDao bandDao = new BandDao(Connector.getInstance(), userDao);
         return bandDao.getBandByID(id);
     }
 
     public RoomRenter getFullRenter(int id){
-        UserDao userDao = new UserDao();
         RoomRenterDao renterDao = new RoomRenterDao(Connector.getInstance(), userDao);
         return renterDao.getRenterByID(id);
     }
