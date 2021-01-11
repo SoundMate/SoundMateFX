@@ -2,6 +2,7 @@ package it.soundmate.controller;
 
 import it.soundmate.bean.LoggedBean;
 import it.soundmate.bean.LoginBean;
+import it.soundmate.database.Connector;
 import it.soundmate.database.dao.BandDao;
 import it.soundmate.database.dao.RoomRenterDao;
 import it.soundmate.database.dao.SoloDao;
@@ -16,17 +17,11 @@ public class LoginController {
 
     private LoginBean loginBean;
     private static final Logger logger = LoggerFactory.getLogger(LoginController.class);
-    private final UserDao userDao;
-    private final SoloDao soloDao;
-    private final BandDao bandDao;
-    private final RoomRenterDao roomRenterDao;
 
-    public LoginController(LoginBean loginBean, UserDao userDao, SoloDao soloDao, BandDao bandDao, RoomRenterDao roomRenterDao) {
+
+    public LoginController(LoginBean loginBean) {
         this.loginBean = loginBean;
-        this.userDao = userDao;
-        this.soloDao = soloDao;
-        this.bandDao = bandDao;
-        this.roomRenterDao = roomRenterDao;
+
     }
 
     public LoggedBean login(LoginBean loginBean){
@@ -40,15 +35,21 @@ public class LoginController {
 
 
     public Solo getFullSolo(int id){
-            return soloDao.getSoloByID(id);
+        UserDao userDao = new UserDao();
+        SoloDao soloDao = new SoloDao(Connector.getInstance(), userDao);
+        return soloDao.getSoloByID(id);
     }
 
     public Band getFullBand(int id){
+        UserDao userDao = new UserDao();
+        BandDao bandDao = new BandDao(Connector.getInstance(), userDao);
         return bandDao.getBandByID(id);
     }
 
     public RoomRenter getFullRenter(int id){
-        return roomRenterDao.getRenterByID(id);
+        UserDao userDao = new UserDao();
+        RoomRenterDao renterDao = new RoomRenterDao(Connector.getInstance(), userDao);
+        return renterDao.getRenterByID(id);
     }
 
 
