@@ -157,7 +157,7 @@ public class SoloProfileView extends VBox {
         if (this.soloUser.getEncodedImg() == null) {
             profileImg = new Image("soundmate/images/user-default.png");
         } else {
-            profileImg = new Image(Cache.getInstance().getProfilePicFromCache(this.soloUser));
+            profileImg = new Image(Cache.getInstance().getProfilePicFromCache(this.soloUser.getId()));
         }
         profilePic.setFill(new ImagePattern(profileImg));
 

@@ -102,7 +102,7 @@ public class EditProfileSolo extends VBox {
         this.profilePicImg = new Circle();
         profilePicImg.setRadius(65);
         if (this.solo.getEncodedImg() != null) {
-            Image image = new Image(Cache.getInstance().getProfilePicFromCache(this.solo));
+            Image image = new Image(Cache.getInstance().getProfilePicFromCache(this.solo.getId()));
             profilePicImg.setFill(new ImagePattern(image));
         } else {
             Image profilePic = new Image("soundmate/images/user-default.png");
@@ -150,7 +150,7 @@ public class EditProfileSolo extends VBox {
                 } catch (IOException ioe) {
                     logger.info("Error updating profile picture in model (IOException)");
                 }
-                profilePicImg.setFill(new ImagePattern(new Image(Cache.getInstance().getProfilePicFromCache(solo))));
+                profilePicImg.setFill(new ImagePattern(new Image(Cache.getInstance().getProfilePicFromCache(solo.getId()))));
             }
         }
     }

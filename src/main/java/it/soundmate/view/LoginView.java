@@ -146,7 +146,7 @@ public class LoginView extends BorderPane {
             logger.info("Login Action Button");
             loginBean = new LoginBean(emailTextField.getText(), passwordField.getText());
             loginController = new LoginController(loginBean);
-            User loggedUser = loginController.login(loginBean); //tranquillo, qui già sto modificando per farti tornare l'user che ti serve.
+            User loggedUser = loginController.login(); //tranquillo, qui già sto modificando per farti tornare l'user che ti serve.
 
             //View Update (qua o nel controller?)
 

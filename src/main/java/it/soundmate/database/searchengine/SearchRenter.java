@@ -6,14 +6,17 @@
 
 package it.soundmate.database.searchengine;
 
+import it.soundmate.bean.searchbeans.RoomRenterResultBean;
+import it.soundmate.bean.searchbeans.SoloResultBean;
+import it.soundmate.bean.searchbeans.UserResultBean;
 import it.soundmate.model.RoomRenter;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class SearchRenter implements SearchEngine<RoomRenter> {
+public class SearchRenter implements SearchEngine<RoomRenterResultBean> {
     @Override
-    public List<RoomRenter> searchForName(String name) {
+    public List<RoomRenterResultBean> searchForName(String name) {
         return new ArrayList<>();
     }
 }

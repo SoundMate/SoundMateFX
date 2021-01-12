@@ -1,6 +1,7 @@
 package it.soundmate.view.registerview;
 
 import it.soundmate.constants.Style;
+import it.soundmate.controller.graphic.ChooseRegisterController;
 import it.soundmate.model.UserType;
 import it.soundmate.view.LoginView;
 import it.soundmate.view.UIUtils;
@@ -30,6 +31,7 @@ public class ChooseRegisterView extends Pane {
     private final HBox chooseHBox = new HBox();
 
     private Logger logger = LoggerFactory.getLogger(ChooseRegisterView.class);
+    private final ChooseRegisterController chooseRegisterController = new ChooseRegisterController();
 
     public ChooseRegisterView() {
         this.borderPane = new BorderPane();
@@ -100,11 +102,7 @@ public class ChooseRegisterView extends Pane {
         @Override
         public void handle(ActionEvent event) {
             logger.info("Register Band Click");
-            Stage stage = (Stage) borderPane.getScene().getWindow();
-            Parent registerView = new RegisterView(UserType.BAND).getMainBorderPane();
-            Scene scene = new Scene(registerView, 800, 600);
-            stage.setScene(scene);
-            stage.show();
+            chooseRegisterController.navigateToRegisterBandView((Stage) borderPane.getScene().getWindow());
         }
     }
 
@@ -112,11 +110,7 @@ public class ChooseRegisterView extends Pane {
         @Override
         public void handle(ActionEvent event) {
             logger.info("Register Band Room Click");
-            Stage stage = (Stage) borderPane.getScene().getWindow();
-            Parent registerView = new RegisterView(UserType.ROOM_RENTER).getMainBorderPane();
-            Scene scene = new Scene(registerView, 800, 600);
-            stage.setScene(scene);
-            stage.show();
+            chooseRegisterController.navigateToRegisterRoomRenterView((Stage) borderPane.getScene().getWindow());
         }
     }
 
@@ -124,11 +118,7 @@ public class ChooseRegisterView extends Pane {
         @Override
         public void handle(ActionEvent event) {
             logger.info("Register Solo Click");
-            Stage stage = (Stage) borderPane.getScene().getWindow();
-            Parent registerView = new RegisterView(UserType.SOLO).getMainBorderPane();
-            Scene scene = new Scene(registerView, 800, 600);
-            stage.setScene(scene);
-            stage.show();
+            chooseRegisterController.navigateToRegisterSoloView((Stage) borderPane.getScene().getWindow());
         }
     }
 
@@ -136,11 +126,7 @@ public class ChooseRegisterView extends Pane {
         @Override
         public void handle(MouseEvent event) {
             logger.info("Back Pressed");
-            Stage stage = (Stage) vBox.getScene().getWindow();
-            Parent loginView = new LoginView();
-            Scene scene = new Scene(loginView, 800, 600);
-            stage.setScene(scene);
-            stage.show();
+            chooseRegisterController.backToLoginView((Stage) borderPane.getScene().getWindow());
         }
     }
 
@@ -148,6 +134,7 @@ public class ChooseRegisterView extends Pane {
         @Override
         public void handle(MouseEvent event) {
             logger.info("Info Clicked");
+            chooseRegisterController.navigateToInfoView((Stage) borderPane.getScene().getWindow());
         }
     }
 }

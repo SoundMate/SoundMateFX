@@ -1,5 +1,9 @@
 package it.soundmate.model;
 
+import it.soundmate.bean.searchbeans.BandResultBean;
+import it.soundmate.bean.searchbeans.RoomRenterResultBean;
+import it.soundmate.bean.searchbeans.SoloResultBean;
+import it.soundmate.bean.searchbeans.UserResultBean;
 import it.soundmate.database.Connector;
 import it.soundmate.database.searchengine.SearchSolo;
 
@@ -22,15 +26,15 @@ public class SearchModel {
         }
     }
 
-    public List<User> searchByName(String searchString) {
-        List<User> results = new ArrayList<>();
+    public List<UserResultBean> searchByName(String searchString) {
+        List<UserResultBean> results = new ArrayList<>();
         results.addAll(searchSolos(searchString));
         results.addAll(searchBands(searchString));
         results.addAll(searchRooms(searchString));  //Threads?
         return results;
     }
 
-    public List<Solo> searchSolos(String searchString)  {
+    public List<SoloResultBean> searchSolos(String searchString)  {
         SearchSolo searchSolo = new SearchSolo(searchString, this.connection);
         Thread searchThread = new Thread(searchSolo);
         searchThread.start();
@@ -43,12 +47,12 @@ public class SearchModel {
         return searchSolo.getResults();
     }
 
-    public List<Band> searchBands(String searchString) {
+    public List<BandResultBean> searchBands(String searchString) {
         //Perform search in bands
         return new ArrayList<>();
     }
 
-    public List<RoomRenter> searchRooms(String searchString) {
+    public List<RoomRenterResultBean> searchRooms(String searchString) {
         //Perform search in rooms
         return new ArrayList<>();
     }

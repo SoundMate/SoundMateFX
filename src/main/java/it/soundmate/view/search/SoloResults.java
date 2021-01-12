@@ -6,10 +6,12 @@
 
 package it.soundmate.view.search;
 
+import it.soundmate.bean.searchbeans.SoloResultBean;
 import it.soundmate.constants.Style;
 import it.soundmate.model.Solo;
 import it.soundmate.view.UIUtils;
 import javafx.beans.binding.Bindings;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
@@ -26,7 +28,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 
-public class SoloResults extends ListView<Solo> {
+public class SoloResults extends ListView<SoloResultBean> {
 
     private static final Logger logger = LoggerFactory.getLogger(SoloResults.class);
 
@@ -42,9 +44,9 @@ public class SoloResults extends ListView<Solo> {
     }
 
 
-    public static class SoloResult extends ListCell<Solo> {
+    public static class SoloResult extends ListCell<SoloResultBean> {
         @Override
-        protected void updateItem(Solo solo, boolean empty) {
+        protected void updateItem(SoloResultBean solo, boolean empty) {
             super.updateItem(solo, empty);
             if (solo != null) {
                 VBox vBox = buildResultVBox(solo);
@@ -56,7 +58,7 @@ public class SoloResults extends ListView<Solo> {
         }
 
         @NotNull
-        private VBox buildResultVBox(Solo solo) {
+        private VBox buildResultVBox(SoloResultBean solo) {
             VBox vBox = new VBox();
             vBox.setAlignment(Pos.CENTER);
             vBox.setPadding(new Insets(5));
@@ -72,9 +74,9 @@ public class SoloResults extends ListView<Solo> {
 
         private static class SelectedSoloResult implements EventHandler<ActionEvent> {
 
-            private final Solo solo;
+            private final SoloResultBean solo;
 
-            public SelectedSoloResult(Solo solo){
+            public SelectedSoloResult(SoloResultBean solo){
                 this.solo = solo;
             }
 

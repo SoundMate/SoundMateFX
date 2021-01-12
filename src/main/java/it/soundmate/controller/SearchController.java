@@ -1,5 +1,6 @@
 package it.soundmate.controller;
 
+import it.soundmate.bean.searchbeans.UserResultBean;
 import it.soundmate.model.SearchModel;
 import it.soundmate.model.User;
 import javafx.scene.control.RadioButton;
@@ -17,8 +18,8 @@ public class SearchController {
         this.searchModel = new SearchModel();
     }
 
-    public List<User> performSearch(String searchString, List<RadioButton> filters) {
-        List<User> results = new ArrayList<>();
+    public List<UserResultBean> performSearch(String searchString, List<RadioButton> filters) {
+        List<UserResultBean> results = new ArrayList<>();
         boolean[] filterValues = getFilterValues(filters);
         if (filtersAllTrue(filterValues) || filtersAllFalse(filterValues)) {
             results.addAll(this.searchModel.searchByName(searchString));

@@ -13,6 +13,7 @@ import org.slf4j.LoggerFactory;
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.*;
+import java.nio.file.Path;
 
 public class Cache {
 
@@ -26,12 +27,12 @@ public class Cache {
         return instance;
     }
 
-    public String buildProfilePicCacheName(User user) {
-        return "src/main/resources/soundmate/userCache/" + user.getId() + "_profilePic.png";
+    public String buildProfilePicCacheName(int id) {
+        return "src/main/resources/soundmate/userCache/" + id + "_profilePic.png";
     }
 
     public boolean saveProfilePicToCache(User user, File image) {
-        String cacheName = buildProfilePicCacheName(user);
+        String cacheName = buildProfilePicCacheName(user.getId());
         try (InputStream initialStream = new FileInputStream(image)) {
             byte[] buffer = new byte[initialStream.available()];
             if (initialStream.read(buffer) > 0){
@@ -48,8 +49,8 @@ public class Cache {
         }
     }
 
-    public InputStream getProfilePicFromCache(User user) {
-        String cacheName = buildProfilePicCacheName(user);
+    public InputStream getProfilePicFromCache(int id) {
+        String cacheName = buildProfilePicCacheName(id);
         try {
             BufferedImage bufferedImage = ImageIO.read(new File(cacheName));
             ByteArrayOutputStream os = new ByteArrayOutputStream();
@@ -62,8 +63,18 @@ public class Cache {
     }
 
     public boolean checkProfilePicInCache(User user) {
-        String cacheName = buildProfilePicCacheName(user);
+        String cacheName = buildProfilePicCacheName(user.getId());
         File fileTest = new File(cacheName);
         return fileTest.exists();
+    }
+
+    public InputStream buildProfileImg(int id, String encodedProfileImg) {
+        try {
+            ImgBase64Repo.decode(encodedProfileImg, Path.of(Cache.getInstance().buildProfilePicCacheName(id)));
+            return Cache.getInstance().getProfilePicFromCache(id);
+        } catch (IOException e) {
+            e.printStackTrace();
+            return null;
+        }
     }
 }

@@ -13,6 +13,8 @@ import it.soundmate.model.Solo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.sql.SQLException;
+
 public class LoginController {
 
     private LoginBean loginBean;
@@ -21,21 +23,17 @@ public class LoginController {
 
     public LoginController(LoginBean loginBean) {
         this.loginBean = loginBean;
-
     }
 
-    public LoggedBean login(LoginBean loginBean){
+    public LoggedBean login(){
         if (checkFields()) {
             return new LoggedBean();
         }else {
-            return this.userDao.login(loginBean);
+            return this.userDao.login(this.loginBean);
         }
     }
 
-
-
-
-    public Solo getFullSolo(int id){
+    public Solo getFullSolo(int id) throws SQLException {
         SoloDao soloDao = new SoloDao(Connector.getInstance(), userDao);
         return soloDao.getSoloByID(id);
     }
@@ -49,9 +47,6 @@ public class LoginController {
         RoomRenterDao renterDao = new RoomRenterDao(Connector.getInstance(), userDao);
         return renterDao.getRenterByID(id);
     }
-
-
-
 
     private boolean checkFields() {
         return ("".equals(loginBean.getEmail()) || "".equals(loginBean.getPassword()));

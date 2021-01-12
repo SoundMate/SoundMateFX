@@ -1,5 +1,6 @@
 package it.soundmate.view.search;
 
+import it.soundmate.bean.searchbeans.UserResultBean;
 import it.soundmate.constants.Style;
 import it.soundmate.controller.SearchController;
 import it.soundmate.model.User;
@@ -139,7 +140,7 @@ public class DefaultSearchView extends Pane {
             loadingLabel.setStyle(Style.LOW_LABEL);
             resultsVBox.getChildren().add(loadingLabel);
 
-            List<User> results = searchController.performSearch(searchTextField.getText(), filters);
+            List<UserResultBean> results = searchController.performSearch(searchTextField.getText(), filters);
             logger.info("Done Search");
             if (results == null || results.isEmpty()) {
                 resultsVBox.getChildren().remove(loadingLabel);
@@ -149,7 +150,7 @@ public class DefaultSearchView extends Pane {
             }
         }
 
-        private void buildResultsScreen(List<User> results) {
+        private void buildResultsScreen(List<UserResultBean> results) {
             resultsView = new ResultsView(results);
             resultsVBox.getChildren().clear();
 

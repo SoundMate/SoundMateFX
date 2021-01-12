@@ -20,7 +20,7 @@ import java.sql.*;
 public class SoloDao {
 
 
-    private UserDao userDao;
+    private final UserDao userDao;
     private static final Logger log = LoggerFactory.getLogger(SoloDao.class);
     private final Connector connector;
     private static final String ACC_BANNED_ERR = "\t ***** THIS ACCOUNT HAS BEEN BANNED *****";
@@ -103,15 +103,14 @@ public class SoloDao {
     }
 
 
-    public Solo getSoloByID(int id) {
+    public Solo getSoloByID(int id) throws SQLException {
         ResultSet resultSet;
         Solo soloUser = new Solo();
         String query = "SELECT email, password, encoded_profile_img, age, first_name, last_name\n" +
         " FROM registered_users LEFT OUTER JOIN users ON (registered_users.id = users.id)\n" +
         " INNER JOIN solo ON (registered_users.id = solo.id) WHERE registered_users.id = ?";
 
-        try (PreparedStatement preparedStatement = connector.getConnection()
-                                                .prepareStatement(query)) {
+        try (PreparedStatement preparedStatement = connector.getConnection().prepareStatement(query)) {
 
             preparedStatement.setInt(1, id);
             resultSet = preparedStatement.executeQuery();

@@ -6,14 +6,17 @@
 
 package it.soundmate.database.searchengine;
 
+import it.soundmate.bean.searchbeans.BandResultBean;
+import it.soundmate.bean.searchbeans.SoloResultBean;
+import it.soundmate.bean.searchbeans.UserResultBean;
 import it.soundmate.model.Band;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class SearchBand implements SearchEngine<Band> {
+public class SearchBand implements SearchEngine<BandResultBean> {
     @Override
-    public List<Band> searchForName(String name) {
+    public List<BandResultBean> searchForName(String name) {
         return new ArrayList<>();
     }
 }
