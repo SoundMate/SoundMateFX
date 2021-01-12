@@ -1,9 +1,13 @@
-package it.soundmate.controller;
+/*
+ * Copyright (c) 2021.
+ * Created by Lorenzo Pantano on 12/01/21, 15:22
+ * Last edited: 12/01/21, 15:01
+ */
+
+package it.soundmate.controller.logic;
 
 import it.soundmate.bean.searchbeans.UserResultBean;
 import it.soundmate.model.SearchModel;
-import it.soundmate.model.User;
-import javafx.scene.control.RadioButton;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import java.util.ArrayList;
@@ -18,21 +22,20 @@ public class SearchController {
         this.searchModel = new SearchModel();
     }
 
-    public List<UserResultBean> performSearch(String searchString, List<RadioButton> filters) {
+    public List<UserResultBean> performSearch(String searchString, boolean[] filters) {
         List<UserResultBean> results = new ArrayList<>();
-        boolean[] filterValues = getFilterValues(filters);
-        if (filtersAllTrue(filterValues) || filtersAllFalse(filterValues)) {
+        if (filtersAllTrue(filters) || filtersAllFalse(filters)) {
             results.addAll(this.searchModel.searchByName(searchString));
         } else {
-            if (filterValues[0]) {
+            if (filters[0]) {
                 logger.info("Searching solos...");
                 results.addAll(this.searchModel.searchSolos(searchString));
             }
-            if (filterValues[1]) {
+            if (filters[1]) {
                 logger.info("Searching bands...");
                 results.addAll(this.searchModel.searchBands(searchString));
             }
-            if (filterValues[2]) {
+            if (filters[2]) {
                 logger.info("Searching rooms...");
                 results.addAll(this.searchModel.searchRooms(searchString));
             }
@@ -50,12 +53,5 @@ public class SearchController {
         return true;
     }
 
-    private boolean[] getFilterValues(List<RadioButton> filters) {
-        boolean[] values = new boolean[3];
-        for (int i = 0; i < 3; i++) {
-            values[i] = filters.get(i).isSelected();
-        }
-        return values;
-    }
 
 }

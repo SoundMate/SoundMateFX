@@ -1,10 +1,10 @@
 /*
  * Copyright (c) 2021.
- * Created by Lorenzo Pantano on 08/01/21, 12:36
- * Last edited: 08/01/21, 12:36
+ * Created by Lorenzo Pantano on 12/01/21, 15:22
+ * Last edited: 11/01/21, 20:53
  */
 
-package it.soundmate.controller;
+package it.soundmate.controller.logic;
 
 import it.soundmate.database.dao.UserDao;
 import it.soundmate.exceptions.UpdateException;

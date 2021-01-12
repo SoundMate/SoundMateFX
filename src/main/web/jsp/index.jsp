@@ -1,4 +1,4 @@
-<%@ page import="it.soundmate.controller.LoginController" %>
+<%@ page import="it.soundmate.controller.logic.LoginController" %>
 <%--
   ~ Copyright (c) 2020.
   ~ This file was created by Soundmate organization Lorenzo Pantano & Matteo D'Alessandro
@@ -16,7 +16,6 @@
 
 <%@page contentType="text/html;charset=UTF-8"%>
 <jsp:useBean id="loginBean" scope="request" class="it.soundmate.bean.LoginBean"/>
-<jsp:useBean id="user" scope="session" class="it.soundmate.model.User"/>
 <jsp:setProperty name="loginBean" property="*"/>
 
 <!-- Login Request -->
@@ -29,22 +28,7 @@
             </div>
 <%
         } else {
-            LoginController loginController = new LoginController(loginBean, userDao);
-            user = loginController.login();
-            if (user != null) {
 
-                session.setAttribute("userID", user.getUserID());
-                session.setAttribute("firstName", user.getFirstName());
-                session.setAttribute("lastName", user.getLastName());
-%>
-                <jsp:forward  page="welcome.jsp"/>  <!--Se il login ritorna user != null allora naviga all'altra pagina-->
-
-<%
-            } else {
-%>
-                <p class="error-message" style="font-weight: bold; color: white; background: red; margin: 0 auto; padding: 1em; text-align: center">Email or password not correct</p>
-<%
-            }
         }
     }
 %>

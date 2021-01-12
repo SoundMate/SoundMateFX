@@ -6,10 +6,10 @@
 
 package it.soundmate.view;
 
-import it.soundmate.bean.LoggedBean;
 import it.soundmate.bean.LoginBean;
 import it.soundmate.constants.Style;
-import it.soundmate.controller.LoginController;
+import it.soundmate.controller.graphic.LoginGraphicController;
+import it.soundmate.controller.logic.LoginController;
 import it.soundmate.database.dao.UserDao;
 import it.soundmate.model.User;
 import it.soundmate.view.main.MainView;
@@ -29,6 +29,8 @@ import javafx.scene.layout.*;
 import javafx.stage.Stage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.sql.SQLException;
 
 /**
  * Login View
@@ -145,8 +147,9 @@ public class LoginView extends BorderPane {
         public void handle(ActionEvent event) {
             logger.info("Login Action Button");
             loginBean = new LoginBean(emailTextField.getText(), passwordField.getText());
-            loginController = new LoginController(loginBean);
-            User loggedUser = loginController.login(); //tranquillo, qui già sto modificando per farti tornare l'user che ti serve.
+            LoginGraphicController loginGraphicController = new LoginGraphicController();
+            User loggedUser = null; //tranquillo, qui già sto modificando per farti tornare l'user che ti serve.
+            loggedUser = loginGraphicController.login(loginBean);
 
             //View Update (qua o nel controller?)
 

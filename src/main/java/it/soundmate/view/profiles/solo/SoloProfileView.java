@@ -1,7 +1,7 @@
 package it.soundmate.view.profiles.solo;
 
 import it.soundmate.constants.Style;
-import it.soundmate.controller.SoloProfileSoloController;
+import it.soundmate.controller.logic.SoloProfileSoloController;
 import it.soundmate.database.dao.UserDao;
 import it.soundmate.model.Solo;
 import it.soundmate.utils.Cache;

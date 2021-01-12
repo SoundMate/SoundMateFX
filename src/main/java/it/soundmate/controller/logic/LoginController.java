@@ -1,4 +1,10 @@
-package it.soundmate.controller;
+/*
+ * Copyright (c) 2021.
+ * Created by Lorenzo Pantano on 12/01/21, 15:22
+ * Last edited: 12/01/21, 13:30
+ */
+
+package it.soundmate.controller.logic;
 
 import it.soundmate.bean.LoggedBean;
 import it.soundmate.bean.LoginBean;
@@ -7,9 +13,11 @@ import it.soundmate.database.dao.BandDao;
 import it.soundmate.database.dao.RoomRenterDao;
 import it.soundmate.database.dao.SoloDao;
 import it.soundmate.database.dao.UserDao;
+import it.soundmate.database.dbexceptions.UserNotFoundException;
 import it.soundmate.model.Band;
 import it.soundmate.model.RoomRenter;
 import it.soundmate.model.Solo;
+import it.soundmate.model.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -25,11 +33,21 @@ public class LoginController {
         this.loginBean = loginBean;
     }
 
-    public LoggedBean login(){
+    public User login() throws SQLException {
         if (checkFields()) {
-            return new LoggedBean();
-        }else {
-            return this.userDao.login(this.loginBean);
+            return null;
+        } else {
+            LoggedBean loggedBean = this.userDao.login(this.loginBean);
+            switch (loggedBean.getUserType()) {
+                case SOLO:
+                    return this.getFullSolo(loggedBean.getUserID());
+                case BAND:
+                    return this.getFullBand(loggedBean.getUserID());
+                case ROOM_RENTER:
+                    return this.getFullRenter(loggedBean.getUserID());
+                default:
+                    throw new UserNotFoundException("User type doesn't exist");
+            }
         }
     }
 

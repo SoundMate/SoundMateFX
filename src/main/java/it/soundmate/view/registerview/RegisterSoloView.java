@@ -7,8 +7,6 @@
 package it.soundmate.view.registerview;
 
 import it.soundmate.constants.Style;
-import it.soundmate.controller.RegisterController;
-import it.soundmate.database.Connector;
 import it.soundmate.view.UIUtils;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;

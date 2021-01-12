@@ -9,7 +9,7 @@ import java.sql.SQLException;
 
 public class Connector {
 
-    private static final String HOST = "jdbc:postgresql://localhost:5432/Soundmate";
+    private static final String HOST = "jdbc:postgresql://localhost:5432/SoundmateDB";
     private static final String USER = "postgres";
     private static final String PASSWORD = "soundmate";
     private static final Logger log = LoggerFactory.getLogger( Connector.class );

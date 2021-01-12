@@ -2,14 +2,12 @@ package it.soundmate.view.search;
 
 import it.soundmate.bean.searchbeans.UserResultBean;
 import it.soundmate.constants.Style;
-import it.soundmate.controller.SearchController;
-import it.soundmate.model.User;
+import it.soundmate.controller.logic.SearchController;
 import it.soundmate.view.UIUtils;
 import it.soundmate.view.main.SearchView;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
-import javafx.geometry.Orientation;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.control.*;
@@ -140,7 +138,7 @@ public class DefaultSearchView extends Pane {
             loadingLabel.setStyle(Style.LOW_LABEL);
             resultsVBox.getChildren().add(loadingLabel);
 
-            List<UserResultBean> results = searchController.performSearch(searchTextField.getText(), filters);
+            List<UserResultBean> results = searchController.performSearch(searchTextField.getText(), getFilterValues(filters));
             logger.info("Done Search");
             if (results == null || results.isEmpty()) {
                 resultsVBox.getChildren().remove(loadingLabel);
@@ -148,6 +146,14 @@ public class DefaultSearchView extends Pane {
             } else {
                 buildResultsScreen(results);
             }
+        }
+
+        private boolean[] getFilterValues(List<RadioButton> filters) {
+            boolean[] values = new boolean[3];
+            for (int i = 0; i < 3; i++) {
+                values[i] = filters.get(i).isSelected();
+            }
+            return values;
         }
 
         private void buildResultsScreen(List<UserResultBean> results) {

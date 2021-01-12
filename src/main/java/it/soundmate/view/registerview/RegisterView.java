@@ -1,15 +1,7 @@
 package it.soundmate.view.registerview;
 
-import it.soundmate.bean.registerbeans.RegisterBandBean;
-import it.soundmate.bean.registerbeans.RegisterBean;
-import it.soundmate.bean.registerbeans.RegisterRenterBean;
-import it.soundmate.bean.registerbeans.RegisterSoloBean;
-import it.soundmate.controller.RegisterController;
-import it.soundmate.model.User;
 import it.soundmate.model.UserType;
 import it.soundmate.view.UIUtils;
-import it.soundmate.view.main.MainView;
-import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;

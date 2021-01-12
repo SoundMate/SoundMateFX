@@ -1,7 +1,7 @@
 package it.soundmate.view.profiles.solo;
 
 import it.soundmate.constants.Style;
-import it.soundmate.controller.EditProfileSoloController;
+import it.soundmate.controller.logic.EditProfileSoloController;
 import it.soundmate.database.dao.UserDao;
 import it.soundmate.exceptions.UpdateException;
 import it.soundmate.model.Solo;
