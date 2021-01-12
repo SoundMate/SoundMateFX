@@ -4,7 +4,7 @@ addons:
   sonarcloud:
     organization: "soundmate"
     token:
-      secure: "f7PQM1F1zvVlvpznxDynNOdWAH3hcpRAcIlczXWh0+5638F89M98H6mvAtltLZ0PaiHny4741KB2/nte63vuOh+TVX0dmVvJIqpvgkL8Ro8q8PxOsyt31kLlpsfIZQFnuHllx/G36ZTpu/16TqwKpBOaNu9YIiSuNimZxluk3py/rtefsY/Na0ryEOoI7DkiniWi6Pmuto7CDEcOO+wi8T36FBcHgG1ktuOKnrarzkEUPaKe2ZnKzgPGLN9/AmrRdZy80x3Fx1dxEAKUJrAxk0R9SOHNuydn5cjlZO0fthwlLhDeogTlgWGyx2XWWEHQRFDGZBGoOAB9X9gVx3PrVcc28nVMTr9XoQtRuQGqNOiXMhf7MLXHO9WgShWVJatCZS/Ep9zdFmOZIOH50FsZh8+SLuZq4gGIRWBabUdSUJ79GSFPIkqtye6wowD9c03Q554Cb9j6jGCx2rPPKLuV21Jlj4iKC/Z1Y4Fi5qg4Sk+PxqExAiHz7ddu5U0u3LTkmRejfCG3yGGTJLj6Dd4oj+kiM5Tqs8CGh39wxgF9fx4DyFwoYFRmXSh4mYBZo8exrR+D0gGvf3eyvm+U1DOKYd2DtcxinoQGC97GnU1xjsWoX953Po6v5fSpvM4NkLHr/nMxdjPqMvN20PHFy1feFM6jxCf7f3s5SOhHgIphV3Y=" # encrypted value of your token
+      secure: "d99d5f1a156ef18dba51ff4ae20135f94322e749" # encrypted value of your token
 
 script:
   # the following command line builds the project, runs the tests with coverage and then execute the SonarCloud analysis
