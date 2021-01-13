@@ -16,6 +16,9 @@ public class ImgBase64Repo {
 
 
     public static void decode(String encodedImage, Path toWrite) throws IOException {
+        if (encodedImage == null) {
+            return;
+        }
         byte[] decodedBytes = Base64.getDecoder().decode(encodedImage);
         Files.write(toWrite, decodedBytes);
     }

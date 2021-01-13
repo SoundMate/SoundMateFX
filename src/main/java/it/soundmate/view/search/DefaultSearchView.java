@@ -127,6 +127,7 @@ public class DefaultSearchView extends Pane {
         @Override
         public void handle(ActionEvent event) {
             resultsVBox.getChildren().clear();
+            resultsVBox.setPrefHeight(USE_COMPUTED_SIZE);
             logger.info("Search Clicked");
             if (searchTextField.getText().isEmpty()) {  //Se la textfield è vuota non fa nessuna ricerca
                 logger.error("Empty text fields");
@@ -179,6 +180,7 @@ public class DefaultSearchView extends Pane {
                 resultsVBox.getChildren().add(noSoloResultsLabel);
             } else {
                 soloResults.setStyle("-fx-background-color: #232323");
+                logger.info("Results Length: {}", soloResults.length());
                 resultsVBox.getChildren().addAll(soloResults, bandResultsLabel);
             }
 

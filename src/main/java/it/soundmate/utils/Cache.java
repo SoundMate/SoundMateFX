@@ -69,10 +69,18 @@ public class Cache {
     }
 
     public InputStream buildProfileImg(int id, String encodedProfileImg) {
+        if (encodedProfileImg == null) {
+            try {
+                return new FileInputStream(new File("src/main/resources/soundmate/images/user-default.png"));
+            } catch (FileNotFoundException fileNotFoundException) {
+                logger.error("File Not Found Exception: User default pic not found");
+            }
+        }
         try {
             ImgBase64Repo.decode(encodedProfileImg, Path.of(Cache.getInstance().buildProfilePicCacheName(id)));
             return Cache.getInstance().getProfilePicFromCache(id);
         } catch (IOException e) {
+            logger.error("IOException: Error decoding image in Cache");
             e.printStackTrace();
             return null;
         }

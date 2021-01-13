@@ -8,10 +8,7 @@ package it.soundmate.view.search;
 
 import it.soundmate.bean.searchbeans.SoloResultBean;
 import it.soundmate.constants.Style;
-import it.soundmate.model.Solo;
 import it.soundmate.view.UIUtils;
-import javafx.beans.binding.Bindings;
-import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
@@ -21,8 +18,9 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
-import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
+import javafx.scene.paint.ImagePattern;
+import javafx.scene.shape.Circle;
 import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -35,12 +33,16 @@ public class SoloResults extends ListView<SoloResultBean> {
     public SoloResults() {
         this.setCellFactory(param -> new SoloResult());
         this.setOrientation(Orientation.HORIZONTAL);
-        this.setPrefHeight(100);
+        this.setPrefHeight(150);
         this.setPrefWidth(525);
     }
 
     public boolean isEmpty() {
         return this.getItems().isEmpty();
+    }
+
+    public int length() {
+        return this.getItems().size();
     }
 
 
@@ -63,12 +65,18 @@ public class SoloResults extends ListView<SoloResultBean> {
             vBox.setAlignment(Pos.CENTER);
             vBox.setPadding(new Insets(5));
             vBox.setSpacing(10);
-            vBox.setPrefHeight(50);
+            vBox.setPrefHeight(USE_COMPUTED_SIZE);
             vBox.setPrefWidth(USE_COMPUTED_SIZE);
+            Circle profilePic = new Circle();
+            profilePic.setRadius(25);
+            if (solo.getProfileImgIs() != null) {
+                ImagePattern imagePattern = new ImagePattern(solo.getProfileImg());
+                profilePic.setFill(imagePattern);
+            }
             Label name = new Label(solo.getFirstName()+" "+ solo.getLastName());
             name.setStyle(Style.MID_LABEL);
             Button btn = UIUtils.createStyledButton("View Profile", new SelectedSoloResult(solo));
-            vBox.getChildren().addAll(name, btn);
+            vBox.getChildren().addAll(profilePic, name, btn);
             return vBox;
         }
 

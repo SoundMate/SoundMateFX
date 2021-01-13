@@ -21,15 +21,13 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class SearchControllerTest {
 
-    private List<UserResultBean> userResultBeanList;
-    private SearchController searchController;
+    private final List<UserResultBean> userResultBeanList = new ArrayList<>();
+    private final SearchController searchController = new SearchController();
     private static final Logger logger = LoggerFactory.getLogger(SearchControllerTest.class);
 
 
     @BeforeAll
-    void init() {
-        userResultBeanList = new ArrayList<>();
-        searchController = new SearchController();
+    public static void init() {
         logger.info("Initialized result List");
     }
 
