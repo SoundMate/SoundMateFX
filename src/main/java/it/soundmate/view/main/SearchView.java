@@ -1,6 +1,5 @@
 package it.soundmate.view.main;
 
-
 import it.soundmate.view.UIUtils;
 import it.soundmate.view.search.DefaultSearchView;
 import it.soundmate.view.search.MapSearchView;

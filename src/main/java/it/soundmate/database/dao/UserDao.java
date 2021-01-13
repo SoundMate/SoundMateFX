@@ -34,7 +34,9 @@ public class UserDao implements Dao<User> {
     private static final String SQL_IMG_UPDATE = "UPDATE users SET encoded_profile_img = ? WHERE id = ?";
 
 
-    public int registerUser(User user){
+    //Cambiato nome per farlo implementare l'interfaccia Dao
+    @Override
+    public int register(RegisterBean registerBean){
         ResultSet resultSet;
         int userID = 0;
 
@@ -43,17 +45,16 @@ public class UserDao implements Dao<User> {
                 "         VALUES (?, ?, ?)\n" +
                 "         RETURNING id AS sample_id),\n" +
                 "     ins2 AS (\n" +
-                "     INSERT INTO users (id, encoded_profile_img)\n" +
-                "         SELECT sample_id, ? FROM ins1)\n" +
+                "     INSERT INTO users (id)\n" +
+                "         SELECT sample_id FROM ins1)\n" +
                 "SELECT sample_id FROM ins1;";
 
         try (Connection conn = connector.getConnection();
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
 
-            pstmt.setString(1, user.getEmail());
-            pstmt.setString(2, user.getPassword());
-            pstmt.setString(3, user.getUserType().toString());
-            pstmt.setString(4, "img");
+            pstmt.setString(1, registerBean.getEmail());
+            pstmt.setString(2, registerBean.getPassword());
+            pstmt.setString(3, registerBean.getUserType().toString());
 
             resultSet = pstmt.executeQuery();
             if (resultSet.next())
@@ -313,10 +314,6 @@ public class UserDao implements Dao<User> {
 //        }
 //    }
 
-    @Override
-    public int register(RegisterBean registerBean) {
-        return 0;
-    }
 
     @Override
     public int update(User user) {

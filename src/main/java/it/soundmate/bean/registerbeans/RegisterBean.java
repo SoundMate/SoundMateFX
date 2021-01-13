@@ -1,7 +1,6 @@
 package it.soundmate.bean.registerbeans;
 
 
-import it.soundmate.model.User;
 import it.soundmate.model.UserType;
 
 public abstract class RegisterBean {
@@ -39,9 +38,8 @@ public abstract class RegisterBean {
      * @return true if fields are not empty, false otherwise
      */
 
-    //??????
     public boolean checkFields() {
-        return !this.email.isEmpty() && !this.password.isEmpty();
+        return !"".equals(this.email) && !"".equals(this.password) && this.email.contains("@");
     }
 
 }

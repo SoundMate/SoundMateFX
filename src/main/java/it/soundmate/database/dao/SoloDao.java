@@ -6,12 +6,10 @@
 
 package it.soundmate.database.dao;
 
-import it.soundmate.bean.registerbeans.RegisterBean;
 import it.soundmate.bean.registerbeans.RegisterSoloBean;
 import it.soundmate.database.Connector;
 import it.soundmate.database.dbexceptions.RepositoryException;
 import it.soundmate.model.Solo;
-import it.soundmate.model.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -22,14 +20,14 @@ public class SoloDao {
 
     private final UserDao userDao;
     private static final Logger log = LoggerFactory.getLogger(SoloDao.class);
-    private final Connector connector;
+    private final Connector connector = Connector.getInstance();
     private static final String ACC_BANNED_ERR = "\t ***** THIS ACCOUNT HAS BEEN BANNED *****";
     private static final String EMAIL_EXISTS_ERR = "\t ***** THIS EMAIL ALREADY EXISTS *****";
     private static final String ERR_INSERT = "Error inserting user";
 
 
-    public SoloDao(Connector connector, UserDao userDao) {
-        this.connector = connector;
+    //Modificato il costruttore per il Connector (attributo come UserDao)
+    public SoloDao(UserDao userDao) {
         this.userDao = userDao;
     }
 
@@ -51,8 +49,8 @@ public class SoloDao {
                     " -- ON     CONFLICT DO NOTHING         -- optional addition in Postgres 9.5+\n" +
                     "         RETURNING id AS sample_id\n" +
                     " ), ins2 AS (\n" +
-                    "     INSERT INTO users (id, encoded_profile_img)\n" +
-                    "         SELECT sample_id, ? FROM ins1\n" +
+                    "     INSERT INTO users (id)\n" +
+                    "         SELECT sample_id FROM ins1\n" +
                     " )\n" +
                     "INSERT INTO solo (id,first_name, last_name)\n" +
                     "SELECT sample_id, ?, ? FROM ins1;";
@@ -62,9 +60,8 @@ public class SoloDao {
                 pstmt.setString(1, soloBean.getEmail());
                 pstmt.setString(2, soloBean.getPassword());
                 pstmt.setString(3, soloBean.getUserType().toString());
-                pstmt.setString(4, "blabla");
-                pstmt.setString(5, soloBean.getFirstName());
-                pstmt.setString(6, soloBean.getLastName());
+                pstmt.setString(4, soloBean.getFirstName());
+                pstmt.setString(5, soloBean.getLastName());
 
 
                 int rowAffected = pstmt.executeUpdate();

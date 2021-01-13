@@ -46,13 +46,14 @@ public class LoginController {
                 case ROOM_RENTER:
                     return this.getFullRenter(loggedBean.getUserID());
                 default:
+                    logger.error("LoginController: usertype error");
                     throw new UserNotFoundException("User type doesn't exist");
             }
         }
     }
 
     public Solo getFullSolo(int id) throws SQLException {
-        SoloDao soloDao = new SoloDao(Connector.getInstance(), userDao);
+        SoloDao soloDao = new SoloDao(userDao);
         return soloDao.getSoloByID(id);
     }
 

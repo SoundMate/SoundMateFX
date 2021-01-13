@@ -1,6 +1,7 @@
 package it.soundmate.bean.registerbeans;
 
 
+import it.soundmate.exceptions.InputException;
 import it.soundmate.model.UserType;
 
 import static it.soundmate.model.UserType.SOLO;
@@ -15,6 +16,7 @@ public class RegisterSoloBean extends RegisterBean {
         super(email, password);
         this.firstName = firstName;
         this.lastName = lastName;
+        if (!this.checkFields()) throw new InputException("Some fields are empty");
     }
 
     public String getFirstName() {

@@ -6,7 +6,11 @@
 
 package it.soundmate.view.registerview;
 
+import it.soundmate.bean.registerbeans.RegisterSoloBean;
 import it.soundmate.constants.Style;
+import it.soundmate.controller.graphic.register.RegisterSoloGraphicController;
+import it.soundmate.exceptions.InputException;
+import it.soundmate.model.User;
 import it.soundmate.view.UIUtils;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
@@ -18,9 +22,14 @@ import javafx.scene.control.TextField;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
+import javafx.stage.Stage;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 
 public class RegisterSoloView extends BorderPane {
+
+    private static final Logger logger = LoggerFactory.getLogger(RegisterSoloView.class);
 
     private final TextField emailTextField = new TextField();
     private final TextField passwordTextField = new TextField();
@@ -71,7 +80,20 @@ public class RegisterSoloView extends BorderPane {
     private class RegisterAction implements EventHandler<ActionEvent> {
         @Override
         public void handle(ActionEvent event) {
-//            RegisterController
+            String email = emailTextField.getText();
+            String password = passwordTextField.getText();
+            String firstName = firstNameTextField.getText();
+            String lastName = lastNameTextField.getText();
+            try {
+                RegisterSoloBean registerSoloBean = new RegisterSoloBean(email, password, firstName, lastName);
+                RegisterSoloGraphicController registerSoloGraphicController = new RegisterSoloGraphicController();
+                User user = registerSoloGraphicController.registerUser(registerSoloBean);
+                if (user!=null) {
+                    registerSoloGraphicController.navigateToMainView(user, (Stage) emailTextField.getScene().getWindow());
+                }
+            } catch (InputException inputException) {
+                logger.error("Input Exception: {}", inputException.getMessage());
+            }
         }
     }
 }
