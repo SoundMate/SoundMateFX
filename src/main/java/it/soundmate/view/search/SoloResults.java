@@ -8,6 +8,7 @@ package it.soundmate.view.search;
 
 import it.soundmate.bean.searchbeans.SoloResultBean;
 import it.soundmate.constants.Style;
+import it.soundmate.controller.graphic.SearchResultsGraphicController;
 import it.soundmate.view.UIUtils;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
@@ -29,6 +30,8 @@ import org.slf4j.LoggerFactory;
 public class SoloResults extends ListView<SoloResultBean> {
 
     private static final Logger logger = LoggerFactory.getLogger(SoloResults.class);
+    private final SearchResultsGraphicController searchResultsGraphicController = new SearchResultsGraphicController();
+    private VBox resultVBox;
 
     public SoloResults() {
         this.setCellFactory(param -> new SoloResult());
@@ -45,8 +48,7 @@ public class SoloResults extends ListView<SoloResultBean> {
         return this.getItems().size();
     }
 
-
-    public static class SoloResult extends ListCell<SoloResultBean> {
+    public class SoloResult extends ListCell<SoloResultBean> {
         @Override
         protected void updateItem(SoloResultBean solo, boolean empty) {
             super.updateItem(solo, empty);
@@ -61,12 +63,12 @@ public class SoloResults extends ListView<SoloResultBean> {
 
         @NotNull
         private VBox buildResultVBox(SoloResultBean solo) {
-            VBox vBox = new VBox();
-            vBox.setAlignment(Pos.CENTER);
-            vBox.setPadding(new Insets(5));
-            vBox.setSpacing(10);
-            vBox.setPrefHeight(USE_COMPUTED_SIZE);
-            vBox.setPrefWidth(USE_COMPUTED_SIZE);
+            resultVBox = new VBox();
+            resultVBox.setAlignment(Pos.CENTER);
+            resultVBox.setPadding(new Insets(5));
+            resultVBox.setSpacing(10);
+            resultVBox.setPrefHeight(USE_COMPUTED_SIZE);
+            resultVBox.setPrefWidth(USE_COMPUTED_SIZE);
             Circle profilePic = new Circle();
             profilePic.setRadius(25);
             if (solo.getProfileImgIs() != null) {
@@ -76,11 +78,11 @@ public class SoloResults extends ListView<SoloResultBean> {
             Label name = new Label(solo.getFirstName()+" "+ solo.getLastName());
             name.setStyle(Style.MID_LABEL);
             Button btn = UIUtils.createStyledButton("View Profile", new SelectedSoloResult(solo));
-            vBox.getChildren().addAll(profilePic, name, btn);
-            return vBox;
+            resultVBox.getChildren().addAll(profilePic, name, btn);
+            return resultVBox;
         }
 
-        private static class SelectedSoloResult implements EventHandler<ActionEvent> {
+        private class SelectedSoloResult implements EventHandler<ActionEvent> {
 
             private final SoloResultBean solo;
 
@@ -91,6 +93,7 @@ public class SoloResults extends ListView<SoloResultBean> {
             @Override
             public void handle(ActionEvent event) {
                 logger.info("Item selected {} {}", solo.getFirstName(), solo.getLastName());
+                searchResultsGraphicController.navigateToSoloResult(solo);
             }
         }
     }

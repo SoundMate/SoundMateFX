@@ -4,6 +4,7 @@ package it.soundmate.view.main;
 import it.soundmate.view.UIUtils;
 import it.soundmate.view.search.DefaultSearchView;
 import it.soundmate.view.search.MapSearchView;
+import it.soundmate.view.search.SoloSearchView;
 import javafx.geometry.Pos;
 import javafx.scene.layout.*;
 import org.slf4j.Logger;
@@ -49,5 +50,9 @@ public class SearchView extends Pane {
     public void setDefaultView() {
         this.contentVBox.getChildren().set(0, this.searchBorderPane);
         logger.info("Default Search Page set");
+    }
+
+    public void setDetailViewSolo(SoloSearchView soloSearchView) {
+        this.contentVBox.getChildren().set(0, soloSearchView);
     }
 }
