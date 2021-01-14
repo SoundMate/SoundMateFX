@@ -9,7 +9,7 @@ import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-public class PowerUserTest {
+class PowerUserTest {
 
     static Connector connector = Connector.getInstance();
     static PowerUserDao powerUserDao = new PowerUserDao();

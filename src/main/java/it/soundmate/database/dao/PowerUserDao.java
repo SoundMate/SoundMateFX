@@ -19,25 +19,6 @@ public class PowerUserDao {
     private static final String BANNED = "\n\t ***** USER HAS BEEN BANNED ***** ";
     private static final String SUCCESS = "Entry successfully modified! ";
 
-    private void updateBanned(String email){
-        String sql = "INSERT INTO banned_users (Email) VALUES (?)";
-        int rowAffected;
-
-        try (Connection conn = connector.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(sql)) {
-
-            stmt.setString(1, email);
-
-            rowAffected = stmt.executeUpdate();
-
-            if (rowAffected == 1) log.info(SUCCESS);
-
-            else log.info(USR_NOT_FOUND);
-
-        } catch (SQLException ex) {
-            log.error(ex.getMessage());
-        }
-    }
 
     public boolean banUser(String email){
         int deletedRec;
