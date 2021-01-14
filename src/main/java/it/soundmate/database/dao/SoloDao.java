@@ -152,8 +152,8 @@ public class SoloDao {
 
     public boolean updateInstrument(Solo solo, String instrument){
 
+        //::text is the parsing for sql queries (the value in ? must be a text type)
         String sql = "UPDATE played_instruments SET instruments = array_append(instruments, ?::text) WHERE id = ?";
-        //UPDATE table SET array_field = array_append(array_field,'new item') WHERE
 
 
 
