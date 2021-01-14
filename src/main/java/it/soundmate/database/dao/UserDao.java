@@ -31,7 +31,7 @@ public class UserDao implements Dao<User> {
     private static final String ERR_INSERT = "Error inserting user";
     private static final String EMAIL = "email";
     private static final String PASSWORD = "password";
-    private static final String SQL_IMG_UPDATE = "UPDATE users SET encoded_profile_img = ? WHERE id = ?";
+
 
 
     //Cambiato nome per farlo implementare l'interfaccia Dao
@@ -196,65 +196,6 @@ public class UserDao implements Dao<User> {
     }
 
 
-    public int uploadHandler(int userId, Path pathToImage){
-        try (Connection conn = connector.getConnection();
-             PreparedStatement pstmt = conn.prepareStatement(SQL_IMG_UPDATE)) {
-
-            pstmt.setString(1, ImgBase64Repo.encode(pathToImage));
-            pstmt.setInt(2, userId);
-
-            return pstmt.executeUpdate();
-
-        } catch (SQLException ex) {
-            throw new RepositoryException("Error Updating Image", ex);
-        } catch (IOException ex) {
-            throw new UncheckedIOException(ex);
-        }
-    }
-
-
-//    public Solo loginSolo(int id) {
-//        log.info("Logging in Solo User ID: {}", id);
-//        ResultSet resultSet;
-//        String sql = "SELECT solo.id, email, password, first_name, last_name, encoded_profile_img FROM registered_users " +
-//                "JOIN solo ON solo.id = registered_users.id JOIN users u on registered_users.id = u.id WHERE solo.id=?;";
-//        try(Connection conn = connector.getConnection();
-//            PreparedStatement preparedStatement = conn.prepareStatement(sql, ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_UPDATABLE)){
-//            preparedStatement.setInt(1, id);
-//            resultSet = preparedStatement.executeQuery();
-//
-//            if (resultSet.next()){
-//                String email = resultSet.getString("email");
-//                String password = resultSet.getString("password");
-//                String encodedImg = resultSet.getString("encoded_profile_img");
-//                User user = new User(id, email, password, encodedImg, UserType.SOLO);
-//                log.info("Returning Solo User {} {}", resultSet.getString("first_name"), resultSet.getString("last_name"));
-//                return new Solo(user, resultSet.getString("first_name"), resultSet.getString("last_name"));
-//            }
-//
-//        } catch (SQLException sqlException){
-//            sqlException.printStackTrace();
-//            throw new RepositoryException("Error: DB not responding! \n Check stacktrace for details");
-//        }
-//        return null; //Error
-//    }
-
-//
-//    public Band getBandByID(Integer bandID) {
-//        Band band = new Band(bandID);
-//        String query = "select * from \"Bands\" where \"bandID\" = (?)";
-//        try (PreparedStatement preparedStatement = Connector.getInstance().getConnection().prepareStatement(query)) {
-//            preparedStatement.setInt(1,bandID);
-//            ResultSet resultSet = preparedStatement.executeQuery();
-//            while (resultSet.next()) {
-//                band.setBandName(resultSet.getString("band_name"));
-//                band.setGenres(Arrays.asList((String []) resultSet.getArray("genres").getArray()));
-//            }
-//            return band;
-//        } catch (SQLException e) {
-//            return null;
-//        }
-//    }
 
     public boolean updatePassword(User user, String password) {
         String query = "update registered_users set password = ? where id = ?";
@@ -280,8 +221,36 @@ public class UserDao implements Dao<User> {
         }
     }
 
-    public boolean deleteUser(User user){
-        String query = "delete from registered_users where id = ?";
+    public boolean deleteUserByEmail(String email){
+        String query = "delete from registered_users where email = ?";
+        try (PreparedStatement preparedStatement = connector.getConnection().prepareStatement(query)) {
+            preparedStatement.setString(1, email);
+            return preparedStatement.executeUpdate() == 1;
+        } catch (SQLException e) {
+            return false;
+        }
+    }
+
+
+    public int updateProfilePic(User user, Path pathToImg){
+
+        String query = "update users set encoded_profile_img = ? where id = ?";
+        try (PreparedStatement preparedStatement = connector.getConnection().prepareStatement(query)) {
+
+            String encodedImg = ImgBase64Repo.encode(pathToImg);
+            preparedStatement.setString(1, encodedImg);
+            preparedStatement.setInt(2, user.getId());
+            return preparedStatement.executeUpdate();
+
+        } catch (SQLException e) {
+            throw new RepositoryException("Error Updating Image", e);
+        } catch (IOException e){
+            throw new UncheckedIOException(e);
+        }
+    }
+
+    public boolean deleteProfilePic(User user){
+        String query = "update users set encoded_profile_img = null where id = ?";
         try (PreparedStatement preparedStatement = connector.getConnection().prepareStatement(query)) {
             preparedStatement.setInt(1, user.getId());
             return preparedStatement.executeUpdate() == 1;
@@ -290,29 +259,6 @@ public class UserDao implements Dao<User> {
         }
     }
 
-//    public BandManager getBandManagerFromUser(User user) {
-//        BandManager bandManager = null;
-//        String query = "select * from band_manager where id = ?";
-//        try (PreparedStatement preparedStatement = Connector.getInstance().getConnection().prepareStatement(query)) {
-//            preparedStatement.setInt(1, user.getUserID());
-//            ResultSet resultSet = preparedStatement.executeQuery();
-//            while (resultSet.next()) {
-//                List<Integer> bandIDs = Arrays.asList((Integer[]) resultSet.getArray("bands").getArray());
-//                if (!bandIDs.isEmpty()) {
-//                    List<Band> bandList = new ArrayList<>();
-//                    for (Integer bandID : bandIDs) {
-//                        bandList.add(this.getBandByID(bandID));
-//                    }
-//                    bandManager = new BandManager(user, bandList);
-//                } else {
-//                    bandManager = new BandManager(user);
-//                }
-//            }
-//            return bandManager;
-//        } catch (SQLException e) {
-//            return null;
-//        }
-//    }
 
 
     @Override

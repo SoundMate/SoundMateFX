@@ -16,7 +16,9 @@ public enum UserType {
         UserType[] userTypes = UserType.values();
         return Arrays.stream(userTypes)
                 .filter(currentUser -> currentUser.toString().equals(userType))
-                .findFirst().get();
+                .findFirst()
+                .orElseThrow(()-> new IllegalArgumentException("UserType not found: " + userType));
+
 
     }
 

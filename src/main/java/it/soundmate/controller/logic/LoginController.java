@@ -58,12 +58,12 @@ public class LoginController {
     }
 
     public Band getFullBand(int id){
-        BandDao bandDao = new BandDao(Connector.getInstance(), userDao);
+        BandDao bandDao = new BandDao(userDao);
         return bandDao.getBandByID(id);
     }
 
     public RoomRenter getFullRenter(int id){
-        RoomRenterDao renterDao = new RoomRenterDao(Connector.getInstance(), userDao);
+        RoomRenterDao renterDao = new RoomRenterDao(userDao);
         return renterDao.getRenterByID(id);
     }
 

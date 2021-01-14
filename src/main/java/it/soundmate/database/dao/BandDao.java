@@ -4,7 +4,6 @@ import it.soundmate.bean.registerbeans.RegisterBandBean;
 import it.soundmate.database.Connector;
 import it.soundmate.database.dbexceptions.RepositoryException;
 import it.soundmate.model.Band;
-import it.soundmate.model.Solo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -17,14 +16,13 @@ public class BandDao {
     private static final String EMAIL_EXISTS_ERR = "\t ***** THIS EMAIL ALREADY EXISTS *****";
     private static final String ERR_INSERT = "Error inserting user";
     private final UserDao userDao;
-    private final Connector connector;
+    private final Connector connector = Connector.getInstance();
     private static final Logger log = LoggerFactory.getLogger(BandDao.class);
 
 //    private final UserDao
 
 
-    public BandDao(Connector connector, UserDao userDao) {
-        this.connector = connector;
+    public BandDao(UserDao userDao) {
         this.userDao = userDao;
     }
 

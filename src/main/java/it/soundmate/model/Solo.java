@@ -79,6 +79,10 @@ public class  Solo extends User{
 
     public void setInstruments(List<String> instruments) {
         this.instruments = instruments;
+
+    }
+    public void addInstruments(String instrument){
+        this.instruments.add(instrument);
     }
 
     @Override
