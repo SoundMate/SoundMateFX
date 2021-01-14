@@ -213,49 +213,6 @@ public class UserDao implements Dao<User> {
     }
 
 
-//    public Solo loginSolo(int id) {
-//        log.info("Logging in Solo User ID: {}", id);
-//        ResultSet resultSet;
-//        String sql = "SELECT solo.id, email, password, first_name, last_name, encoded_profile_img FROM registered_users " +
-//                "JOIN solo ON solo.id = registered_users.id JOIN users u on registered_users.id = u.id WHERE solo.id=?;";
-//        try(Connection conn = connector.getConnection();
-//            PreparedStatement preparedStatement = conn.prepareStatement(sql, ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_UPDATABLE)){
-//            preparedStatement.setInt(1, id);
-//            resultSet = preparedStatement.executeQuery();
-//
-//            if (resultSet.next()){
-//                String email = resultSet.getString("email");
-//                String password = resultSet.getString("password");
-//                String encodedImg = resultSet.getString("encoded_profile_img");
-//                User user = new User(id, email, password, encodedImg, UserType.SOLO);
-//                log.info("Returning Solo User {} {}", resultSet.getString("first_name"), resultSet.getString("last_name"));
-//                return new Solo(user, resultSet.getString("first_name"), resultSet.getString("last_name"));
-//            }
-//
-//        } catch (SQLException sqlException){
-//            sqlException.printStackTrace();
-//            throw new RepositoryException("Error: DB not responding! \n Check stacktrace for details");
-//        }
-//        return null; //Error
-//    }
-
-//
-//    public Band getBandByID(Integer bandID) {
-//        Band band = new Band(bandID);
-//        String query = "select * from \"Bands\" where \"bandID\" = (?)";
-//        try (PreparedStatement preparedStatement = Connector.getInstance().getConnection().prepareStatement(query)) {
-//            preparedStatement.setInt(1,bandID);
-//            ResultSet resultSet = preparedStatement.executeQuery();
-//            while (resultSet.next()) {
-//                band.setBandName(resultSet.getString("band_name"));
-//                band.setGenres(Arrays.asList((String []) resultSet.getArray("genres").getArray()));
-//            }
-//            return band;
-//        } catch (SQLException e) {
-//            return null;
-//        }
-//    }
-
     public boolean updatePassword(User user, String password) {
         String query = "update registered_users set password = ? where id = ?";
         try (PreparedStatement preparedStatement = connector.getConnection().prepareStatement(query)) {
@@ -280,39 +237,16 @@ public class UserDao implements Dao<User> {
         }
     }
 
-    public boolean deleteUser(User user){
-        String query = "delete from registered_users where id = ?";
+    public boolean deleteUserByEmail(String email){
+        String query = "delete from registered_users where email = ?";
         try (PreparedStatement preparedStatement = connector.getConnection().prepareStatement(query)) {
-            preparedStatement.setInt(1, user.getId());
+            preparedStatement.setString(1, email);
             return preparedStatement.executeUpdate() == 1;
         } catch (SQLException e) {
             return false;
         }
     }
 
-//    public BandManager getBandManagerFromUser(User user) {
-//        BandManager bandManager = null;
-//        String query = "select * from band_manager where id = ?";
-//        try (PreparedStatement preparedStatement = Connector.getInstance().getConnection().prepareStatement(query)) {
-//            preparedStatement.setInt(1, user.getUserID());
-//            ResultSet resultSet = preparedStatement.executeQuery();
-//            while (resultSet.next()) {
-//                List<Integer> bandIDs = Arrays.asList((Integer[]) resultSet.getArray("bands").getArray());
-//                if (!bandIDs.isEmpty()) {
-//                    List<Band> bandList = new ArrayList<>();
-//                    for (Integer bandID : bandIDs) {
-//                        bandList.add(this.getBandByID(bandID));
-//                    }
-//                    bandManager = new BandManager(user, bandList);
-//                } else {
-//                    bandManager = new BandManager(user);
-//                }
-//            }
-//            return bandManager;
-//        } catch (SQLException e) {
-//            return null;
-//        }
-//    }
 
 
     @Override
