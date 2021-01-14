@@ -10,7 +10,8 @@ public enum Genres {
         Genres[] genres = Genres.values();
         return Arrays.stream(genres)
                 .filter(currentGenre -> currentGenre.toString().equals(genre))
-                .findFirst().get();
+                .findFirst()
+                .orElseThrow(() -> new IllegalArgumentException("Genre not found:"));
     }
 
 
