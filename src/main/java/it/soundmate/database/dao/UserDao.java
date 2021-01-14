@@ -248,6 +248,28 @@ public class UserDao implements Dao<User> {
     }
 
 
+    public boolean updateProfilePic(User user, String encodedImg){
+        String query = "update users set encoded_profile_img = ? where id = ?";
+        try (PreparedStatement preparedStatement = connector.getConnection().prepareStatement(query)) {
+            preparedStatement.setString(1, encodedImg);
+            preparedStatement.setInt(2, user.getId());
+            return preparedStatement.executeUpdate() == 1;
+        } catch (SQLException e) {
+            return false;
+        }
+    }
+
+    public boolean deleteProfilePic(User user){
+        String query = "update users set encoded_profile_img = null where id = ?";
+        try (PreparedStatement preparedStatement = connector.getConnection().prepareStatement(query)) {
+            preparedStatement.setInt(1, user.getId());
+            return preparedStatement.executeUpdate() == 1;
+        } catch (SQLException e) {
+            return false;
+        }
+    }
+
+
 
     @Override
     public int update(User user) {
