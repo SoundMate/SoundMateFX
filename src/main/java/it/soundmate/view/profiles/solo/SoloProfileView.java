@@ -1,8 +1,10 @@
 package it.soundmate.view.profiles.solo;
 
 import it.soundmate.constants.Style;
-import it.soundmate.controller.logic.SoloProfileSoloController;
+import it.soundmate.controller.graphic.SoloProfileGraphicController;
+import it.soundmate.controller.logic.SoloProfileController;
 import it.soundmate.database.dao.UserDao;
+import it.soundmate.exceptions.InputException;
 import it.soundmate.model.Solo;
 import it.soundmate.utils.Cache;
 import it.soundmate.view.UIUtils;
@@ -14,7 +16,6 @@ import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
-import javafx.scene.control.TextInputDialog;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
@@ -23,13 +24,11 @@ import javafx.scene.paint.ImagePattern;
 import javafx.scene.shape.Circle;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import java.util.Optional;
 
 public class SoloProfileView extends VBox {
 
     private static final Logger logger = LoggerFactory.getLogger(SoloProfileView.class);
     private final Solo soloUser;
-    private final SoloProfileSoloController soloProfileSoloController = new SoloProfileSoloController();
     private final ProfileView profileView;
 
     //UI
@@ -243,22 +242,18 @@ public class SoloProfileView extends VBox {
         @Override
         public void handle(ActionEvent event) {
             logger.info("Add Genre Clicked");
-            Optional<String> result = favGenreDialog();
-            result.ifPresent(s -> logger.info("User input genre: {}", s));
-            if (result.isPresent() && soloProfileSoloController.addGenre(result.get(), soloUser)) {
-                logger.info("Added new genre to solo user: {} {}; {}",soloUser.getFirstName(), soloUser.getLastName(), result.get());
-                updateUI(result.get());
-            } else {
-                logger.info("Error adding genre");
+            SoloProfileGraphicController soloProfileGraphicController = new SoloProfileGraphicController();
+            try {
+                String result = soloProfileGraphicController.addGenreDialog(soloUser);
+                if (result != null) {
+                    updateUI(result);
+                } else {
+                    //Display error message
+                    logger.error("Genre was null");
+                }
+            } catch (InputException inputException) {
+                logger.error("Input Exception: {}", inputException.getMessage());
             }
-        }
-
-        private Optional<String> favGenreDialog() {
-            TextInputDialog dialog = new TextInputDialog();
-            dialog.setTitle("Favourite Genres");
-            dialog.setHeaderText("Add a new favourite genre");
-            dialog.setContentText("Enter a genre:");
-            return dialog.showAndWait();
         }
 
         private void updateUI(String newGenre) {

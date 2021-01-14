@@ -14,5 +14,4 @@ public enum Genres {
                 .orElseThrow(() -> new IllegalArgumentException("Genre not found:"));
     }
 
-
 }

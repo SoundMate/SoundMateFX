@@ -6,19 +6,18 @@
 
 package it.soundmate.controller.logic;
 
-import it.soundmate.database.dao.SoloDao;
 import it.soundmate.model.Solo;
 
 import java.util.List;
 
-public class SoloProfileSoloController {
+public class SoloProfileController {
 
 
     public List<String> getSoloInstruments(Solo solo) {
         return solo.getInstruments();
     }
 
-    public boolean addGenre(String s, Solo soloUser) {
-        return false;
+    public String addGenre(String genre, Solo solo) {
+        return null;
     }
 }

@@ -3,6 +3,7 @@ package it.soundmate.view.search;
 import it.soundmate.bean.searchbeans.UserResultBean;
 import it.soundmate.constants.Style;
 import it.soundmate.controller.logic.SearchController;
+import it.soundmate.model.Genres;
 import it.soundmate.view.UIUtils;
 import it.soundmate.view.main.SearchView;
 import javafx.event.ActionEvent;
@@ -89,15 +90,20 @@ public class DefaultSearchView extends Pane {
         filtersHBox.setAlignment(Pos.CENTER);
         filtersHBox.setSpacing(20);
 
-        this.genresComboBox.setPromptText("Genres");
-        this.instrumentsComboBox.setPromptText("Instruments");
+        //City comboBox
         this.cityComboBox.setPromptText("City");
+        this.cityComboBox.setStyle("-fx-background-color: black; -fx-text-fill: white");
+        this.cityComboBox.getItems().add(new Label("Rome, IT"));
 
+        //Genres ComboBox
+        buildGenresComboBox();
 
-        this.genresComboBox.getItems().add(new Label("Rock"));
+        //Instrument ComboBox
+        this.instrumentsComboBox.setPromptText("Instruments");
         this.instrumentsComboBox.getItems().add(new Label("Guitar"));
         this.instrumentsComboBox.getItems().add(new Label("Drums"));
-        this.cityComboBox.getItems().add(new Label("Rome, IT"));
+        this.instrumentsComboBox.setStyle("-fx-background-color: black; -fx-text-fill: white");
+
 
         Label label = new Label("Filter by: ");
         label.setStyle(Style.MID_LABEL);
@@ -107,6 +113,16 @@ public class DefaultSearchView extends Pane {
         UIUtils.addRegion(null, filtersHBox);
         filtersHBox.getChildren().add(this.cityComboBox);
         return filtersHBox;
+    }
+
+    private void buildGenresComboBox() {
+        this.genresComboBox.setPromptText("Genres");
+        this.genresComboBox.setVisibleRowCount(5);
+        for (Genres genre : Genres.values()) {
+            Label genreLabel = new Label(genre.name());
+            this.genresComboBox.getItems().add(genreLabel);
+        }
+        this.genresComboBox.setStyle("-fx-background-color: black; -fx-text-fill: white");
     }
 
     private HBox buildFiltersHBox() {
