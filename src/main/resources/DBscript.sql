@@ -182,7 +182,7 @@ create unique index band_band_managed_id_band_uindex
 create unique index band_band_managed_id_manager_uindex
     on band_band_managed (id_manager);
 
-create table instruments
+create table played_instruments
 (
     id          integer not null
         constraint instruments_pk
@@ -190,14 +190,14 @@ create table instruments
         constraint instruments_solo_id_fk
             references solo
             on update cascade on delete cascade,
-    instruments text
+    instruments text[]  not null
 );
 
-alter table instruments
+alter table played_instruments
     owner to postgres;
 
 create unique index instruments_id_uindex
-    on instruments (id);
+    on played_instruments (id);
 
 create table fav_genres
 (
@@ -207,7 +207,7 @@ create table fav_genres
         constraint fav_genres_solo_id_fk
             references solo
             on update cascade on delete cascade,
-    genre text
+    genre text[]  not null
 );
 
 alter table fav_genres
@@ -232,5 +232,4 @@ alter table played_genres
 
 create unique index played_genres_id_uindex
     on played_genres (id);
-
 
