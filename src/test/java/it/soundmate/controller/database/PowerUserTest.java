@@ -5,9 +5,9 @@ import it.soundmate.database.Connector;
 import it.soundmate.database.dao.BandDao;
 import it.soundmate.database.dao.PowerUserDao;
 import it.soundmate.database.dao.UserDao;
-import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
+
+//@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 
 class PowerUserTest {
 
@@ -17,6 +17,7 @@ class PowerUserTest {
 
 
     @Test
+//    @Order(2)
     void banTest(){
         RegisterBandBean registerBandBean = new RegisterBandBean("DT@", "sasa", "DT");
         BandDao bandDao = new BandDao(userDao);
@@ -26,6 +27,7 @@ class PowerUserTest {
 
 
     @Test
+   // @Order(1)
     void unbanTest(){
         Assertions.assertTrue(powerUserDao.unbanEmail("DT@"));
     }

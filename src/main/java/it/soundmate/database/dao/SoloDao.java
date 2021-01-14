@@ -13,7 +13,13 @@ import it.soundmate.model.Solo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.sql.*;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 public class SoloDao {
 
@@ -125,5 +131,66 @@ public class SoloDao {
             throw new RepositoryException("Err Fetching User", exc);
         }return soloUser;
     }
+
+
+    public boolean insertInstruments(Solo solo, List<String> genres){
+
+        String sql = "INSERT INTO played_instruments (id, instruments) VALUES (?, ?)";
+
+        try (PreparedStatement preparedStatement = connector.getConnection().prepareStatement(sql)){
+
+            preparedStatement.setInt(1,solo.getId());
+            preparedStatement.setArray(2, connector.getConnection().createArrayOf("text", genres.toArray()));
+
+            if (preparedStatement.executeUpdate() == 1)
+                return true;
+
+        } catch (SQLException e){
+            throw new RepositoryException("Error, check the stack trace for details", e);
+        }return false;
+    }
+
+    public boolean updateInstrument(Solo solo, String instrument){
+
+        String sql = "UPDATE played_instruments SET instruments = array_append(instruments, ?::text) WHERE id = ?";
+        //UPDATE table SET array_field = array_append(array_field,'new item') WHERE
+
+
+
+        try (PreparedStatement preparedStatement = connector.getConnection().prepareStatement(sql)){
+
+            preparedStatement.setString(1, instrument);
+            preparedStatement.setInt(2, solo.getId());
+
+            return preparedStatement.executeUpdate() == 1;
+
+        }catch (SQLException ex){
+            throw new RepositoryException("Error, check stack trace for details", ex);
+        }
+    }
+
+    public List<String> getInstruments(Solo solo){
+        String sql = "SELECT instruments FROM played_instruments WHERE id = ?";
+        List<String> instrumentList = new ArrayList<>();
+
+        try (PreparedStatement preparedStatement = connector.getConnection().prepareStatement(sql)){
+
+            preparedStatement.setInt(1, solo.getId());
+            ResultSet resultSet = preparedStatement.executeQuery();
+
+            while(resultSet.next()){
+
+                String [] temp = (String []) resultSet.getArray("instruments").getArray();
+                instrumentList = Arrays.asList(temp);
+
+            }
+            return instrumentList;
+
+        } catch (SQLException ex){
+            throw new RepositoryException("Error, check stack trace for details", ex);
+        }
+
+    }
+
 
 }
