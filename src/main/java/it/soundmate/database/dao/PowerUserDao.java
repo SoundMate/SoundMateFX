@@ -1,6 +1,7 @@
 package it.soundmate.database.dao;
 
 import it.soundmate.database.Connector;
+import it.soundmate.database.dbexceptions.RepositoryException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -62,7 +63,7 @@ public class PowerUserDao {
     }
 
 
-    private void unbanHandler(String email){
+    public boolean unbanEmail(String email){
         int deletedRec;
 
         try(Connection conn = connector.getConnection(); PreparedStatement pstmt = conn.prepareStatement(UNBAN_STAT)){
@@ -72,12 +73,13 @@ public class PowerUserDao {
 
             if (deletedRec == 1){
                 log.info(SUCCESS);
+                return true;
 
             }
             else log.info(USR_NOT_FOUND);
         } catch (SQLException ex){
             log.error((ex.getMessage()));
-        }
+        } return false;
     }
 
 
@@ -111,6 +113,22 @@ public class PowerUserDao {
                 System.out.println(str + "\n");
             }
         }
+    }
+
+    public void unbanAll(){
+        String sql = "DELETE FROM banned_users";
+        int delRecs;
+        try (Connection conn = connector.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            delRecs = stmt.executeUpdate();
+            if (delRecs >= 1) log.info("\t ***** All Users Unbanned! *****");
+            else log.info("\t ***** No entries found! *****");
+
+        } catch (SQLException ex) {
+            throw new RepositoryException("Error Unbanning All", ex);
+        }
+
     }
 
 

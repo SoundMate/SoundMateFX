@@ -5,14 +5,15 @@ import it.soundmate.database.Connector;
 import it.soundmate.database.dao.BandDao;
 import it.soundmate.database.dao.PowerUserDao;
 import it.soundmate.database.dao.UserDao;
+import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 public class PowerUserTest {
 
     static Connector connector = Connector.getInstance();
-    PowerUserDao powerUserDao = new PowerUserDao();
-    UserDao userDao = new UserDao();
+    static PowerUserDao powerUserDao = new PowerUserDao();
+    static UserDao userDao = new UserDao();
 
 
     @Test
@@ -23,5 +24,16 @@ public class PowerUserTest {
         Assertions.assertTrue(powerUserDao.banUser("DT@"));
     }
 
+
+    @Test
+    void unbanTest(){
+        Assertions.assertTrue(powerUserDao.unbanEmail("DT@"));
+    }
+
+    @AfterAll
+    static void tearDown(){
+        userDao.deleteAll();
+        powerUserDao.unbanAll();
+    }
 
 }
