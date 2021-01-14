@@ -23,14 +23,19 @@ public class DefaultSearchView extends Pane {
     private final SearchController searchController = new SearchController();
     private static final Logger logger = LoggerFactory.getLogger(DefaultSearchView.class);
 
-    private BorderPane defaultSVBorderPane;
+    private final BorderPane defaultSVBorderPane;
     private final TextField searchTextField = new TextField();
     private final Button searchBtn = new Button();
     private final Button searchOnMapBtn = new Button();
     private final List<RadioButton> filters = new ArrayList<>();
     private final ScrollPane resultsScrollPane = new ScrollPane();
     private final VBox resultsVBox = new VBox();
-    private ResultsView resultsView;
+
+    //Advanced Filters
+    private final ComboBox<Label> genresComboBox = new ComboBox<>();
+    private final ComboBox<Label> instrumentsComboBox = new ComboBox<>();
+    private final ComboBox<Label> cityComboBox = new ComboBox<>();
+
 
     public DefaultSearchView() {
         this.defaultSVBorderPane = buildDefaultView();
@@ -71,9 +76,37 @@ public class DefaultSearchView extends Pane {
 
         HBox searchBarHBox = buildSearchBarHBox();
         HBox filtersHBox = buildFiltersHBox();
+        HBox advancedFiltersHBox = buildAdvancedFiltersHBox();
 
-        topVBox.getChildren().addAll(searchLabel, searchBarHBox, filtersHBox);
+        topVBox.getChildren().addAll(searchLabel, searchBarHBox, filtersHBox, advancedFiltersHBox);
         return topVBox;
+    }
+
+    private HBox buildAdvancedFiltersHBox() {
+        HBox filtersHBox = new HBox();
+        filtersHBox.setPrefHeight(USE_COMPUTED_SIZE);
+        filtersHBox.setPrefWidth(USE_COMPUTED_SIZE);
+        filtersHBox.setAlignment(Pos.CENTER);
+        filtersHBox.setSpacing(20);
+
+        this.genresComboBox.setPromptText("Genres");
+        this.instrumentsComboBox.setPromptText("Instruments");
+        this.cityComboBox.setPromptText("City");
+
+
+        this.genresComboBox.getItems().add(new Label("Rock"));
+        this.instrumentsComboBox.getItems().add(new Label("Guitar"));
+        this.instrumentsComboBox.getItems().add(new Label("Drums"));
+        this.cityComboBox.getItems().add(new Label("Rome, IT"));
+
+        Label label = new Label("Filter by: ");
+        label.setStyle(Style.MID_LABEL);
+        filtersHBox.getChildren().addAll(label, this.genresComboBox);
+        UIUtils.addRegion(null, filtersHBox);
+        filtersHBox.getChildren().add(this.instrumentsComboBox);
+        UIUtils.addRegion(null, filtersHBox);
+        filtersHBox.getChildren().add(this.cityComboBox);
+        return filtersHBox;
     }
 
     private HBox buildFiltersHBox() {
@@ -108,6 +141,7 @@ public class DefaultSearchView extends Pane {
         hBox.setPrefWidth(USE_COMPUTED_SIZE);
         hBox.setPrefHeight(USE_COMPUTED_SIZE);
 
+        //Prima riga (textField e button)
         this.searchTextField.setStyle(Style.TEXT_FIELD);
         this.searchTextField.setPromptText("Search...");
         this.searchBtn.setText("Search");
@@ -158,7 +192,7 @@ public class DefaultSearchView extends Pane {
         }
 
         private void buildResultsScreen(List<UserResultBean> results) {
-            resultsView = new ResultsView(results);
+            ResultsView resultsView = new ResultsView(results);
             resultsVBox.getChildren().clear();
 
             Label bandResultsLabel = new Label("Bands");
@@ -195,7 +229,7 @@ public class DefaultSearchView extends Pane {
     }
 
 
-    private class SearchMapAction implements EventHandler<ActionEvent> {
+    private static class SearchMapAction implements EventHandler<ActionEvent> {
         @Override
         public void handle(ActionEvent event) {
             logger.info("Search on Map clicked");

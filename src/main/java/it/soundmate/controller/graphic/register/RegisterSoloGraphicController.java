@@ -10,7 +10,7 @@ import it.soundmate.bean.registerbeans.RegisterSoloBean;
 import it.soundmate.controller.logic.RegisterController;
 import it.soundmate.model.User;
 
-public class RegisterSoloGraphicController extends RegisterGraphicController {
+public class RegisterSoloGraphicController implements RegisterGraphicController {
 
     RegisterController registerController = new RegisterController();
 
