@@ -9,6 +9,7 @@ package it.soundmate.database.dao;
 import it.soundmate.bean.registerbeans.RegisterSoloBean;
 import it.soundmate.database.Connector;
 import it.soundmate.database.dbexceptions.RepositoryException;
+import it.soundmate.model.Genre;
 import it.soundmate.model.Solo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -193,4 +194,64 @@ public class SoloDao {
     }
 
 
+
+    public boolean insertGenres(Solo solo, List<Genre> genreList){
+        String sql = "INSERT INTO fav_genres (id, genre) VALUES (?, ?)";
+
+        try (PreparedStatement preparedStatement = connector.getConnection().prepareStatement(sql)){
+
+            preparedStatement.setInt(1,solo.getId());
+            preparedStatement.setArray(2, connector.getConnection().createArrayOf("text", genreList.toArray()));
+
+            if (preparedStatement.executeUpdate() == 1)
+                return true;
+
+        } catch (SQLException e){
+            throw new RepositoryException("Error, check the stack trace for details", e);
+        }return false;
+    }
+
+    public boolean updateGenre(Solo solo, Genre genre){
+
+        //::text is the parsing for sql queries (the value in ? must be a text type)
+        String sql = "UPDATE fav_genres SET genre = array_append(genre, ?::text) WHERE id = ?";
+
+
+
+        try (PreparedStatement preparedStatement = connector.getConnection().prepareStatement(sql)){
+
+            preparedStatement.setString(1, genre.toString());
+            preparedStatement.setInt(2, solo.getId());
+
+            return preparedStatement.executeUpdate() == 1;
+
+        }catch (SQLException ex){
+            throw new RepositoryException("Error, check stack trace for details", ex);
+        }
+    }
+
+    public List<Genre> getGenres(Solo solo){
+        String sql = "SELECT genre FROM fav_genres WHERE id = ?";
+        List<Genre> genreList = new ArrayList<>();
+
+        try (PreparedStatement preparedStatement = connector.getConnection().prepareStatement(sql)){
+
+            preparedStatement.setInt(1, solo.getId());
+            ResultSet resultSet = preparedStatement.executeQuery();
+
+            while(resultSet.next()){
+
+                Genre [] temp = (Genre []) resultSet.getArray("genre").getArray();
+                genreList = Arrays.asList(temp);
+
+            }
+            return genreList;
+        } catch (SQLException ex){
+            throw new RepositoryException("Error, check stack trace for details", ex);
+        }
+    }
+
+
+
 }
+
