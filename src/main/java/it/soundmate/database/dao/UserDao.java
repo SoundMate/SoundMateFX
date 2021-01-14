@@ -31,7 +31,7 @@ public class UserDao implements Dao<User> {
     private static final String ERR_INSERT = "Error inserting user";
     private static final String EMAIL = "email";
     private static final String PASSWORD = "password";
-    private static final String SQL_IMG_UPDATE = "UPDATE users SET encoded_profile_img = ? WHERE id = ?";
+
 
 
     //Cambiato nome per farlo implementare l'interfaccia Dao
@@ -195,22 +195,6 @@ public class UserDao implements Dao<User> {
         return userType;
     }
 
-
-    public int uploadHandler(int userId, Path pathToImage){
-        try (Connection conn = connector.getConnection();
-             PreparedStatement pstmt = conn.prepareStatement(SQL_IMG_UPDATE)) {
-
-            pstmt.setString(1, ImgBase64Repo.encode(pathToImage));
-            pstmt.setInt(2, userId);
-
-            return pstmt.executeUpdate();
-
-        } catch (SQLException ex) {
-            throw new RepositoryException("Error Updating Image", ex);
-        } catch (IOException ex) {
-            throw new UncheckedIOException(ex);
-        }
-    }
 
 
     public boolean updatePassword(User user, String password) {
