@@ -11,13 +11,13 @@ import java.util.List;
 import static it.soundmate.model.UserType.SOLO;
 
 
-public class  Solo extends User{
+public class  Solo extends User {
 
     private String firstName;
     private String lastName;
     private int age;
     private List<Band> bands;
-    private List<String> favGenres;
+    private List<Genre> favGenres;
     private List<String> instruments;
     private static final UserType userType= SOLO;
 
@@ -65,11 +65,11 @@ public class  Solo extends User{
         this.bands = bands;
     }
 
-    public List<String> getFavGenres() {
+    public List<Genre> getFavGenres() {
         return favGenres;
     }
 
-    public void setFavGenres(List<String> favGenres) {
+    public void setFavGenres(List<Genre> favGenres) {
         this.favGenres = favGenres;
     }
 
@@ -90,4 +90,7 @@ public class  Solo extends User{
         return userType;
     }
 
+    public void addGenre(Genre genre) {
+        this.favGenres.add(genre);
+    }
 }

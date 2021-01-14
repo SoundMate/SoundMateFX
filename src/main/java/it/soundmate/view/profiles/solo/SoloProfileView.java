@@ -2,9 +2,8 @@ package it.soundmate.view.profiles.solo;
 
 import it.soundmate.constants.Style;
 import it.soundmate.controller.graphic.SoloProfileGraphicController;
-import it.soundmate.controller.logic.SoloProfileController;
-import it.soundmate.database.dao.UserDao;
 import it.soundmate.exceptions.InputException;
+import it.soundmate.model.Genre;
 import it.soundmate.model.Solo;
 import it.soundmate.utils.Cache;
 import it.soundmate.view.UIUtils;
@@ -124,8 +123,8 @@ public class SoloProfileView extends VBox {
         favGenreLabel.setStyle(Style.MID_LABEL);
 
         if (this.soloUser.getFavGenres() != null && !this.soloUser.getFavGenres().isEmpty()) {
-            for (String favGenre : this.soloUser.getFavGenres()) {
-                Label genreLabel = new Label(favGenre);
+            for (Genre favGenre : this.soloUser.getFavGenres()) {
+                Label genreLabel = new Label(favGenre.name());
                 genreLabel.setPadding(new Insets(5));
                 genreLabel.setStyle(Style.FAV_GENRE_LABEL);
                 favGenresHBoxList.getChildren().add(genreLabel);
@@ -244,20 +243,17 @@ public class SoloProfileView extends VBox {
             logger.info("Add Genre Clicked");
             SoloProfileGraphicController soloProfileGraphicController = new SoloProfileGraphicController();
             try {
-                String result = soloProfileGraphicController.addGenreDialog(soloUser);
-                if (result != null) {
-                    updateUI(result);
-                } else {
-                    //Display error message
-                    logger.error("Genre was null");
+                Genre newGenre = soloProfileGraphicController.addGenreDialog(soloUser);
+                if (newGenre != null) {
+                    updateUI(newGenre);
                 }
             } catch (InputException inputException) {
                 logger.error("Input Exception: {}", inputException.getMessage());
             }
         }
 
-        private void updateUI(String newGenre) {
-            Label newGenreLabel = new Label(newGenre);
+        private void updateUI(Genre newGenre) {
+            Label newGenreLabel = new Label(newGenre.name());
             newGenreLabel.setStyle(Style.FAV_GENRE_LABEL);
             newGenreLabel.setPadding(new Insets(5));
             favGenresHBoxList.getChildren().add(newGenreLabel);
@@ -271,8 +267,7 @@ public class SoloProfileView extends VBox {
         @Override
         public void handle(ActionEvent event) {
             logger.info("Edit Profile Info Clicked");
-            UserDao userDao = new UserDao();
-            profileView.setProfilePage(new EditProfileSolo(soloUser, profileView, userDao));
+            profileView.setProfilePage(new EditProfileSolo(soloUser, profileView));
         }
     }
 

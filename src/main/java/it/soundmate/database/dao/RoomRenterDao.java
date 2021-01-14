@@ -4,7 +4,6 @@ import it.soundmate.bean.registerbeans.RegisterRenterBean;
 import it.soundmate.database.Connector;
 import it.soundmate.database.dbexceptions.RepositoryException;
 import it.soundmate.model.RoomRenter;
-import it.soundmate.model.Solo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

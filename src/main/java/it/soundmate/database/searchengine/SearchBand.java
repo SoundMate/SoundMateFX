@@ -7,9 +7,6 @@
 package it.soundmate.database.searchengine;
 
 import it.soundmate.bean.searchbeans.BandResultBean;
-import it.soundmate.bean.searchbeans.SoloResultBean;
-import it.soundmate.bean.searchbeans.UserResultBean;
-import it.soundmate.model.Band;
 
 import java.util.ArrayList;
 import java.util.List;

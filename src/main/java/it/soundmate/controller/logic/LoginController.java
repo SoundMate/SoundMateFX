@@ -8,7 +8,6 @@ package it.soundmate.controller.logic;
 
 import it.soundmate.bean.LoggedBean;
 import it.soundmate.bean.LoginBean;
-import it.soundmate.database.Connector;
 import it.soundmate.database.dao.BandDao;
 import it.soundmate.database.dao.RoomRenterDao;
 import it.soundmate.database.dao.SoloDao;
@@ -54,7 +53,9 @@ public class LoginController {
 
     public Solo getFullSolo(int id) throws SQLException {
         SoloDao soloDao = new SoloDao(userDao);
-        return soloDao.getSoloByID(id);
+        Solo soloUser = soloDao.getSoloByID(id);
+        soloUser.setFavGenres(soloDao.getGenres(id));
+        return soloUser;
     }
 
     public Band getFullBand(int id){

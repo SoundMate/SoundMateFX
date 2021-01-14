@@ -3,7 +3,7 @@ package it.soundmate.view.search;
 import it.soundmate.bean.searchbeans.UserResultBean;
 import it.soundmate.constants.Style;
 import it.soundmate.controller.logic.SearchController;
-import it.soundmate.model.Genres;
+import it.soundmate.model.Genre;
 import it.soundmate.view.UIUtils;
 import it.soundmate.view.main.SearchView;
 import javafx.event.ActionEvent;
@@ -92,7 +92,6 @@ public class DefaultSearchView extends Pane {
 
         //City comboBox
         this.cityComboBox.setPromptText("City");
-        this.cityComboBox.setStyle("-fx-background-color: black; -fx-text-fill: white");
         this.cityComboBox.getItems().add(new Label("Rome, IT"));
 
         //Genres ComboBox
@@ -102,7 +101,6 @@ public class DefaultSearchView extends Pane {
         this.instrumentsComboBox.setPromptText("Instruments");
         this.instrumentsComboBox.getItems().add(new Label("Guitar"));
         this.instrumentsComboBox.getItems().add(new Label("Drums"));
-        this.instrumentsComboBox.setStyle("-fx-background-color: black; -fx-text-fill: white");
 
 
         Label label = new Label("Filter by: ");
@@ -118,7 +116,7 @@ public class DefaultSearchView extends Pane {
     private void buildGenresComboBox() {
         this.genresComboBox.setPromptText("Genres");
         this.genresComboBox.setVisibleRowCount(5);
-        for (Genres genre : Genres.values()) {
+        for (Genre genre : Genre.values()) {
             Label genreLabel = new Label(genre.name());
             this.genresComboBox.getItems().add(genreLabel);
         }

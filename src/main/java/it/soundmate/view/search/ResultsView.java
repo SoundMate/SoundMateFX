@@ -25,6 +25,9 @@ public class ResultsView {
                 case SOLO:
                     soloList.add((SoloResultBean) user);
                     break;
+                case ROOM_RENTER:
+                case BAND:
+                    break;
             }
         }
         ObservableList<SoloResultBean> soloObservableList = FXCollections.observableArrayList(soloList);

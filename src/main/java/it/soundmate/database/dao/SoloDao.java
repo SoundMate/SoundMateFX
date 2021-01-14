@@ -31,6 +31,7 @@ public class SoloDao {
     private static final String ACC_BANNED_ERR = "\t ***** THIS ACCOUNT HAS BEEN BANNED *****";
     private static final String EMAIL_EXISTS_ERR = "\t ***** THIS EMAIL ALREADY EXISTS *****";
     private static final String ERR_INSERT = "Error inserting user";
+    private static final String ERR_MESSAGE = "Error, check stack trace for details";
 
 
     //Modificato il costruttore per il Connector (attributo come UserDao)
@@ -134,7 +135,7 @@ public class SoloDao {
     }
 
 
-    public boolean insertInstruments(Solo solo, List<String> genres){
+    public boolean insertInstruments(Solo solo, List<String> genres) {
 
         String sql = "INSERT INTO played_instruments (id, instruments) VALUES (?, ?)";
 
@@ -151,6 +152,7 @@ public class SoloDao {
         }return false;
     }
 
+
     public boolean updateInstrument(Solo solo, String instrument){
 
         //::text is the parsing for sql queries (the value in ? must be a text type)
@@ -166,7 +168,7 @@ public class SoloDao {
             return preparedStatement.executeUpdate() == 1;
 
         }catch (SQLException ex){
-            throw new RepositoryException("Error, check stack trace for details", ex);
+            throw new RepositoryException(ERR_MESSAGE, ex);
         }
     }
 
@@ -188,7 +190,7 @@ public class SoloDao {
             return instrumentList;
 
         } catch (SQLException ex){
-            throw new RepositoryException("Error, check stack trace for details", ex);
+            throw new RepositoryException(ERR_MESSAGE, ex);
         }
 
     }
@@ -203,8 +205,10 @@ public class SoloDao {
             preparedStatement.setInt(1,solo.getId());
             preparedStatement.setArray(2, connector.getConnection().createArrayOf("text", genreList.toArray()));
 
-            if (preparedStatement.executeUpdate() == 1)
+            if (preparedStatement.executeUpdate() == 1) {
+                solo.setFavGenres(genreList);
                 return true;
+            }
 
         } catch (SQLException e){
             throw new RepositoryException("Error, check the stack trace for details", e);
@@ -212,46 +216,41 @@ public class SoloDao {
     }
 
     public boolean updateGenre(Solo solo, Genre genre){
-
         //::text is the parsing for sql queries (the value in ? must be a text type)
         String sql = "UPDATE fav_genres SET genre = array_append(genre, ?::text) WHERE id = ?";
 
-
-
         try (PreparedStatement preparedStatement = connector.getConnection().prepareStatement(sql)){
-
             preparedStatement.setString(1, genre.toString());
             preparedStatement.setInt(2, solo.getId());
-
-            return preparedStatement.executeUpdate() == 1;
-
-        }catch (SQLException ex){
-            throw new RepositoryException("Error, check stack trace for details", ex);
+            boolean result = preparedStatement.executeUpdate() == 1;
+            if (result) solo.addGenre(genre);
+            return result;
+        } catch (SQLException ex){
+            throw new RepositoryException(ERR_MESSAGE, ex);
         }
     }
 
-    public List<Genre> getGenres(Solo solo){
+    public List<Genre> getGenres(int id) {
         String sql = "SELECT genre FROM fav_genres WHERE id = ?";
-        List<Genre> genreList = new ArrayList<>();
+        List<String> genreList = new ArrayList<>();
 
         try (PreparedStatement preparedStatement = connector.getConnection().prepareStatement(sql)){
 
-            preparedStatement.setInt(1, solo.getId());
+            preparedStatement.setInt(1, id);
             ResultSet resultSet = preparedStatement.executeQuery();
 
             while(resultSet.next()){
-
-                Genre [] temp = (Genre []) resultSet.getArray("genre").getArray();
+                String [] temp = (String []) resultSet.getArray("genre").getArray();
                 genreList = Arrays.asList(temp);
-
             }
-            return genreList;
+            List<Genre> genres = new ArrayList<>();
+            for (String genre : genreList) {
+                genres.add(Genre.returnGenre(genre));
+            }
+            return genres;
         } catch (SQLException ex){
-            throw new RepositoryException("Error, check stack trace for details", ex);
+            throw new RepositoryException(ERR_MESSAGE, ex);
         }
     }
-
-
-
 }
 

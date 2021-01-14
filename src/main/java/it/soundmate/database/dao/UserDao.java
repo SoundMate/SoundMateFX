@@ -26,8 +26,6 @@ public class UserDao implements Dao<User> {
 
     private final Connector connector = Connector.getInstance();
     private static final Logger log = LoggerFactory.getLogger(UserDao.class);
-    private static final String ACC_BANNED_ERR = "\t ***** THIS ACCOUNT HAS BEEN BANNED *****";
-    private static final String EMAIL_EXISTS_ERR = "\t ***** THIS EMAIL ALREADY EXISTS *****";
     private static final String ERR_INSERT = "Error inserting user";
     private static final String EMAIL = "email";
     private static final String PASSWORD = "password";

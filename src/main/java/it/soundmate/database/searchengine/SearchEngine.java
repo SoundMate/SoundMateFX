@@ -6,7 +6,6 @@
 
 package it.soundmate.database.searchengine;
 
-import it.soundmate.bean.searchbeans.UserResultBean;
 
 import java.util.List;
 

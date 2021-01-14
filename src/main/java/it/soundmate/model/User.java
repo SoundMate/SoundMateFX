@@ -18,7 +18,6 @@ public abstract class User {
     private String country;
     private List<File> photos;
     private String encodedImg;
-    private InputStream profilePic;
 
 
     public String getEmail() {

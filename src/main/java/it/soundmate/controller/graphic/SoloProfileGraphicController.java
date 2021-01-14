@@ -8,7 +8,7 @@ package it.soundmate.controller.graphic;
 
 import it.soundmate.controller.logic.SoloProfileController;
 import it.soundmate.exceptions.InputException;
-import it.soundmate.model.Genres;
+import it.soundmate.model.Genre;
 import it.soundmate.model.Solo;
 import javafx.scene.control.ChoiceDialog;
 import org.slf4j.Logger;
@@ -23,8 +23,8 @@ public class SoloProfileGraphicController {
     private final SoloProfileController soloProfileController = new SoloProfileController();
     private static final Logger logger = LoggerFactory.getLogger(SoloProfileGraphicController.class);
 
-    public String addGenreDialog(Solo solo){
-        String selectedGenre = favGenreDialog();
+    public Genre addGenreDialog(Solo solo){
+        Genre selectedGenre = favGenreDialog();
         if (selectedGenre == null) {
             throw new InputException("Genre was not selected");
         } else {
@@ -32,10 +32,10 @@ public class SoloProfileGraphicController {
         }
     }
 
-    private String favGenreDialog() {
+    private Genre favGenreDialog() {
         List<String> choices = new ArrayList<>();
-        for (Genres genres : Genres.values()) {
-            choices.add(genres.name());
+        for (Genre genre : Genre.values()) {
+            choices.add(genre.name());
         }
 
         ChoiceDialog<String> dialog = new ChoiceDialog<>("GENRE", choices);
@@ -46,7 +46,7 @@ public class SoloProfileGraphicController {
         Optional<String> result = dialog.showAndWait();
         if (result.isPresent()){
             logger.info("Your choice: {}", result.get());
-            return result.get();
+            return Genre.returnGenre(result.get());
         }
         return null;
     }

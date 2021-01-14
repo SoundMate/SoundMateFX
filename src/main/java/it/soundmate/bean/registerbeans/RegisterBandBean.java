@@ -1,6 +1,5 @@
 package it.soundmate.bean.registerbeans;
 
-import it.soundmate.model.User;
 import it.soundmate.model.UserType;
 
 import static it.soundmate.model.UserType.BAND;

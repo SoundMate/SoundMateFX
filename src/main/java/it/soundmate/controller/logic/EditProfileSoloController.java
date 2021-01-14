@@ -16,11 +16,7 @@ import java.io.IOException;
 
 public class EditProfileSoloController {
 
-    private final UserDao userDao;
-
-    public EditProfileSoloController(UserDao userDao) {
-        this.userDao = userDao;
-    }
+    private final UserDao userDao = new UserDao();
 
     public void updateProfilePic(Solo solo, File image) throws IOException {
         if (userDao.updateProfilePic(solo, image.toPath()) != 1) {

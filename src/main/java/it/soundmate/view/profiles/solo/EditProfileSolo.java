@@ -2,7 +2,6 @@ package it.soundmate.view.profiles.solo;
 
 import it.soundmate.constants.Style;
 import it.soundmate.controller.logic.EditProfileSoloController;
-import it.soundmate.database.dao.UserDao;
 import it.soundmate.exceptions.UpdateException;
 import it.soundmate.model.Solo;
 import it.soundmate.utils.Cache;
@@ -39,15 +38,13 @@ public class EditProfileSolo extends VBox {
     private final TextField updateFirstNameTextField = new TextField();
     private final TextField updateLastNameTextField = new TextField();
     private Circle profilePicImg;
-    private final UserDao userDao;
 
-    public EditProfileSolo(Solo solo, ProfileView profileView, UserDao userDao){
+    public EditProfileSolo(Solo solo, ProfileView profileView){
         this.solo = solo;
         this.profileView = profileView;
         this.setPadding(new Insets(25));
         this.setAlignment(Pos.CENTER);
-        this.userDao = userDao;
-        this.editProfileSoloController = new EditProfileSoloController(userDao);
+        this.editProfileSoloController = new EditProfileSoloController();
 
 
         HBox profilePicSection = buildProfilePicSection();
