@@ -12,8 +12,9 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Base64;
+import java.util.Objects;
 
-public class ImgBase64Test {
+class ImgBase64Test {
 
 
     @TempDir
@@ -23,14 +24,14 @@ public class ImgBase64Test {
     @BeforeEach
     public void setUp() throws Exception {
         imgPath = Paths.get(
-                ImgBase64Test.class.getClassLoader()
-                        .getResource("Gpus.jpg")
+                Objects.requireNonNull(ImgBase64Test.class.getClassLoader()
+                        .getResource("Gpus.jpg"))
                         .toURI()
         );
     }
 
     @Test
-    public void encode() throws IOException {
+    void encode() throws IOException {
 
         File created = new File(folder, "gpus");
         String encodedImage = ImgBase64Repo.encode(imgPath);
@@ -42,7 +43,7 @@ public class ImgBase64Test {
     }
 
     @Test
-    public void decode() throws IOException {
+    void decode() throws IOException {
         File toWrite = new File(folder, "testImg");
         String encodedImage = ImgBase64Repo.encode(imgPath);
 

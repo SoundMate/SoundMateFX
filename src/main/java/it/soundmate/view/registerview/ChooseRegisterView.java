@@ -2,15 +2,11 @@ package it.soundmate.view.registerview;
 
 import it.soundmate.constants.Style;
 import it.soundmate.controller.graphic.ChooseRegisterController;
-import it.soundmate.model.UserType;
-import it.soundmate.view.LoginView;
 import it.soundmate.view.UIUtils;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;

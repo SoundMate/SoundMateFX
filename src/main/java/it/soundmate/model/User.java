@@ -8,7 +8,6 @@ package it.soundmate.model;
 
 
 import java.io.File;
-import java.io.InputStream;
 import java.util.List;
 
 public abstract class User {

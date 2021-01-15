@@ -91,7 +91,7 @@ public class PowerUserDao {
         else {
             log.info("\n" + "Banned Users Email:");
             for (String str : banned) {
-                System.out.println(str + "\n");
+                log.info("{}", str);
             }
         }
     }

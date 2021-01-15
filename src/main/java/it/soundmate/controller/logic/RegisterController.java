@@ -9,8 +9,6 @@ package it.soundmate.controller.logic;
 
 import it.soundmate.bean.LoggedBean;
 import it.soundmate.bean.LoginBean;
-import it.soundmate.bean.registerbeans.RegisterBandBean;
-import it.soundmate.bean.registerbeans.RegisterRenterBean;
 import it.soundmate.bean.registerbeans.RegisterSoloBean;
 import it.soundmate.database.dao.SoloDao;
 import it.soundmate.database.dao.UserDao;
@@ -42,11 +40,11 @@ public class RegisterController {
         }
     }
 
-    public LoggedBean registerBand(RegisterBandBean registerBandBean) {
+    public LoggedBean registerBand() {
         return null;
     }
 
-    public LoggedBean registerRoomRenter(RegisterRenterBean registerRenterBean) {
+    public LoggedBean registerRoomRenter() {
         return null;
     }
 
