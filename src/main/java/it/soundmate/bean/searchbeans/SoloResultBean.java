@@ -9,10 +9,14 @@ package it.soundmate.bean.searchbeans;
 
 import it.soundmate.model.UserType;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class SoloResultBean extends UserResultBean {
 
     private final String firstName;
     private final String lastName;
+    private final List<String> genreList = new ArrayList<>();
 
     public SoloResultBean(int id, String email, String encodedProfileImg, String firstName, String lastName) {
         super(id, email, encodedProfileImg, UserType.SOLO);
@@ -27,5 +31,13 @@ public class SoloResultBean extends UserResultBean {
 
     public String getLastName() {
         return lastName;
+    }
+
+    public void setGenres(List<String> genreList) {
+        this.genreList.addAll(genreList);
+    }
+
+    public List<String> getGenreList() {
+        return genreList;
     }
 }

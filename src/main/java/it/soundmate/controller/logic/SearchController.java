@@ -22,22 +22,23 @@ public class SearchController {
         this.searchModel = new SearchModel();
     }
 
-    public List<UserResultBean> performSearch(String searchString, boolean[] filters) {
+    public List<UserResultBean> performSearch(String searchString, boolean[] filters, String[] advancedFilters) {
         List<UserResultBean> results = new ArrayList<>();
-        if (filtersAllTrue(filters) || filtersAllFalse(filters)) {
-            results.addAll(this.searchModel.searchByName(searchString));
+        if ((filtersAllTrue(filters) || filtersAllFalse(filters))) {
+            results.addAll(this.searchModel.searchByName(searchString, advancedFilters));
         } else {
+            boolean advancedFiltersSearchOff = this.advancedFiltersAllNull(advancedFilters);
             if (filters[0]) {
                 logger.info("Searching solos...");
-                results.addAll(this.searchModel.searchSolos(searchString));
+                results.addAll(this.searchModel.searchSolos(searchString, advancedFilters));
             }
             if (filters[1]) {
                 logger.info("Searching bands...");
-                results.addAll(this.searchModel.searchBands(searchString));
+                results.addAll(this.searchModel.searchBands());
             }
-            if (filters[2]) {
+            if (filters[2] && advancedFiltersSearchOff) {
                 logger.info("Searching rooms...");
-                results.addAll(this.searchModel.searchRooms(searchString));
+                results.addAll(this.searchModel.searchRooms());
             }
         }
         return results;
@@ -53,5 +54,10 @@ public class SearchController {
         return true;
     }
 
-
+    private boolean advancedFiltersAllNull(String[] advancedFilters) {
+        for (int i = 0; i < 3; i++) {
+            if (!advancedFilters[i].equals("")) return false;
+        }
+        return true;
+    }
 }

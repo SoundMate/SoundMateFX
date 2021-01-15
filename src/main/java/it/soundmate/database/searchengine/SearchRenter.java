@@ -14,7 +14,7 @@ import java.util.List;
 
 public class SearchRenter implements SearchEngine<RoomRenterResultBean> {
     @Override
-    public List<RoomRenterResultBean> searchForName(String name) {
+    public List<RoomRenterResultBean> searchByName(String name) {
         return new ArrayList<>();
     }
 }

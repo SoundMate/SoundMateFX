@@ -34,7 +34,7 @@ class SearchControllerTest {
     @Test
     void testPerformSearchSoloByName() {
         boolean[] soloFilter = {true, false, false};
-        userResultBeanList.addAll(searchController.performSearch("Lo", soloFilter));
+        userResultBeanList.addAll(searchController.performSearch("Lo", soloFilter, null));
         assertFalse(userResultBeanList.isEmpty());
     }
 }

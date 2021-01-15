@@ -26,16 +26,36 @@ public class SearchModel {
         }
     }
 
-    public List<UserResultBean> searchByName(String searchString) {
+    /**
+     * SearchByName
+     *
+     * Searches among Solos, Bands and Room Renters
+     * considering only advanced filters.
+     **/
+    public List<UserResultBean> searchByName(String searchString, String[] advancedFilters) {
         List<UserResultBean> results = new ArrayList<>();
-        results.addAll(searchSolos(searchString));
-        results.addAll(searchBands(searchString));
-        results.addAll(searchRooms(searchString));  //Threads?
+        results.addAll(searchSolos(searchString, advancedFilters));
+        results.addAll(searchBands());
+        results.addAll(searchRooms());
         return results;
     }
 
-    public List<SoloResultBean> searchSolos(String searchString)  {
-        SearchSolo searchSolo = new SearchSolo(searchString, this.connection);
+    /**
+     * Search Solos
+     *
+     * Create thread "SearchSolo" and call its run method
+     * with parameters searchString and db connection.
+     * Start the thread and then join when it's done.
+     * @param searchString: String taken from the searchTextField;
+     * @param advancedFilters: Advanced filters (Genre, Instrument, City);
+     * @return List of the soloBeans that matches the searchString and advancedFilters, null if none.
+     * */
+    public List<SoloResultBean> searchSolos(String searchString, String[] advancedFilters)  {
+        SearchSolo searchSolo;
+        if (searchString.equals("")) {
+             searchSolo = new SearchSolo(null, this.connection, advancedFilters);
+        }
+        else searchSolo = new SearchSolo(searchString, this.connection, advancedFilters);
         Thread searchThread = new Thread(searchSolo);
         searchThread.start();
         try {
@@ -47,12 +67,12 @@ public class SearchModel {
         return searchSolo.getResults();
     }
 
-    public List<BandResultBean> searchBands(String searchString) {
+    public List<BandResultBean> searchBands() {
         //Perform search in bands
         return new ArrayList<>();
     }
 
-    public List<RoomRenterResultBean> searchRooms(String searchString) {
+    public List<RoomRenterResultBean> searchRooms() {
         //Perform search in rooms
         return new ArrayList<>();
     }

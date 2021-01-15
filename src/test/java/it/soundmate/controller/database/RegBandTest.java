@@ -25,6 +25,4 @@ class RegBandTest {
         userDao.deleteAll();
     }
 
-
-
 }

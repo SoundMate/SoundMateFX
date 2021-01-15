@@ -2,7 +2,8 @@ package it.soundmate.view.search;
 
 import it.soundmate.bean.searchbeans.UserResultBean;
 import it.soundmate.constants.Style;
-import it.soundmate.controller.logic.SearchController;
+import it.soundmate.controller.graphic.search.DefaultSearchGraphicController;
+import it.soundmate.exceptions.InputException;
 import it.soundmate.model.Genre;
 import it.soundmate.view.UIUtils;
 import it.soundmate.view.main.SearchView;
@@ -21,7 +22,6 @@ import java.util.List;
 
 public class DefaultSearchView extends BorderPane {
 
-    private final SearchController searchController = new SearchController();
     private static final Logger logger = LoggerFactory.getLogger(DefaultSearchView.class);
     private final SearchView searchView;
 
@@ -33,9 +33,7 @@ public class DefaultSearchView extends BorderPane {
     private final VBox resultsVBox = new VBox();
 
     //Advanced Filters
-    private final ComboBox<Label> genresComboBox = new ComboBox<>();
-    private final ComboBox<Label> instrumentsComboBox = new ComboBox<>();
-    private final ComboBox<Label> cityComboBox = new ComboBox<>();
+    List<ComboBox<Label>> advancedFilters = new ArrayList<>();
 
 
     public DefaultSearchView(SearchView searchView) {
@@ -90,36 +88,43 @@ public class DefaultSearchView extends BorderPane {
         filtersHBox.setAlignment(Pos.CENTER);
         filtersHBox.setSpacing(20);
 
-        //City comboBox
-        this.cityComboBox.setPromptText("City");
-        this.cityComboBox.getItems().add(new Label("Rome, IT"));
+        ComboBox<Label> genresComboBox = buildGenresComboBox();
+        ComboBox<Label> instrumentsComboBox = new ComboBox<>();
+        ComboBox<Label> cityComboBox = new ComboBox<>();
 
-        //Genres ComboBox
-        buildGenresComboBox();
+        //City comboBox
+        cityComboBox.setPromptText("City");
+        cityComboBox.getItems().add(new Label("Rome, IT"));
 
         //Instrument ComboBox
-        this.instrumentsComboBox.setPromptText("Instruments");
-        this.instrumentsComboBox.getItems().add(new Label("Guitar"));
-        this.instrumentsComboBox.getItems().add(new Label("Drums"));
+        instrumentsComboBox.setPromptText("Instruments");
+        instrumentsComboBox.getItems().add(new Label("Guitar"));
+        instrumentsComboBox.getItems().add(new Label("Drums"));
+
+        this.advancedFilters.add(genresComboBox);
+        this.advancedFilters.add(instrumentsComboBox);
+        this.advancedFilters.add(cityComboBox);
 
 
         Label label = new Label("Filter by: ");
         label.setStyle(Style.MID_LABEL);
-        filtersHBox.getChildren().addAll(label, this.genresComboBox);
+        filtersHBox.getChildren().addAll(label, genresComboBox);
         UIUtils.addRegion(null, filtersHBox);
-        filtersHBox.getChildren().add(this.instrumentsComboBox);
+        filtersHBox.getChildren().add(instrumentsComboBox);
         UIUtils.addRegion(null, filtersHBox);
-        filtersHBox.getChildren().add(this.cityComboBox);
+        filtersHBox.getChildren().add(cityComboBox);
         return filtersHBox;
     }
 
-    private void buildGenresComboBox() {
-        this.genresComboBox.setPromptText("Genres");
-        this.genresComboBox.setVisibleRowCount(5);
+    private ComboBox<Label> buildGenresComboBox() {
+        ComboBox<Label> genresComboBox = new ComboBox<>();
+        genresComboBox.setPromptText("Genres");
+        genresComboBox.setVisibleRowCount(5);
         for (Genre genre : Genre.values()) {
             Label genreLabel = new Label(genre.name());
-            this.genresComboBox.getItems().add(genreLabel);
+            genresComboBox.getItems().add(genreLabel);
         }
+        return genresComboBox;
     }
 
     private HBox buildFiltersHBox() {
@@ -173,33 +178,22 @@ public class DefaultSearchView extends BorderPane {
             resultsVBox.getChildren().clear();
             resultsVBox.setPrefHeight(USE_COMPUTED_SIZE);
             logger.info("Search Clicked");
-            if (searchTextField.getText().isEmpty()) {  //Se la textfield è vuota non fa nessuna ricerca
-                logger.error("Empty text fields");
-                searchTextField.setPromptText("Try to search for Musicians, Bands or Rooms...");
-                return;
-            }
 
             Label loadingLabel = new Label("Loading results...");
             loadingLabel.setStyle(Style.LOW_LABEL);
             resultsVBox.getChildren().add(loadingLabel);
 
-            List<UserResultBean> results = searchController.performSearch(searchTextField.getText(), getFilterValues(filters));
-            logger.info("Done Search");
-            if (results == null || results.isEmpty()) {
+            DefaultSearchGraphicController searchGraphicController = new DefaultSearchGraphicController(filters, advancedFilters);
+            try {
+                List<UserResultBean> results = searchGraphicController.performSearch(searchTextField.getText());
+                buildResultsScreen(results);
+            } catch (InputException inputException) {
+                logger.error("Input Exception: {}", inputException.getMessage());
                 resultsVBox.getChildren().remove(loadingLabel);
                 buildNoResultsScreen();
-            } else {
-                buildResultsScreen(results);
             }
         }
 
-        private boolean[] getFilterValues(List<RadioButton> filters) {
-            boolean[] values = new boolean[3];
-            for (int i = 0; i < 3; i++) {
-                values[i] = filters.get(i).isSelected();
-            }
-            return values;
-        }
 
         private void buildResultsScreen(List<UserResultBean> results) {
             ResultsView resultsView = new ResultsView(results, searchView);

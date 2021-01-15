@@ -10,5 +10,5 @@ package it.soundmate.database.searchengine;
 import java.util.List;
 
 public interface SearchEngine<T> {
-    List<T> searchForName(String name);
+    List<T> searchByName(String name);
 }

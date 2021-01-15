@@ -13,7 +13,7 @@ import java.util.List;
 
 public class SearchBand implements SearchEngine<BandResultBean> {
     @Override
-    public List<BandResultBean> searchForName(String name) {
+    public List<BandResultBean> searchByName(String name) {
         return new ArrayList<>();
     }
 }
