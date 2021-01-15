@@ -12,18 +12,10 @@ import org.slf4j.LoggerFactory;
 
 public class SearchView extends Pane {
 
-    private static SearchView instance = null;
     private static final Logger logger = LoggerFactory.getLogger(SearchView.class);
 
-    private BorderPane searchBorderPane;
-    private VBox contentVBox;
-
-    public static SearchView getInstance(){
-        if (instance == null) {
-            instance = new SearchView();
-        }
-        return instance;
-    }
+    private final BorderPane searchBorderPane;
+    private final VBox contentVBox;
 
     public BorderPane getSearchBorderPane() {
         return searchBorderPane;
@@ -37,12 +29,12 @@ public class SearchView extends Pane {
         this.contentVBox = new VBox();
         this.contentVBox.setAlignment(Pos.TOP_CENTER);
         UIUtils.setBackgroundPane("#232323", this.contentVBox);
-        this.searchBorderPane = new DefaultSearchView().getDefaultSVBorderPane();
+        this.searchBorderPane = new DefaultSearchView(this);
         this.contentVBox.getChildren().add(this.searchBorderPane);
     }
 
     public void setMapView() {
-        this.contentVBox.getChildren().set(0, new MapSearchView().getSearchMapBorderPane());
+        this.contentVBox.getChildren().set(0, new MapSearchView(this));
         logger.info("Search Map Page set");
     }
 

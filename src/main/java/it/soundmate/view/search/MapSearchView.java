@@ -1,6 +1,7 @@
 package it.soundmate.view.search;
 
 import it.soundmate.constants.Style;
+import it.soundmate.controller.graphic.search.MapSearchGraphicController;
 import it.soundmate.view.UIUtils;
 import it.soundmate.view.main.SearchView;
 import javafx.event.ActionEvent;
@@ -16,30 +17,26 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 
-public class MapSearchView extends Pane {
+public class MapSearchView extends BorderPane {
 
+    private final SearchView searchView;
+    private final MapSearchGraphicController mapSearchGraphicController = new MapSearchGraphicController();
     private static final Logger logger = LoggerFactory.getLogger(MapSearchView.class);
 
-    private BorderPane searchMapBorderPane;
-    private TextField searchMapTextField = new TextField();
-    private Button searchMapBtn = UIUtils.createStyledButton("Search on Map", new SearchOnMapAction());
+    private final TextField searchMapTextField = new TextField();
+    private final Button searchMapBtn = UIUtils.createStyledButton("Search on Map", new SearchOnMapAction());
 
-    public MapSearchView() {
-        this.searchMapBorderPane = buildSearchMapBorderPane();
+    public MapSearchView(SearchView searchView) {
+        buildSearchMapBorderPane();
+        this.searchView = searchView;
     }
 
-    public BorderPane getSearchMapBorderPane() {
-        return searchMapBorderPane;
-    }
-
-    private BorderPane buildSearchMapBorderPane() {
-        BorderPane borderPane = new BorderPane();
-        UIUtils.setBackgroundPane("#232323", borderPane);
+    private void buildSearchMapBorderPane() {
+        UIUtils.setBackgroundPane("#232323", this);
         Node top = buildTopNode();
         Node center = buildCenterNode();
-        borderPane.setTop(top);
-        borderPane.setCenter(center);
-        return borderPane;
+        this.setTop(top);
+        this.setCenter(center);
     }
 
     private Node buildCenterNode() {
@@ -82,7 +79,7 @@ public class MapSearchView extends Pane {
         @Override
         public void handle(ActionEvent event) {
             logger.info("Back Clicked");
-            SearchView.getInstance().setDefaultView();
+            mapSearchGraphicController.backNavigation(searchView);
         }
     }
 }

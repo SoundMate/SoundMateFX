@@ -8,6 +8,7 @@ package it.soundmate.view.search;
 
 import it.soundmate.bean.searchbeans.SoloResultBean;
 import it.soundmate.bean.searchbeans.UserResultBean;
+import it.soundmate.view.main.SearchView;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 
@@ -18,7 +19,7 @@ public class ResultsView {
 
     private final SoloResults soloResults;
 
-    public ResultsView(List<UserResultBean> userList) {
+    public ResultsView(List<UserResultBean> userList, SearchView searchView) {
         List<SoloResultBean> soloList = new ArrayList<>();
         for (UserResultBean user : userList) {
             switch (user.getUserType()) {
@@ -31,7 +32,7 @@ public class ResultsView {
             }
         }
         ObservableList<SoloResultBean> soloObservableList = FXCollections.observableArrayList(soloList);
-        this.soloResults = new SoloResults();
+        this.soloResults = new SoloResults(searchView);
         this.soloResults.setItems(soloObservableList);
     }
 

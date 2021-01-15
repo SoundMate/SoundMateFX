@@ -19,12 +19,12 @@ import org.slf4j.LoggerFactory;
 import java.util.ArrayList;
 import java.util.List;
 
-public class DefaultSearchView extends Pane {
+public class DefaultSearchView extends BorderPane {
 
     private final SearchController searchController = new SearchController();
     private static final Logger logger = LoggerFactory.getLogger(DefaultSearchView.class);
+    private final SearchView searchView;
 
-    private final BorderPane defaultSVBorderPane;
     private final TextField searchTextField = new TextField();
     private final Button searchBtn = new Button();
     private final Button searchOnMapBtn = new Button();
@@ -38,17 +38,17 @@ public class DefaultSearchView extends Pane {
     private final ComboBox<Label> cityComboBox = new ComboBox<>();
 
 
-    public DefaultSearchView() {
-        this.defaultSVBorderPane = buildDefaultView();
+    public DefaultSearchView(SearchView searchView) {
+        this.searchView = searchView;
+        buildDefaultView();
     }
 
     private BorderPane buildDefaultView() {
-        BorderPane defaultSearchPane = new BorderPane();
-        UIUtils.setBackgroundPane("#232323", defaultSearchPane);
+        UIUtils.setBackgroundPane("#232323", this);
 
         Node top = buildTopSearchBar();
-        defaultSearchPane.setTop(top);
-        defaultSearchPane.setCenter(resultsScrollPane);
+        this.setTop(top);
+        this.setCenter(resultsScrollPane);
 
         this.resultsScrollPane.setStyle("-fx-background: #232323; -fx-background-color: #232323; -fx-border-color: #232323");
         this.resultsScrollPane.setContent(this.resultsVBox);
@@ -61,7 +61,7 @@ public class DefaultSearchView extends Pane {
         this.resultsVBox.setPrefHeight(USE_COMPUTED_SIZE);
         this.resultsVBox.setPrefWidth(USE_COMPUTED_SIZE);
 
-        return defaultSearchPane;
+        return this;
     }
 
     private Node buildTopSearchBar() {
@@ -120,7 +120,6 @@ public class DefaultSearchView extends Pane {
             Label genreLabel = new Label(genre.name());
             this.genresComboBox.getItems().add(genreLabel);
         }
-        this.genresComboBox.setStyle("-fx-background-color: black; -fx-text-fill: white");
     }
 
     private HBox buildFiltersHBox() {
@@ -167,9 +166,6 @@ public class DefaultSearchView extends Pane {
         return hBox;
     }
 
-    public BorderPane getDefaultSVBorderPane() {
-        return defaultSVBorderPane;
-    }
 
     private class SearchAction implements EventHandler<ActionEvent> {
         @Override
@@ -206,7 +202,7 @@ public class DefaultSearchView extends Pane {
         }
 
         private void buildResultsScreen(List<UserResultBean> results) {
-            ResultsView resultsView = new ResultsView(results);
+            ResultsView resultsView = new ResultsView(results, searchView);
             resultsVBox.getChildren().clear();
 
             Label bandResultsLabel = new Label("Bands");
@@ -243,11 +239,11 @@ public class DefaultSearchView extends Pane {
     }
 
 
-    private static class SearchMapAction implements EventHandler<ActionEvent> {
+    private class SearchMapAction implements EventHandler<ActionEvent> {
         @Override
         public void handle(ActionEvent event) {
             logger.info("Search on Map clicked");
-            SearchView.getInstance().setMapView();
+            searchView.setMapView();
         }
     }
 }
