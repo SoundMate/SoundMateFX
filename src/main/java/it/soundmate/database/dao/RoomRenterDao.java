@@ -40,8 +40,8 @@ public class RoomRenterDao {
                     " -- ON     CONFLICT DO NOTHING         -- optional addition in Postgres 9.5+\n" +
                     "         RETURNING id AS sample_id\n" +
                     " ), ins2 AS (\n" +
-                    "     INSERT INTO users (id, encoded_profile_img)\n" +
-                    "         SELECT sample_id, ? FROM ins1\n" +
+                    "     INSERT INTO users (id)\n" +
+                    "         SELECT sample_id FROM ins1\n" +
                     " )\n" +
                     "INSERT INTO room_manager (id, first_name, last_name)\n" +
                     "SELECT sample_id, ?, ? FROM ins1;";
@@ -52,9 +52,8 @@ public class RoomRenterDao {
                 pstmt.setString(1, rentBean.getEmail());
                 pstmt.setString(2, rentBean.getPassword());
                 pstmt.setString(3, rentBean.getUserType().toString());
-                pstmt.setString(4, "profileImg");
-                pstmt.setString(5, rentBean.getFirstName());
-                pstmt.setString(6, rentBean.getLastName());
+                pstmt.setString(4, rentBean.getFirstName());
+                pstmt.setString(5, rentBean.getLastName());
 
                 int rowAffected = pstmt.executeUpdate();
                 if (rowAffected == 1) {

@@ -33,7 +33,7 @@ public class DefaultSearchView extends BorderPane {
     private final VBox resultsVBox = new VBox();
 
     //Advanced Filters
-    List<ComboBox<Label>> advancedFilters = new ArrayList<>();
+    private final List<ComboBox<Label>> advancedFilters = new ArrayList<>();
 
 
     public DefaultSearchView(SearchView searchView) {
@@ -95,11 +95,13 @@ public class DefaultSearchView extends BorderPane {
         //City comboBox
         cityComboBox.setPromptText("City");
         cityComboBox.getItems().add(new Label("Rome, IT"));
+        cityComboBox.setStyle("-fx-background-color: black");
 
         //Instrument ComboBox
         instrumentsComboBox.setPromptText("Instruments");
         instrumentsComboBox.getItems().add(new Label("Guitar"));
         instrumentsComboBox.getItems().add(new Label("Drums"));
+        instrumentsComboBox.setStyle("-fx-background-color: black");
 
         this.advancedFilters.add(genresComboBox);
         this.advancedFilters.add(instrumentsComboBox);
@@ -124,6 +126,7 @@ public class DefaultSearchView extends BorderPane {
             Label genreLabel = new Label(genre.name());
             genresComboBox.getItems().add(genreLabel);
         }
+        genresComboBox.setStyle("-fx-background-color: black");
         return genresComboBox;
     }
 

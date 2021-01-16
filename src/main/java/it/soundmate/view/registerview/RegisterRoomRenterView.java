@@ -24,10 +24,14 @@ public class RegisterRoomRenterView extends BorderPane {
     private final TextField emailTextField = new TextField();
     private final TextField passwordTextField = new TextField();
     private final TextField roomRenterNameTextField = new TextField();
+    private final TextField firstNameTextField = new TextField();
+    private final TextField lastNameTextField = new TextField();
+    private final TextField addressTextField = new TextField();
+    private final TextField cityTextField = new TextField();
     //Aggiungere selezione città e via (tramite gmaps api)
 
     public RegisterRoomRenterView(){
-        VBox fieldsVBox = buildFieldsVBox();
+        VBox fieldsVBox = buildFieldsHBox();
         UIUtils.setBackgroundPane("#232323", fieldsVBox);
 
         //Label
@@ -39,22 +43,58 @@ public class RegisterRoomRenterView extends BorderPane {
         this.setCenter(fieldsVBox);
     }
 
-    private VBox buildFieldsVBox() {
-        VBox fieldsVBox = RegisterView.styleVBoxFields();
+    private VBox buildFieldsHBox() {
+        VBox allVBox = new VBox();
+        allVBox.setAlignment(Pos.CENTER);
+        allVBox.setPrefWidth(USE_COMPUTED_SIZE);
+        allVBox.setPrefHeight(USE_COMPUTED_SIZE);
+        allVBox.setSpacing(30);
+
+        HBox fieldsHBox = new HBox();
+        fieldsHBox.setSpacing(20);
+        fieldsHBox.setAlignment(Pos.CENTER);
 
         VBox emailVBox = UIUtils.textFieldWithLabel("Email", this.emailTextField);
         VBox passwordVBox = UIUtils.textFieldWithLabel("Password", this.passwordTextField);
+        VBox firstNameVBox = UIUtils.textFieldWithLabel("First Name", this.firstNameTextField);
+        VBox lastNameVBox = UIUtils.textFieldWithLabel("Last Name", this.lastNameTextField);
+
+        HBox emailAndPasswordHBox = RegisterView.createEmailAndPasswordHBox(emailVBox, passwordVBox);
+        HBox firstAndLastNameHBox = RegisterView.createEmailAndPasswordHBox(firstNameVBox, lastNameVBox);
+
+        //Email, password, first name, last name
+        VBox userFields = new VBox();
+        userFields.setAlignment(Pos.CENTER);
+        userFields.setPrefWidth(USE_COMPUTED_SIZE);
+        userFields.setPrefHeight(USE_COMPUTED_SIZE);
+        userFields.setSpacing(10);
+
+        //Room renter name, city, address
+        VBox addressAndNameVBox = new VBox();
+        addressAndNameVBox.setAlignment(Pos.CENTER);
+        addressAndNameVBox.setPrefWidth(USE_COMPUTED_SIZE);
+        addressAndNameVBox.setPrefHeight(USE_COMPUTED_SIZE);
+        addressAndNameVBox.setSpacing(10);
+
         this.roomRenterNameTextField.setStyle(Style.TEXT_FIELD_REGISTER);
         this.roomRenterNameTextField.setPromptText("Room Renter Name...");
         this.roomRenterNameTextField.setPrefWidth(250);
         this.roomRenterNameTextField.setAlignment(Pos.CENTER);
 
-        HBox emailAndPassword = RegisterView.createEmailAndPasswordHBox(emailVBox, passwordVBox);
+        VBox cityVBox = UIUtils.textFieldWithLabel("City", this.cityTextField);
+        VBox addressVBox = UIUtils.textFieldWithLabel("Address", this.addressTextField);
+        HBox cityAndAddressHBox = RegisterView.createEmailAndPasswordHBox(cityVBox, addressVBox);
 
+        addressAndNameVBox.getChildren().addAll(this.roomRenterNameTextField, cityAndAddressHBox);
+
+        //Buttons
         Button registerBtn = UIUtils.createStyledButton("Register", new RegisterAction());
-        registerBtn.setPrefWidth(200);
-        fieldsVBox.getChildren().addAll(emailAndPassword, this.roomRenterNameTextField, registerBtn);
-        return fieldsVBox;
+        registerBtn.setPrefWidth(300);
+
+        userFields.getChildren().addAll(emailAndPasswordHBox, firstAndLastNameHBox);
+        fieldsHBox.getChildren().addAll(userFields, addressAndNameVBox);
+        allVBox.getChildren().addAll(fieldsHBox , registerBtn);
+        return allVBox;
     }
 
 
