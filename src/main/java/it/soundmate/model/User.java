@@ -10,14 +10,23 @@ package it.soundmate.model;
 import java.io.File;
 import java.util.List;
 
-public abstract class User {
+public class User {
+
     private int id;
     private String email;
     private String password;
-    private String country;
+    private String city;
     private List<File> photos;
     private String encodedImg;
 
+    public User(){}
+
+    public User(int id, String email, String password, String city) {
+        this.id = id;
+        this.email = email;
+        this.password = password;
+        this.city = city;
+    }
 
     public String getEmail() {
         return email;
@@ -44,14 +53,16 @@ public abstract class User {
     }
 
     public String getCountry() {
-        return country;
+        return city;
     }
 
-    public void setCountry(String country) {
-        this.country = country;
+    public void setCountry(String city) {
+        this.city = city;
     }
 
-    public abstract UserType getUserType();
+    public UserType getUserType() {
+        return null;
+    }
 
     public List<File> getPhotos() {
         return photos;

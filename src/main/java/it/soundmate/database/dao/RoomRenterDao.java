@@ -2,8 +2,11 @@ package it.soundmate.database.dao;
 
 import it.soundmate.bean.registerbeans.RegisterRenterBean;
 import it.soundmate.database.Connector;
+import it.soundmate.database.dbexceptions.DBException;
+import it.soundmate.database.dbexceptions.DuplicatedEmailException;
 import it.soundmate.database.dbexceptions.RepositoryException;
 import it.soundmate.model.RoomRenter;
+import it.soundmate.model.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -22,17 +25,14 @@ public class RoomRenterDao {
         this.userDao = userDao;
     }
 
-    public int regiRoomRenterController(RegisterRenterBean rentBean){
-
+    public int registerRoomRenter(RegisterRenterBean rentBean){
         ResultSet resultSet;
-
-        int userID = 0;
         if (userDao.checkIfBanned(rentBean.getEmail())){
             log.error(ACC_BANNED_ERR);
-            return -1;
+            throw new DBException("Account banned");
         }else if (userDao.checkEmailBoolean(rentBean.getEmail())){
             log.error(EMAIL_EXISTS_ERR);
-            return -2;
+            throw new DuplicatedEmailException("Duplicated email "+rentBean.getEmail());
         } else {
             String sql = " WITH ins1 AS (\n" +
                     "     INSERT INTO registered_users (email, password, user_type)\n" +
@@ -43,56 +43,61 @@ public class RoomRenterDao {
                     "     INSERT INTO users (id)\n" +
                     "         SELECT sample_id FROM ins1\n" +
                     " )\n" +
-                    "INSERT INTO room_manager (id, first_name, last_name)\n" +
-                    "SELECT sample_id, ?, ? FROM ins1;";
+                    "INSERT INTO room_renter (id, first_name, last_name, name, city, address)\n" +
+                    "SELECT sample_id, ?, ?, ?, ?, ? FROM ins1;";
 
             try (Connection conn = connector.getConnection();
-                 PreparedStatement pstmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
+                 PreparedStatement preparedStmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
 
-                pstmt.setString(1, rentBean.getEmail());
-                pstmt.setString(2, rentBean.getPassword());
-                pstmt.setString(3, rentBean.getUserType().toString());
-                pstmt.setString(4, rentBean.getFirstName());
-                pstmt.setString(5, rentBean.getLastName());
+                preparedStmt.setString(1, rentBean.getEmail());
+                preparedStmt.setString(2, rentBean.getPassword());
+                preparedStmt.setString(3, rentBean.getUserType().toString());
+                preparedStmt.setString(4, rentBean.getFirstName());
+                preparedStmt.setString(5, rentBean.getLastName());
+                preparedStmt.setString(6, rentBean.getName());
+                preparedStmt.setString(7, rentBean.getCity());
+                preparedStmt.setString(8, rentBean.getAddress());
 
-                int rowAffected = pstmt.executeUpdate();
+                int rowAffected = preparedStmt.executeUpdate();
                 if (rowAffected == 1) {
-
-                    resultSet = pstmt.getGeneratedKeys();
-                    if (resultSet.next())
-                        userID = resultSet.getInt(1);
-                }
+                    resultSet = preparedStmt.getGeneratedKeys();
+                    if (resultSet.next()) {
+                        return resultSet.getInt(1);
+                    }
+                    else throw new RepositoryException(ERR_INSERT + "Result Set");
+                } else throw new RepositoryException(ERR_INSERT + "Row affected != 1");
             } catch (SQLException ex) {
                 throw new RepositoryException(ERR_INSERT, ex);
-            } return userID;
+            }
         }
     }
 
     public RoomRenter getRenterByID(int id) {
         ResultSet resultSet;
-        RoomRenter roomRenter = new RoomRenter();
-        String query = "SELECT email, password, encoded_profile_img, age, first_name, last_name\n" +
+        String query = "SELECT users.id, email, password, encoded_profile_img, first_name, last_name, name, city, address\n" +
                 " FROM registered_users LEFT OUTER JOIN users ON (registered_users.id = users.id)\n" +
-                " INNER JOIN solo ON (registered_users.id = solo.id) WHERE registered_users.id = ?";
+                " INNER JOIN room_renter rr on users.id = rr.id WHERE registered_users.id = ?";
 
         try (PreparedStatement preparedStatement = connector.getConnection()
                 .prepareStatement(query)) {
-
             preparedStatement.setInt(1, id);
             resultSet = preparedStatement.executeQuery();
-
-            while(resultSet.next()){
-                roomRenter.setId(id);
-                roomRenter.setEmail(resultSet.getString("email"));
-                roomRenter.setPassword(resultSet.getString("password"));
-                roomRenter.setEncodedImg(resultSet.getString("encoded_profile_img"));
-                roomRenter.setFirstName(resultSet.getString("first_name"));
-                roomRenter.setLastName(resultSet.getString("last_name"));
+            if (resultSet.next()){
+                int userId = resultSet.getInt(1);
+                String email = resultSet.getString("email");
+                String password = resultSet.getString("password");
+                String firstName = resultSet.getString("first_name");
+                String lastName = resultSet.getString("last_name");
+                String name = resultSet.getString("name");
+                String city = resultSet.getString("city");
+                String address = resultSet.getString("address");
+                User user = new User(userId, email, password, city);
+                return new RoomRenter(user, firstName, lastName, name, address);
+            } else {
+                throw new RepositoryException("Error ResultSet in getRenterByID");
             }
-        }catch (SQLException exc) {
+        } catch (SQLException exc) {
             throw new RepositoryException("Err Fetching User", exc);
-        }return roomRenter;
+        }
     }
-
-
 }

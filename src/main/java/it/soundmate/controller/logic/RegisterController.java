@@ -9,10 +9,14 @@ package it.soundmate.controller.logic;
 
 import it.soundmate.bean.LoggedBean;
 import it.soundmate.bean.LoginBean;
+import it.soundmate.bean.registerbeans.RegisterRenterBean;
 import it.soundmate.bean.registerbeans.RegisterSoloBean;
+import it.soundmate.database.dao.RoomRenterDao;
 import it.soundmate.database.dao.SoloDao;
 import it.soundmate.database.dao.UserDao;
+import it.soundmate.database.dbexceptions.RepositoryException;
 import it.soundmate.exceptions.InputException;
+import it.soundmate.model.RoomRenter;
 import it.soundmate.model.Solo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -44,8 +48,16 @@ public class RegisterController {
         return null;
     }
 
-    public LoggedBean registerRoomRenter() {
-        return null;
+    public RoomRenter registerRoomRenter(RegisterRenterBean registerRenterBean) {
+        try {
+            RoomRenterDao roomRenterDao = new RoomRenterDao(userDao);
+            int id = roomRenterDao.registerRoomRenter(registerRenterBean);
+            LoginBean loginBean = new LoginBean(registerRenterBean.getEmail(), registerRenterBean.getPassword());
+            LoginController loginController = new LoginController(loginBean);
+            return loginController.getFullRenter(id);
+        } catch (RepositoryException repositoryException) {
+            throw new RepositoryException(repositoryException.getMessage());
+        }
     }
 
 }

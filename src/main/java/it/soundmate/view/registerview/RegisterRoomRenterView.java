@@ -6,7 +6,12 @@
 
 package it.soundmate.view.registerview;
 
+import it.soundmate.bean.registerbeans.RegisterRenterBean;
 import it.soundmate.constants.Style;
+import it.soundmate.controller.graphic.register.RegisterRenterGraphicController;
+import it.soundmate.database.dbexceptions.RepositoryException;
+import it.soundmate.exceptions.InputException;
+import it.soundmate.model.User;
 import it.soundmate.view.UIUtils;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
@@ -18,6 +23,9 @@ import javafx.scene.control.TextField;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
+import javafx.stage.Stage;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class RegisterRoomRenterView extends BorderPane {
 
@@ -28,7 +36,8 @@ public class RegisterRoomRenterView extends BorderPane {
     private final TextField lastNameTextField = new TextField();
     private final TextField addressTextField = new TextField();
     private final TextField cityTextField = new TextField();
-    //Aggiungere selezione città e via (tramite gmaps api)
+
+    private static final Logger logger = LoggerFactory.getLogger(RegisterRoomRenterView.class);
 
     public RegisterRoomRenterView(){
         VBox fieldsVBox = buildFieldsHBox();
@@ -101,7 +110,17 @@ public class RegisterRoomRenterView extends BorderPane {
     private class RegisterAction implements EventHandler<ActionEvent> {
         @Override
         public void handle(ActionEvent event) {
-            //Controller qua
+            RegisterRenterGraphicController registerRenterGraphicController = new RegisterRenterGraphicController();
+            RegisterRenterBean registerRenterBean = new RegisterRenterBean(emailTextField.getText(), passwordTextField.getText(), firstNameTextField.getText(),
+                    lastNameTextField.getText(), addressTextField.getText(), roomRenterNameTextField.getText(), cityTextField.getText());
+            try {
+                User user = registerRenterGraphicController.registerUser(registerRenterBean);
+                registerRenterGraphicController.navigateToMainView(user, (Stage) emailTextField.getScene().getWindow());
+            } catch (RepositoryException repositoryException) {
+                logger.error("Repository Exception: {}", repositoryException.getMessage());
+            } catch (InputException inputException) {
+                logger.error("Input Exception: {}", inputException.getMessage());
+            }
         }
     }
 }

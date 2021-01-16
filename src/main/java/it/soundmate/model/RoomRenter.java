@@ -17,17 +17,45 @@ public class RoomRenter extends User {
     private List<Room> rooms;
     private String firstName;
     private String lastName;
+    private String name;
+    private String city;
+    private String address;
     private static final UserType userType = ROOM_RENTER;
 
-
-    public RoomRenter() {
+    public RoomRenter(){
+        super();
     }
 
-    public RoomRenter(int id, String fName, String lName, String password){
-        super.setId(id);
-        this.setFirstName(fName);
-        this.setLastName(lName);
-        super.setPassword(password);
+    public RoomRenter(User user, String firstName, String lastName, String name, String address) {
+        super(user.getId(), user.getEmail(), user.getPassword(), user.getCountry());
+        this.address = address;
+        this.name = name;
+        this.firstName = firstName;
+        this.lastName = lastName;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getCity() {
+        return city;
+    }
+
+    public void setCity(String city) {
+        this.city = city;
+    }
+
+    public String getAddress() {
+        return address;
+    }
+
+    public void setAddress(String address) {
+        this.address = address;
     }
 
     public String getFirstName() {
