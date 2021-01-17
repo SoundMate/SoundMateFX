@@ -58,7 +58,7 @@ public class  Solo extends User {
         this.registryData.setCity(city);
     }
 
-    public String getCity(String city){
+    public String getCity(){
         return this.registryData.getCity();
     }
 
