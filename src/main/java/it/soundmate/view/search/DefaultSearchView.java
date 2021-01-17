@@ -23,6 +23,7 @@ import java.util.List;
 public class DefaultSearchView extends BorderPane {
 
     private static final Logger logger = LoggerFactory.getLogger(DefaultSearchView.class);
+    public static final String FX_BACKGROUND_COLOR_BLACK = "-fx-background-color: black";
     private final SearchView searchView;
 
     private final TextField searchTextField = new TextField();
@@ -95,13 +96,13 @@ public class DefaultSearchView extends BorderPane {
         //City comboBox
         cityComboBox.setPromptText("City");
         cityComboBox.getItems().add(new Label("Rome, IT"));
-        cityComboBox.setStyle("-fx-background-color: black");
+        cityComboBox.setStyle(FX_BACKGROUND_COLOR_BLACK);
 
         //Instrument ComboBox
         instrumentsComboBox.setPromptText("Instruments");
         instrumentsComboBox.getItems().add(new Label("Guitar"));
         instrumentsComboBox.getItems().add(new Label("Drums"));
-        instrumentsComboBox.setStyle("-fx-background-color: black");
+        instrumentsComboBox.setStyle(FX_BACKGROUND_COLOR_BLACK);
 
         this.advancedFilters.add(genresComboBox);
         this.advancedFilters.add(instrumentsComboBox);
@@ -126,7 +127,7 @@ public class DefaultSearchView extends BorderPane {
             Label genreLabel = new Label(genre.name());
             genresComboBox.getItems().add(genreLabel);
         }
-        genresComboBox.setStyle("-fx-background-color: black");
+        genresComboBox.setStyle(FX_BACKGROUND_COLOR_BLACK);
         return genresComboBox;
     }
 
