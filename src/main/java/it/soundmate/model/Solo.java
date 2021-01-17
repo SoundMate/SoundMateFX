@@ -6,6 +6,7 @@
 
 package it.soundmate.model;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import static it.soundmate.model.UserType.SOLO;
@@ -13,9 +14,7 @@ import static it.soundmate.model.UserType.SOLO;
 
 public class  Solo extends User {
 
-    private String firstName;
-    private String lastName;
-    private int age;
+    private AnagraphicData registryData = new AnagraphicData();
     private List<Band> bands;
     private List<Genre> favGenres;
     private List<String> instruments;
@@ -24,37 +23,43 @@ public class  Solo extends User {
     public Solo() {
     }
 
-    public Solo(int id, String fName, String lName, int age, String email, String password) {
+    public Solo(int id, AnagraphicData registryData, String email, String password) {
         super.setId(id);
-        this.firstName = fName;
-        this.lastName = lName;
         super.setEmail(email);
         super.setPassword(password);
-        this.age = age;
+        this.registryData = registryData;
     }
 
-    public String getFirstName() {
-        return firstName;
+    public void setFirstName(String firstName){
+        this.registryData.setFirstName(firstName);
     }
 
-    public void setFirstName(String firstName) {
-        this.firstName = firstName;
+    public String getFirstName(){
+        return this.registryData.getFirstName();
     }
 
-    public String getLastName() {
-        return lastName;
+    public void setLastName(String lastName){
+        this.registryData.setLastName(lastName);
     }
 
-    public void setLastName(String lastName) {
-        this.lastName = lastName;
+    public String getLastName(){
+        return this.registryData.getLastName();
     }
 
-    public int getAge() {
-        return age;
+    public void setAge(int age){
+        this.registryData.setAge(age);
     }
 
-    public void setAge(int age) {
-        this.age = age;
+    public int getAge(){
+        return this.registryData.getAge();
+    }
+
+    public void setCity(String city){
+        this.registryData.setCity(city);
+    }
+
+    public String getCity(String city){
+        return this.registryData.getCity();
     }
 
     public List<Band> getBands() {
@@ -70,7 +75,11 @@ public class  Solo extends User {
     }
 
     public void setFavGenres(List<Genre> favGenres) {
-        this.favGenres = favGenres;
+        this.favGenres = new ArrayList<>(favGenres);
+    }
+
+    public void addGenre(Genre genre) {
+        this.favGenres.add(genre);
     }
 
     public List<String> getInstruments() {
@@ -78,7 +87,7 @@ public class  Solo extends User {
     }
 
     public void setInstruments(List<String> instruments) {
-        this.instruments = instruments;
+        this.instruments = new ArrayList<>(instruments);
 
     }
     public void addInstruments(String instrument){
@@ -90,7 +99,4 @@ public class  Solo extends User {
         return userType;
     }
 
-    public void addGenre(Genre genre) {
-        this.favGenres.add(genre);
-    }
 }

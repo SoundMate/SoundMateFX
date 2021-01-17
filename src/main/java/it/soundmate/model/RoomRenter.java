@@ -7,6 +7,7 @@
 package it.soundmate.model;
 
 
+import java.util.ArrayList;
 import java.util.List;
 
 import static it.soundmate.model.UserType.ROOM_RENTER;
@@ -15,39 +16,26 @@ import static it.soundmate.model.UserType.ROOM_RENTER;
 public class RoomRenter extends User {
 
     private List<Room> rooms;
-    private String firstName;
-    private String lastName;
-    private String name;
-    private String city;
     private String address;
     private static final UserType userType = ROOM_RENTER;
+    private AnagraphicData registryData = new AnagraphicData();
 
     public RoomRenter(){
         super();
     }
 
-    public RoomRenter(User user, String firstName, String lastName, String name, String address) {
-        super(user.getId(), user.getEmail(), user.getPassword(), user.getCountry());
+    public RoomRenter(User user, String address, AnagraphicData registryData) {
+        super(user.getId(), user.getEmail(), user.getPassword());
         this.address = address;
-        this.name = name;
-        this.firstName = firstName;
-        this.lastName = lastName;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
+        this.registryData = registryData;
     }
 
     public String getCity() {
-        return city;
+        return this.registryData.getCity();
     }
 
     public void setCity(String city) {
-        this.city = city;
+        this.registryData.setCity(city);
     }
 
     public String getAddress() {
@@ -59,19 +47,19 @@ public class RoomRenter extends User {
     }
 
     public String getFirstName() {
-        return firstName;
+        return this.registryData.getFirstName();
     }
 
     public void setFirstName(String firstName) {
-        this.firstName = firstName;
+        this.registryData.setFirstName(firstName);
     }
 
     public String getLastName() {
-        return lastName;
+        return this.registryData.getLastName();
     }
 
     public void setLastName(String lastName) {
-        this.lastName = lastName;
+        this.registryData.setLastName(lastName);
     }
 
     public List<Room> getRooms() {
@@ -79,7 +67,7 @@ public class RoomRenter extends User {
     }
 
     public void setRooms(List<Room> rooms) {
-        this.rooms = rooms;
+        this.rooms = new ArrayList<>(rooms);
     }
 
     @Override
