@@ -4,6 +4,7 @@ import it.soundmate.bean.registerbeans.RegisterBandBean;
 import it.soundmate.bean.registerbeans.RegisterSoloBean;
 import it.soundmate.database.dao.SoloDao;
 import it.soundmate.database.dao.UserDao;
+import it.soundmate.model.AnagraphicData;
 import it.soundmate.model.Solo;
 import org.junit.jupiter.api.*;
 
@@ -16,7 +17,8 @@ class SoloDaoTest {
 
     static UserDao userDao = new UserDao();
     static SoloDao soloDao = new SoloDao(userDao);
-    static Solo solo = new Solo(0, "pippo", "pluto", 32, "pippo@", "asd");
+    static AnagraphicData registryData = new AnagraphicData("pippo", "pluto", 32, "Rome");
+    static Solo solo = new Solo(0, registryData, "pippo@", "asd");
 
     @BeforeAll
     static void setUp(){
