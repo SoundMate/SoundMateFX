@@ -100,14 +100,14 @@ create table room_manager
     last_name  text    not null
 );
 
-alter table room_manager
+alter table room_renter
     owner to postgres;
 
 create table room
 (
     id           integer              not null
         constraint room_room_manager_id_fk
-            references room_manager
+            references room_renter
             on update cascade on delete cascade,
     room_code    serial               not null
         constraint room_pk
@@ -127,7 +127,7 @@ create unique index room_room_code_uindex
     on room (room_code);
 
 create unique index room_manager_id_uindex
-    on room_manager (id);
+    on room_renter (id);
 
 create table banned_users
 (

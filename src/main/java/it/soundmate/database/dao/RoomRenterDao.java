@@ -42,7 +42,7 @@ public class RoomRenterDao {
                     "     INSERT INTO users (id)\n" +
                     "         SELECT sample_id FROM ins1\n" +
                     " )\n" +
-                    "INSERT INTO room_renter (id, first_name, last_name, name, city, address)\n" +
+                    "INSERT INTO room_renter (id, first_name, last_name, city, address)\n" +
                     "SELECT sample_id, ?, ?, ?, ?, ? FROM ins1;";
 
             try (Connection conn = connector.getConnection();
@@ -74,7 +74,7 @@ public class RoomRenterDao {
     public RoomRenter getRenterByID(int id) {
         RoomRenter roomRenter = new RoomRenter();
         ResultSet resultSet;
-        String query = "SELECT users.id, email, password, encoded_profile_img, first_name, last_name, name, city, address\n" +
+        String query = "SELECT users.id, email, password, encoded_profile_img, first_name, last_name\n" +
                 " FROM registered_users LEFT OUTER JOIN users ON (registered_users.id = users.id)\n" +
                 " INNER JOIN room_renter rr on users.id = rr.id WHERE registered_users.id = ?";
 

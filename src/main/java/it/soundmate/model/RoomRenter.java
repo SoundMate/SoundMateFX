@@ -24,8 +24,10 @@ public class RoomRenter extends User {
         super();
     }
 
-    public RoomRenter(User user, String address, AnagraphicData registryData) {
-        super(user.getId(), user.getEmail(), user.getPassword());
+    public RoomRenter(int id, String email, String password, String address, AnagraphicData registryData) {
+        super.setId(id);
+        super.setEmail(email);
+        super.setPassword(password);
         this.address = address;
         this.registryData = registryData;
     }
