@@ -5,6 +5,8 @@ import it.soundmate.database.Connector;
 import it.soundmate.database.dbexceptions.DBException;
 import it.soundmate.database.dbexceptions.DuplicatedEmailException;
 import it.soundmate.database.dbexceptions.RepositoryException;
+import it.soundmate.model.AnagraphicData;
+import it.soundmate.model.Room;
 import it.soundmate.model.RoomRenter;
 import it.soundmate.model.User;
 import org.slf4j.Logger;
@@ -73,6 +75,7 @@ public class RoomRenterDao {
     }
 
     public RoomRenter getRenterByID(int id) {
+        RoomRenter roomRenter = new RoomRenter();
         ResultSet resultSet;
         String query = "SELECT users.id, email, password, encoded_profile_img, first_name, last_name, name, city, address\n" +
                 " FROM registered_users LEFT OUTER JOIN users ON (registered_users.id = users.id)\n" +
@@ -83,16 +86,16 @@ public class RoomRenterDao {
             preparedStatement.setInt(1, id);
             resultSet = preparedStatement.executeQuery();
             if (resultSet.next()){
-                int userId = resultSet.getInt(1);
-                String email = resultSet.getString("email");
-                String password = resultSet.getString("password");
-                String firstName = resultSet.getString("first_name");
-                String lastName = resultSet.getString("last_name");
-                String name = resultSet.getString("name");
-                String city = resultSet.getString("city");
-                String address = resultSet.getString("address");
-                User user = new User(userId, email, password, city);
-                return new RoomRenter(user, firstName, lastName, name, address);
+                roomRenter.setId(resultSet.getInt("id"));
+                roomRenter.setEmail(resultSet.getString("email"));
+                roomRenter.setPassword(resultSet.getString("password"));
+                roomRenter.setEncodedImg(resultSet.getString("encoded_profile_img"));
+                roomRenter.setFirstName(resultSet.getString("first_name"));
+                roomRenter.setLastName(resultSet.getString("last_name"));
+                roomRenter.setCity(resultSet.getString("city"));
+                roomRenter.setAddress(resultSet.getString("address"));
+            return roomRenter;
+
             } else {
                 throw new RepositoryException("Error ResultSet in getRenterByID");
             }
