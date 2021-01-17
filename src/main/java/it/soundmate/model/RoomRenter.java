@@ -17,6 +17,7 @@ public class RoomRenter extends User {
 
     private List<Room> rooms;
     private String address;
+    private String name;
     private static final UserType userType = ROOM_RENTER;
     private AnagraphicData registryData = new AnagraphicData();
 
@@ -24,12 +25,21 @@ public class RoomRenter extends User {
         super();
     }
 
-    public RoomRenter(int id, String email, String password, String address, AnagraphicData registryData) {
+    public RoomRenter(int id, String email, String password, String address, String name, AnagraphicData registryData) {
         super.setId(id);
         super.setEmail(email);
         super.setPassword(password);
         this.address = address;
         this.registryData = registryData;
+        this.name = name;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 
     public String getCity() {

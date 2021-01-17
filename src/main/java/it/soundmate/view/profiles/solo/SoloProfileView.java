@@ -45,31 +45,7 @@ public class SoloProfileView extends VBox {
     }
 
     private HBox buildMediaSection() {
-        HBox mediaSection = new HBox();
-        mediaSection.setPadding(new Insets(25));
-        mediaSection.setAlignment(Pos.BOTTOM_CENTER);
-
-        VBox titleAndList = new VBox();
-        titleAndList.setAlignment(Pos.BOTTOM_LEFT);
-        titleAndList.setSpacing(10);
-
-        Label mediaTitleLabel = new Label("Photos");
-        mediaTitleLabel.setStyle(Style.MID_LABEL);
-        titleAndList.getChildren().add(mediaTitleLabel);
-
-        if (this.soloUser.getPhotos() != null && !this.soloUser.getPhotos().isEmpty()) {
-            //Display Photo List (Add children to this.photoList)
-        } else {
-            Label defaultString = new Label("Add photos in the manage media section");
-            defaultString.setStyle(Style.LOW_LABEL);
-            titleAndList.getChildren().add(defaultString);
-        }
-
-        Button manageMediaBtn = UIUtils.createStyledButton("Manage Media", new ManageMediaAction());
-        mediaSection.getChildren().add(titleAndList);
-        UIUtils.addRegion(null, mediaSection);
-        mediaSection.getChildren().add(manageMediaBtn);
-        return mediaSection;
+        return this.profileView.buildMediaHBox(soloUser, new ManageMediaAction());
     }
 
     private HBox buildBandsSection() {
@@ -93,8 +69,6 @@ public class SoloProfileView extends VBox {
             titleAndList.getChildren().add(defaultString);
         }
 
-        //private HBox bandsList;
-        //private HBox mediaList;
         Button searchBandsBtn = UIUtils.createStyledButton("Search Bands", new SearchBandAction());
         bandsSection.getChildren().add(titleAndList);
         UIUtils.addRegion(null, bandsSection);

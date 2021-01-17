@@ -42,7 +42,7 @@ public class RoomRenterDao {
                     "     INSERT INTO users (id)\n" +
                     "         SELECT sample_id FROM ins1\n" +
                     " )\n" +
-                    "INSERT INTO room_renter (id, first_name, last_name, city, address)\n" +
+                    "INSERT INTO room_renter (id, first_name, last_name, name, city, address)\n" +
                     "SELECT sample_id, ?, ?, ?, ?, ? FROM ins1;";
 
             try (Connection conn = connector.getConnection();
@@ -66,7 +66,7 @@ public class RoomRenterDao {
                     else throw new RepositoryException(ERR_INSERT + "Result Set");
                 } else throw new RepositoryException(ERR_INSERT + "Row affected != 1");
             } catch (SQLException ex) {
-                throw new RepositoryException(ERR_INSERT, ex);
+                throw new RepositoryException(ERR_INSERT + ex.getMessage(), ex);
             }
         }
     }
@@ -74,7 +74,7 @@ public class RoomRenterDao {
     public RoomRenter getRenterByID(int id) {
         RoomRenter roomRenter = new RoomRenter();
         ResultSet resultSet;
-        String query = "SELECT users.id, email, password, encoded_profile_img, first_name, last_name\n" +
+        String query = "SELECT users.id, email, password, encoded_profile_img, first_name, last_name, name, city, address\n" +
                 " FROM registered_users LEFT OUTER JOIN users ON (registered_users.id = users.id)\n" +
                 " INNER JOIN room_renter rr on users.id = rr.id WHERE registered_users.id = ?";
 
@@ -89,6 +89,7 @@ public class RoomRenterDao {
                 roomRenter.setEncodedImg(resultSet.getString("encoded_profile_img"));
                 roomRenter.setFirstName(resultSet.getString("first_name"));
                 roomRenter.setLastName(resultSet.getString("last_name"));
+                roomRenter.setName(resultSet.getString("name"));
                 roomRenter.setCity(resultSet.getString("city"));
                 roomRenter.setAddress(resultSet.getString("address"));
             return roomRenter;
