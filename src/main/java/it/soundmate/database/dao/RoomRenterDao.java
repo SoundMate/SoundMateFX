@@ -5,10 +5,7 @@ import it.soundmate.database.Connector;
 import it.soundmate.database.dbexceptions.DBException;
 import it.soundmate.database.dbexceptions.DuplicatedEmailException;
 import it.soundmate.database.dbexceptions.RepositoryException;
-import it.soundmate.model.AnagraphicData;
-import it.soundmate.model.Room;
 import it.soundmate.model.RoomRenter;
-import it.soundmate.model.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
