@@ -12,6 +12,8 @@ import it.soundmate.exceptions.UpdateException;
 import it.soundmate.model.RoomRenter;
 import it.soundmate.utils.Cache;
 import it.soundmate.utils.ImagePicker;
+import it.soundmate.view.main.ProfileView;
+import it.soundmate.view.profiles.renter.EditRenterView;
 import javafx.scene.shape.Rectangle;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -41,4 +43,7 @@ public class RoomRenterProfileGraphicController {
         }
     }
 
+    public void navigateToEditView(ProfileView profileView, RoomRenter roomRenter) {
+        profileView.setProfilePage(new EditRenterView(roomRenter, profileView));
+    }
 }

@@ -186,6 +186,7 @@ public class RenterProfileView extends VBox {
         @Override
         public void handle(ActionEvent event) {
             logger.info("Edit profile click");
+            roomRenterProfileGraphicController.navigateToEditView(profileView, roomRenter);
         }
     }
 
