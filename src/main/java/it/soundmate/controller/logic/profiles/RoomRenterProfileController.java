@@ -6,7 +6,6 @@
 
 package it.soundmate.controller.logic.profiles;
 
-import it.soundmate.database.dao.RoomRenterDao;
 import it.soundmate.database.dao.UserDao;
 import it.soundmate.exceptions.UpdateException;
 import it.soundmate.model.RoomRenter;
