@@ -1,10 +1,10 @@
 /*
  * Copyright (c) 2021.
- * Created by Lorenzo Pantano on 14/01/21, 20:05
- * Last edited: 14/01/21, 20:05
+ * Created by Lorenzo Pantano on 18/01/21, 18:06
+ * Last edited: 14/01/21, 23:03
  */
 
-package it.soundmate.controller.graphic;
+package it.soundmate.controller.graphic.profiles;
 
 import it.soundmate.controller.logic.SoloProfileController;
 import it.soundmate.exceptions.InputException;

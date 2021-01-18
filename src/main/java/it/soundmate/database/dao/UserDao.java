@@ -230,14 +230,14 @@ public class UserDao implements Dao<User> {
     }
 
 
-    public int updateProfilePic(User user, Path pathToImg){
+    public int updateProfilePic(int id, Path pathToImg){
 
         String query = "update users set encoded_profile_img = ? where id = ?";
         try (PreparedStatement preparedStatement = connector.getConnection().prepareStatement(query)) {
 
             String encodedImg = ImgBase64Repo.encode(pathToImg);
             preparedStatement.setString(1, encodedImg);
-            preparedStatement.setInt(2, user.getId());
+            preparedStatement.setInt(2, id);
             return preparedStatement.executeUpdate();
 
         } catch (SQLException e) {

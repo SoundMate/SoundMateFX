@@ -7,6 +7,9 @@
 package it.soundmate.view.profiles.renter;
 
 import it.soundmate.constants.Style;
+import it.soundmate.controller.graphic.profiles.RoomRenterProfileGraphicController;
+import it.soundmate.exceptions.InputException;
+import it.soundmate.exceptions.UpdateException;
 import it.soundmate.model.RoomRenter;
 import it.soundmate.utils.Cache;
 import it.soundmate.view.UIUtils;
@@ -28,9 +31,16 @@ import org.slf4j.LoggerFactory;
 
 public class RenterProfileView extends VBox {
 
+    private final RoomRenterProfileGraphicController roomRenterProfileGraphicController = new RoomRenterProfileGraphicController();
     private final ProfileView profileView;
     private final RoomRenter roomRenter;
     private static final Logger logger = LoggerFactory.getLogger(RenterProfileView.class);
+
+    //UI
+    private final Rectangle coverImg = new Rectangle();
+    private StackPane stackPane;
+    private final Button addCoverImgBtn = UIUtils.createStyledButton("Add cover image", new AddImageAction());
+
 
     public RenterProfileView(ProfileView profileView, RoomRenter roomRenter) {
         this.profileView = profileView;
@@ -39,7 +49,7 @@ public class RenterProfileView extends VBox {
     }
 
     private void buildRenterProfileView(RoomRenter roomRenter) {
-        StackPane stackPane = buildStackPane(roomRenter);
+        stackPane = buildStackPane(roomRenter);
         HBox userInfoVBox = buildUserInfoVBox(roomRenter);
         HBox photosHBox = buildPhotosHBox(roomRenter);
         HBox roomsHBox = buildRoomsHBox(roomRenter);
@@ -126,25 +136,23 @@ public class RenterProfileView extends VBox {
     }
 
     private StackPane buildStackPane(RoomRenter roomRenter) {
-        StackPane stackPane = new StackPane();
-        stackPane.setPrefHeight(175);
-        stackPane.setPrefWidth(USE_COMPUTED_SIZE);
-        stackPane.setAlignment(Pos.CENTER);
+        StackPane tempStackPane = new StackPane();
+        tempStackPane.setPrefHeight(175);
+        tempStackPane.setPrefWidth(USE_COMPUTED_SIZE);
+        tempStackPane.setAlignment(Pos.CENTER);
 
         //Profile Picture
-        Rectangle coverImg = new Rectangle();
         coverImg.setHeight(175);
         coverImg.setWidth(600);
         if (roomRenter.getEncodedImg() == null) {
-            stackPane.getChildren().add(coverImg);
-            Button addImgBtn = UIUtils.createStyledButton("Add cover image", new AddImageAction());
-            stackPane.getChildren().add(addImgBtn);
+            tempStackPane.getChildren().add(coverImg);
+            tempStackPane.getChildren().add(addCoverImgBtn);
         } else {
             Image image = new Image(Cache.getInstance().getProfilePicFromCache(roomRenter.getId()));
             coverImg.setFill(new ImagePattern(image));
         }
 
-        return stackPane;
+        return tempStackPane;
     }
 
 
@@ -152,6 +160,25 @@ public class RenterProfileView extends VBox {
         @Override
         public void handle(ActionEvent event) {
             logger.info("Add image btn clicked");
+            try {
+                roomRenterProfileGraphicController.addCoverImage(coverImg, roomRenter);
+            } catch (UpdateException updateException) {
+                logger.error("Update Exception: {}", updateException.getMessage());
+                updateUIErrorImage();
+            } catch (InputException inputException) {
+                logger.error("Input Exception: {}", inputException.getMessage());
+                updateUIErrorImage();
+            }
+        }
+
+        private void updateUIErrorImage() {
+            stackPane.getChildren().remove(addCoverImgBtn);
+            VBox errorVBox = new VBox();
+            errorVBox.setAlignment(Pos.CENTER);
+            Label errorLabel = new Label("Error uploading image, try again");
+            errorLabel.setStyle(Style.ERROR_TEXT);
+            errorVBox.getChildren().addAll(errorLabel, addCoverImgBtn);
+            stackPane.getChildren().add(errorVBox);
         }
     }
 

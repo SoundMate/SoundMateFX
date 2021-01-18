@@ -2,7 +2,7 @@ package it.soundmate.utils;
 
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.shape.Circle;
+import javafx.scene.shape.Shape;
 import javafx.stage.FileChooser;
 import java.io.File;
 
@@ -23,8 +23,8 @@ public class ImagePicker {
         } else return null;
     }
 
-    public File chooseImage(Circle circle) {
-        return this.fileChooser.showOpenDialog(circle.getScene().getWindow());
+    public File chooseImage(Shape shape) {
+        return this.fileChooser.showOpenDialog(shape.getScene().getWindow());
     }
 
 

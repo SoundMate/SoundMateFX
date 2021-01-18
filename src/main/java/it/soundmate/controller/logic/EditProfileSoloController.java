@@ -19,7 +19,7 @@ public class EditProfileSoloController {
     private final UserDao userDao = new UserDao();
 
     public void updateProfilePic(Solo solo, File image) throws IOException {
-        if (userDao.updateProfilePic(solo, image.toPath()) != 1) {
+        if (userDao.updateProfilePic(solo.getId(), image.toPath()) != 1) {
             throw new UpdateException("Error updating profile pic");
         }
         solo.setEncodedImg(ImgBase64Repo.encode(image.toPath()));

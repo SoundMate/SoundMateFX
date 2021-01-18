@@ -1,7 +1,7 @@
 package it.soundmate.view.profiles.solo;
 
 import it.soundmate.constants.Style;
-import it.soundmate.controller.graphic.SoloProfileGraphicController;
+import it.soundmate.controller.graphic.profiles.SoloProfileGraphicController;
 import it.soundmate.exceptions.InputException;
 import it.soundmate.model.Genre;
 import it.soundmate.model.Solo;

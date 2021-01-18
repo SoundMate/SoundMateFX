@@ -6,6 +6,7 @@
 
 package it.soundmate.view.search;
 
+import it.soundmate.bean.searchbeans.RoomRenterResultBean;
 import it.soundmate.bean.searchbeans.SoloResultBean;
 import it.soundmate.bean.searchbeans.UserResultBean;
 import it.soundmate.view.main.SearchView;
