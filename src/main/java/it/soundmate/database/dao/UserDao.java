@@ -11,6 +11,7 @@ import it.soundmate.bean.LoginBean;
 import it.soundmate.bean.registerbeans.RegisterBean;
 import it.soundmate.database.Connector;
 import it.soundmate.database.dbexceptions.RepositoryException;
+import it.soundmate.exceptions.UpdateException;
 import it.soundmate.model.*;
 import it.soundmate.utils.ImgBase64Repo;
 import org.slf4j.Logger;
@@ -195,27 +196,29 @@ public class UserDao implements Dao<User> {
 
 
 
-    public boolean updatePassword(User user, String password) {
+    public void updatePassword(User user, String password) {
         String query = "update registered_users set password = ? where id = ?";
         try (PreparedStatement preparedStatement = connector.getConnection().prepareStatement(query)) {
             preparedStatement.setString(1, password);
             preparedStatement.setInt(2, user.getId());
-            return preparedStatement.executeUpdate() == 1;
+            preparedStatement.executeUpdate();
+            user.setPassword(password);
         } catch (SQLException e) {
-            return false;
+            throw new UpdateException("Unable to update password, SQLException: "+e.getMessage());
         }
     }
 
 
 
-    public boolean updateEmail(User user, String email) {
+    public void updateEmail(User user, String email) {
         String query = "update registered_users set email = ? where id = ?";
         try (PreparedStatement preparedStatement = connector.getConnection().prepareStatement(query)) {
             preparedStatement.setString(1, email);
             preparedStatement.setInt(2, user.getId());
-            return preparedStatement.executeUpdate() == 1;
+            preparedStatement.executeUpdate();
+            user.setEmail(email);
         } catch (SQLException e) {
-            return false;
+            throw new UpdateException("Unable to update email, SQLException: "+e.getMessage());
         }
     }
 
@@ -231,15 +234,12 @@ public class UserDao implements Dao<User> {
 
 
     public int updateProfilePic(int id, Path pathToImg){
-
         String query = "update users set encoded_profile_img = ? where id = ?";
         try (PreparedStatement preparedStatement = connector.getConnection().prepareStatement(query)) {
-
             String encodedImg = ImgBase64Repo.encode(pathToImg);
             preparedStatement.setString(1, encodedImg);
             preparedStatement.setInt(2, id);
             return preparedStatement.executeUpdate();
-
         } catch (SQLException e) {
             throw new RepositoryException("Error Updating Image", e);
         } catch (IOException e){

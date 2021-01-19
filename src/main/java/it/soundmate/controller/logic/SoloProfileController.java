@@ -6,6 +6,7 @@
 
 package it.soundmate.controller.logic;
 
+import it.soundmate.controller.logic.profiles.EditController;
 import it.soundmate.database.dao.SoloDao;
 import it.soundmate.database.dao.UserDao;
 import it.soundmate.exceptions.InputException;
@@ -15,7 +16,7 @@ import it.soundmate.model.Solo;
 import java.util.ArrayList;
 import java.util.List;
 
-public class SoloProfileController {
+public class SoloProfileController extends EditController {
 
     private final UserDao userDao = new UserDao();
 

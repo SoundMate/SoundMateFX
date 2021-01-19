@@ -13,12 +13,11 @@ import it.soundmate.model.Solo;
 import javafx.scene.control.ChoiceDialog;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-public class SoloProfileGraphicController {
+public class SoloProfileGraphicController extends EditGraphicController {
 
     private final SoloProfileController soloProfileController = new SoloProfileController();
     private static final Logger logger = LoggerFactory.getLogger(SoloProfileGraphicController.class);
@@ -50,5 +49,4 @@ public class SoloProfileGraphicController {
         }
         return null;
     }
-
 }

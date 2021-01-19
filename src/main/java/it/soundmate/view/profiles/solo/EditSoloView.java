@@ -1,13 +1,14 @@
 package it.soundmate.view.profiles.solo;
 
 import it.soundmate.constants.Style;
-import it.soundmate.controller.logic.EditProfileSoloController;
+import it.soundmate.controller.graphic.profiles.SoloProfileGraphicController;
+import it.soundmate.exceptions.InputException;
 import it.soundmate.exceptions.UpdateException;
 import it.soundmate.model.Solo;
 import it.soundmate.utils.Cache;
-import it.soundmate.utils.ImagePicker;
 import it.soundmate.view.UIUtils;
 import it.soundmate.view.main.ProfileView;
+import it.soundmate.view.profiles.EditProfileView;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
@@ -23,28 +24,27 @@ import javafx.scene.shape.Circle;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.File;
-import java.io.IOException;
 
+public class EditSoloView extends EditProfileView {
 
-public class EditProfileSolo extends VBox {
-
-    private static final Logger logger = LoggerFactory.getLogger(EditProfileSolo.class);
+    private static final Logger logger = LoggerFactory.getLogger(EditSoloView.class);
     private final ProfileView profileView;
-    private final EditProfileSoloController editProfileSoloController;
     private final Solo solo;
+    private final SoloProfileGraphicController soloProfileGraphicController = new SoloProfileGraphicController();
+
+    //UI
     private final TextField updateEmailTextField = new TextField();
     private final TextField updatePassTextField = new TextField();
     private final TextField updateFirstNameTextField = new TextField();
     private final TextField updateLastNameTextField = new TextField();
     private Circle profilePicImg;
+    private final Label resultLabel = new Label();
 
-    public EditProfileSolo(Solo solo, ProfileView profileView){
+    public EditSoloView(Solo solo, ProfileView profileView){
         this.solo = solo;
         this.profileView = profileView;
         this.setPadding(new Insets(25));
         this.setAlignment(Pos.CENTER);
-        this.editProfileSoloController = new EditProfileSoloController();
 
 
         HBox profilePicSection = buildProfilePicSection();
@@ -55,6 +55,9 @@ public class EditProfileSolo extends VBox {
         VBox updateInfoVBox = buildUpdateInfoVBox();
         this.getChildren().add(updateInfoVBox);
         this.getChildren().add(backBtn);
+        UIUtils.addSizedRegion(this, 50, 50);
+        resultLabel.setPadding(new Insets(5));
+        this.getChildren().add(resultLabel);
     }
 
     private VBox buildUpdateInfoVBox() {
@@ -135,24 +138,18 @@ public class EditProfileSolo extends VBox {
         @Override
         public void handle(ActionEvent event) {
             logger.info("Update profile pic clicked");
-            ImagePicker imagePicker = new ImagePicker();
-            File chosenImage = imagePicker.chooseImage(profilePicImg);
-            if (chosenImage != null && Cache.getInstance().saveProfilePicToCache(solo, chosenImage)) {
-                //Saved to Cache
-                //Save to DB
-                try {
-                    editProfileSoloController.updateProfilePic(solo, chosenImage);
-                    profilePicImg.setFill(new ImagePattern(new Image(Cache.getInstance().getProfilePicFromCache(solo.getId()))));
-                } catch (UpdateException ue) {
-                    logger.info("Error updating profile picture (UpdateException)");
-                } catch (IOException ioe) {
-                    logger.info("Error updating profile picture in model (IOException)");
-                }
+            try {
+                soloProfileGraphicController.updateProfilePic(profilePicImg, solo);
+                profilePicImg.setFill(new ImagePattern(new Image(Cache.getInstance().getProfilePicFromCache(solo.getId()))));
+            } catch (UpdateException ue) {
+                logger.info("Error updating profile picture (UpdateException): {}", ue.getMessage());
+            } catch (InputException ie) {
+                logger.info("Error updating profile picture in model (InputException): {}", ie.getMessage());
             }
         }
     }
 
-    private class RemoveProfilePicAction implements EventHandler<ActionEvent> {
+    private static class RemoveProfilePicAction implements EventHandler<ActionEvent> {
         @Override
         public void handle(ActionEvent event) {
             logger.info("Remove profile pic clicked");
@@ -180,9 +177,11 @@ public class EditProfileSolo extends VBox {
             switch (updateType) {
                 case "Email":
                     logger.info("Update Email Clicked: {}", updateEmailTextField.getText());
+                    updateEmail(soloProfileGraphicController, solo, updateEmailTextField, resultLabel);
                     break;
                 case "Password":
                     logger.info("Update Password Clicked: {}", updatePassTextField.getText());
+                    updatePassword();
                     break;
                 case "First Name":
                     logger.info("Update First Name Clicked: {}", updateFirstNameTextField.getText());
@@ -193,6 +192,22 @@ public class EditProfileSolo extends VBox {
                 default:
                     logger.info("Error: Button Undetected");
             }
+        }
+
+        private void updatePassword() {
+            try {
+                soloProfileGraphicController.updatePassword(updatePassTextField.getText(), solo);
+            } catch (UpdateException updateException) {
+                logger.error("Update Exception: {}", updateException.getMessage());
+                updateUIError(updatePassTextField, "Something went wrong...");
+            } catch (InputException inputException) {
+                logger.error("Input Exception: {}", inputException.getMessage());
+                updateUIError(updatePassTextField, "Invalid password (Length < 5)");
+            }
+        }
+
+        private void updateUIError(TextField textField, String errorMessage) {
+            textField.setPromptText(errorMessage);
         }
     }
 }

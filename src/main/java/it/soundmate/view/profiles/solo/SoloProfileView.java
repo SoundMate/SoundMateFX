@@ -241,7 +241,7 @@ public class SoloProfileView extends VBox {
         @Override
         public void handle(ActionEvent event) {
             logger.info("Edit Profile Info Clicked");
-            profileView.setProfilePage(new EditProfileSolo(soloUser, profileView));
+            profileView.setProfilePage(new EditSoloView(soloUser, profileView));
         }
     }
 

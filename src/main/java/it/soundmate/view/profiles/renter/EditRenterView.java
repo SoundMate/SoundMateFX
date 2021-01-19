@@ -14,6 +14,7 @@ import it.soundmate.model.RoomRenter;
 import it.soundmate.utils.Cache;
 import it.soundmate.view.UIUtils;
 import it.soundmate.view.main.ProfileView;
+import it.soundmate.view.profiles.EditProfileView;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
@@ -24,18 +25,18 @@ import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
-import javafx.scene.layout.VBox;
 import javafx.scene.paint.ImagePattern;
 import javafx.scene.shape.Rectangle;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class EditRenterView extends VBox {
+public class EditRenterView extends EditProfileView {
 
     public static final String UPDATE = "Update";
     private final RoomRenter roomRenter;
     private final ProfileView profileView;
     private static final Logger logger = LoggerFactory.getLogger(EditRenterView.class);
+    private final RoomRenterProfileGraphicController roomRenterProfileGraphicController = new RoomRenterProfileGraphicController();
 
     //UI
     private final TextField emailTextField = new TextField();
@@ -54,6 +55,7 @@ public class EditRenterView extends VBox {
     private final Rectangle rectangle = new Rectangle();
     private final StackPane stackPane;
     private final Button editImageBtn = UIUtils.createStyledButton("Edit cover image", new EditImageAction());
+    private final Label errorLabel = new Label();
 
     public EditRenterView(RoomRenter roomRenter, ProfileView profileView) {
         this.roomRenter = roomRenter;
@@ -73,7 +75,6 @@ public class EditRenterView extends VBox {
         if (roomRenter.getEncodedImg() != null) {
             rectangle.setFill(new ImagePattern(new Image(Cache.getInstance().getProfilePicFromCache(roomRenter.getId()))));
         }
-
         imageStackPane.getChildren().addAll(rectangle, editImageBtn);
         return imageStackPane;
     }
@@ -103,6 +104,15 @@ public class EditRenterView extends VBox {
         buildEditRow("Address: ", roomRenter.getAddress(), addressTextField, editAddressBtn);
 
         this.getChildren().add(backBtn);
+
+        //Error label
+        HBox errorLabelHBox = new HBox();
+        errorLabelHBox.setAlignment(Pos.CENTER);
+        errorLabelHBox.setPrefHeight(USE_COMPUTED_SIZE);
+        errorLabel.setVisible(false);
+        errorLabel.setPadding(new Insets(5));
+        errorLabelHBox.getChildren().add(errorLabel);
+        this.getChildren().add(errorLabelHBox);
     }
 
     public void buildEditRow(String label, String text, TextField textField, Button button) {
@@ -145,6 +155,7 @@ public class EditRenterView extends VBox {
             switch (editType) {
                 case 0:
                     logger.info("Edit email");
+                    updateEmail(roomRenterProfileGraphicController, roomRenter, emailTextField, errorLabel);
                     break;
                 case 1:
                     logger.info("Edit password");
@@ -162,15 +173,15 @@ public class EditRenterView extends VBox {
                     throw new InputException("No edit field found");
             }
         }
+
     }
 
     private class EditImageAction implements EventHandler<ActionEvent> {
         @Override
         public void handle(ActionEvent event) {
             logger.info("Edit image click");
-            RoomRenterProfileGraphicController roomRenterProfileGraphicController = new RoomRenterProfileGraphicController();
             try {
-                roomRenterProfileGraphicController.addCoverImage(rectangle, roomRenter);
+                roomRenterProfileGraphicController.updateProfilePic(rectangle, roomRenter);
                 rectangle.setFill(new ImagePattern(new Image(Cache.getInstance().getProfilePicFromCache(roomRenter.getId()))));
             } catch (InputException inputException) {
                 logger.error("Input Exception: {}", inputException.getMessage());

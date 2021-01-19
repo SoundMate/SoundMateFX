@@ -160,7 +160,7 @@ public class RenterProfileView extends VBox {
         public void handle(ActionEvent event) {
             logger.info("Add image btn clicked");
             try {
-                roomRenterProfileGraphicController.addCoverImage(coverImg, roomRenter);
+                roomRenterProfileGraphicController.updateProfilePic(coverImg, roomRenter);
                 coverImg.setFill(new ImagePattern(new Image(Cache.getInstance().getProfilePicFromCache(roomRenter.getId()))));
             } catch (UpdateException updateException) {
                 logger.error("Update Exception: {}", updateException.getMessage());
