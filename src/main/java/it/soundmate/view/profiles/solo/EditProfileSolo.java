@@ -142,12 +142,12 @@ public class EditProfileSolo extends VBox {
                 //Save to DB
                 try {
                     editProfileSoloController.updateProfilePic(solo, chosenImage);
+                    profilePicImg.setFill(new ImagePattern(new Image(Cache.getInstance().getProfilePicFromCache(solo.getId()))));
                 } catch (UpdateException ue) {
                     logger.info("Error updating profile picture (UpdateException)");
                 } catch (IOException ioe) {
                     logger.info("Error updating profile picture in model (IOException)");
                 }
-                profilePicImg.setFill(new ImagePattern(new Image(Cache.getInstance().getProfilePicFromCache(solo.getId()))));
             }
         }
     }

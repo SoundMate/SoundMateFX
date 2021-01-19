@@ -144,14 +144,13 @@ public class RenterProfileView extends VBox {
         //Profile Picture
         coverImg.setHeight(175);
         coverImg.setWidth(600);
-        if (roomRenter.getEncodedImg() == null) {
+        if (roomRenter.getEncodedImg() != null) {
+            coverImg.setFill(new ImagePattern(new Image(Cache.getInstance().getProfilePicFromCache(roomRenter.getId()))));
+            tempStackPane.getChildren().add(coverImg);
+        } else {
             tempStackPane.getChildren().add(coverImg);
             tempStackPane.getChildren().add(addCoverImgBtn);
-        } else {
-            Image image = new Image(Cache.getInstance().getProfilePicFromCache(roomRenter.getId()));
-            coverImg.setFill(new ImagePattern(image));
         }
-
         return tempStackPane;
     }
 
@@ -162,6 +161,7 @@ public class RenterProfileView extends VBox {
             logger.info("Add image btn clicked");
             try {
                 roomRenterProfileGraphicController.addCoverImage(coverImg, roomRenter);
+                coverImg.setFill(new ImagePattern(new Image(Cache.getInstance().getProfilePicFromCache(roomRenter.getId()))));
             } catch (UpdateException updateException) {
                 logger.error("Update Exception: {}", updateException.getMessage());
                 updateUIErrorImage();
@@ -170,6 +170,7 @@ public class RenterProfileView extends VBox {
                 updateUIErrorImage();
             }
         }
+
 
         private void updateUIErrorImage() {
             stackPane.getChildren().remove(addCoverImgBtn);

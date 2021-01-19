@@ -7,8 +7,11 @@
 package it.soundmate.view.profiles.renter;
 
 import it.soundmate.constants.Style;
+import it.soundmate.controller.graphic.profiles.RoomRenterProfileGraphicController;
 import it.soundmate.exceptions.InputException;
+import it.soundmate.exceptions.UpdateException;
 import it.soundmate.model.RoomRenter;
+import it.soundmate.utils.Cache;
 import it.soundmate.view.UIUtils;
 import it.soundmate.view.main.ProfileView;
 import javafx.event.ActionEvent;
@@ -18,8 +21,12 @@ import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
+import javafx.scene.image.Image;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
+import javafx.scene.paint.ImagePattern;
+import javafx.scene.shape.Rectangle;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -44,20 +51,42 @@ public class EditRenterView extends VBox {
     private final Button editCityBtn = UIUtils.createStyledButton(UPDATE, new EditAction(3));
     private final Button editAddressBtn = UIUtils.createStyledButton(UPDATE, new EditAction(4));
 
+    private final Rectangle rectangle = new Rectangle();
+    private final StackPane stackPane;
+    private final Button editImageBtn = UIUtils.createStyledButton("Edit cover image", new EditImageAction());
+
     public EditRenterView(RoomRenter roomRenter, ProfileView profileView) {
         this.roomRenter = roomRenter;
         this.profileView = profileView;
+        this.stackPane = buildStackPane(roomRenter);
         buildEditVBox(roomRenter);
+    }
+
+    private StackPane buildStackPane(RoomRenter roomRenter) {
+        StackPane imageStackPane = new StackPane();
+        imageStackPane.setAlignment(Pos.CENTER);
+        imageStackPane.setPrefWidth(USE_COMPUTED_SIZE);
+        imageStackPane.setPrefHeight(USE_COMPUTED_SIZE);
+
+        rectangle.setWidth(500);
+        rectangle.setHeight(150);
+        if (roomRenter.getEncodedImg() != null) {
+            rectangle.setFill(new ImagePattern(new Image(Cache.getInstance().getProfilePicFromCache(roomRenter.getId()))));
+        }
+
+        imageStackPane.getChildren().addAll(rectangle, editImageBtn);
+        return imageStackPane;
     }
 
     private void buildEditVBox(RoomRenter roomRenter) {
         this.setAlignment(Pos.TOP_LEFT);
         this.setSpacing(20);
         this.setPadding(new Insets(35));
+        this.getChildren().add(this.stackPane);
 
         Label nameLabel = new Label(roomRenter.getName());
         nameLabel.setStyle(Style.HEADER_TEXT);
-        this.getChildren().addAll(backBtn, nameLabel);
+        this.getChildren().add(nameLabel);
         UIUtils.addRegion(this, null);
 
         //TextFields
@@ -72,6 +101,8 @@ public class EditRenterView extends VBox {
         buildEditRow("Name: ", roomRenter.getName(), nameTextField, editNameBtn);
         buildEditRow("City: ", roomRenter.getCity(), cityTextField, editCityBtn);
         buildEditRow("Address: ", roomRenter.getAddress(), addressTextField, editAddressBtn);
+
+        this.getChildren().add(backBtn);
     }
 
     public void buildEditRow(String label, String text, TextField textField, Button button) {
@@ -97,6 +128,7 @@ public class EditRenterView extends VBox {
         @Override
         public void handle(ActionEvent event) {
             logger.info("Back clicked");
+            profileView.setProfilePage(new RenterProfileView(profileView, roomRenter));
         }
     }
 
@@ -128,6 +160,22 @@ public class EditRenterView extends VBox {
                     break;
                 default:
                     throw new InputException("No edit field found");
+            }
+        }
+    }
+
+    private class EditImageAction implements EventHandler<ActionEvent> {
+        @Override
+        public void handle(ActionEvent event) {
+            logger.info("Edit image click");
+            RoomRenterProfileGraphicController roomRenterProfileGraphicController = new RoomRenterProfileGraphicController();
+            try {
+                roomRenterProfileGraphicController.addCoverImage(rectangle, roomRenter);
+                rectangle.setFill(new ImagePattern(new Image(Cache.getInstance().getProfilePicFromCache(roomRenter.getId()))));
+            } catch (InputException inputException) {
+                logger.error("Input Exception: {}", inputException.getMessage());
+            } catch (UpdateException updateException) {
+                logger.error("Update Exception: {}", updateException.getMessage());
             }
         }
     }
