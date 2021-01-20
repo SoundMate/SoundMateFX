@@ -6,6 +6,7 @@ import it.soundmate.exceptions.InputException;
 import it.soundmate.exceptions.UpdateException;
 import it.soundmate.model.Solo;
 import it.soundmate.utils.Cache;
+import it.soundmate.utils.UserProperties;
 import it.soundmate.view.UIUtils;
 import it.soundmate.view.main.ProfileView;
 import it.soundmate.view.profiles.EditProfileView;
@@ -37,8 +38,16 @@ public class EditSoloView extends EditProfileView {
     private final TextField updatePassTextField = new TextField();
     private final TextField updateFirstNameTextField = new TextField();
     private final TextField updateLastNameTextField = new TextField();
+    private final TextField updateCityTextField = new TextField();
     private Circle profilePicImg;
     private final Label resultLabel = new Label();
+
+    //Buttons
+    private final Button updateEmailBtn = UIUtils.createStyledButton(UPDATE, new EditSoloAction(UserProperties.EMAIL));
+    private final Button updatePasswordBtn = UIUtils.createStyledButton(UPDATE, new EditSoloAction(UserProperties.PASSWORD));
+    private final Button updateFirstNameBtn = UIUtils.createStyledButton(UPDATE, new EditSoloAction(UserProperties.FIRST_NAME));
+    private final Button updateLastNameBtn = UIUtils.createStyledButton(UPDATE, new EditSoloAction(UserProperties.LAST_NAME));
+    private final Button updateCityBtn = UIUtils.createStyledButton(UPDATE, new EditSoloAction(UserProperties.CITY));
 
     public EditSoloView(Solo solo, ProfileView profileView){
         this.solo = solo;
@@ -66,32 +75,16 @@ public class EditSoloView extends EditProfileView {
         updateInfoVBox.setAlignment(Pos.CENTER_LEFT);
         updateInfoVBox.setSpacing(20);
 
-        HBox updateEmailHBox = buildSingleUpdateInfoHBox("Email", this.solo.getEmail(), updateEmailTextField);
-        HBox updatePasswordHBox = buildSingleUpdateInfoHBox("Password", "********", updatePassTextField);
-        HBox updateFirstNameHBox = buildSingleUpdateInfoHBox("First Name", this.solo.getFirstName(), updateFirstNameTextField);
-        HBox updateLastNameHBox = buildSingleUpdateInfoHBox("Last Name", this.solo.getLastName(), updateLastNameTextField);
+        HBox updateEmailHBox = buildEditRow("Email: ", this.solo.getEmail(), updateEmailTextField, updateEmailBtn);
+        HBox updatePasswordHBox = buildEditRow("Password: ", this.solo.getPassword(), updatePassTextField, updatePasswordBtn);
+        HBox updateFirstNameHBox = buildEditRow("First Name: ", this.solo.getFirstName(), updateFirstNameTextField, updateFirstNameBtn);
+        HBox updateLastNameHBox = buildEditRow("Last Name: ", this.solo.getLastName(), updateLastNameTextField, updateLastNameBtn);
+        HBox updateCityHBox = buildEditRow("City: ", this.solo.getCity(), updateCityTextField, updateCityBtn);
 
-        updateInfoVBox.getChildren().addAll(updateEmailHBox, updatePasswordHBox, updateFirstNameHBox, updateLastNameHBox);
+        updateInfoVBox.getChildren().addAll(updateEmailHBox, updatePasswordHBox, updateFirstNameHBox, updateLastNameHBox, updateCityHBox);
         return updateInfoVBox;
     }
 
-    private HBox buildSingleUpdateInfoHBox(String label, String content, TextField textField) {
-        HBox updateSingleHBox = new HBox();
-        updateSingleHBox.setAlignment(Pos.CENTER_LEFT);
-        updateSingleHBox.setSpacing(10);
-
-        Label updateLabel = new Label(label+": ");
-        updateLabel.setStyle(Style.MID_LABEL);
-        Label contentLabel = new Label(content);
-        contentLabel.setStyle(Style.MID_LABEL);
-
-        updateSingleHBox.getChildren().addAll(updateLabel, contentLabel);
-        UIUtils.addRegion(null, updateSingleHBox);
-        textField.setStyle(Style.TEXT_FIELD);
-        Button button = UIUtils.createStyledButton("Update", new UpdateInfoAction(label));
-        updateSingleHBox.getChildren().addAll(textField, button);
-        return updateSingleHBox;
-    }
 
     private HBox buildProfilePicSection() {
         HBox profilePicSection = new HBox();
@@ -164,50 +157,35 @@ public class EditSoloView extends EditProfileView {
         }
     }
 
-    private class UpdateInfoAction implements EventHandler<ActionEvent> {
+    private class EditSoloAction implements EventHandler<ActionEvent> {
 
-        private final String updateType;
+        private final UserProperties property;
 
-        public UpdateInfoAction(String updateType){
-            this.updateType = updateType;
+        public EditSoloAction(UserProperties property) {
+            this.property = property;
         }
 
         @Override
         public void handle(ActionEvent event) {
-            switch (updateType) {
-                case "Email":
-                    logger.info("Update Email Clicked: {}", updateEmailTextField.getText());
+            switch (property) {
+                case EMAIL:
                     updateEmail(soloProfileGraphicController, solo, updateEmailTextField, resultLabel);
                     break;
-                case "Password":
-                    logger.info("Update Password Clicked: {}", updatePassTextField.getText());
-                    updatePassword();
+                case PASSWORD:
+                    updatePassword(soloProfileGraphicController, solo, updatePassTextField, resultLabel);
                     break;
-                case "First Name":
-                    logger.info("Update First Name Clicked: {}", updateFirstNameTextField.getText());
+                case FIRST_NAME:
+                    updateFirstName(soloProfileGraphicController, solo, updateFirstNameTextField, resultLabel);
                     break;
-                case "Last Name":
-                    logger.info("Update Last Name Clicked: {}", updateLastNameTextField.getText());
+                case LAST_NAME:
+                    updateLastName(soloProfileGraphicController, solo, updateLastNameTextField, resultLabel);
+                    break;
+                case CITY:
+                    updateCity(soloProfileGraphicController, solo, updateCityTextField, resultLabel);
                     break;
                 default:
-                    logger.info("Error: Button Undetected");
+                    throw new InputException("Non editable field clicked");
             }
-        }
-
-        private void updatePassword() {
-            try {
-                soloProfileGraphicController.updatePassword(updatePassTextField.getText(), solo);
-            } catch (UpdateException updateException) {
-                logger.error("Update Exception: {}", updateException.getMessage());
-                updateUIError(updatePassTextField, "Something went wrong...");
-            } catch (InputException inputException) {
-                logger.error("Input Exception: {}", inputException.getMessage());
-                updateUIError(updatePassTextField, "Invalid password (Length < 5)");
-            }
-        }
-
-        private void updateUIError(TextField textField, String errorMessage) {
-            textField.setPromptText(errorMessage);
         }
     }
 }

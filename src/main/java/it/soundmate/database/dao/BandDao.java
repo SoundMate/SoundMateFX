@@ -4,6 +4,7 @@ import it.soundmate.bean.registerbeans.RegisterBandBean;
 import it.soundmate.database.Connector;
 import it.soundmate.database.dbexceptions.DuplicatedEmailException;
 import it.soundmate.database.dbexceptions.RepositoryException;
+import it.soundmate.exceptions.UpdateException;
 import it.soundmate.model.Band;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -72,7 +73,7 @@ public class BandDao {
     public Band getBandByID(int id) {
         ResultSet resultSet;
         Band bandUser = new Band();
-        String query = "SELECT email, password, encoded_profile_img, band_name\n" +
+        String query = "SELECT email, password, encoded_profile_img, band_name, city\n" +
                 " FROM registered_users LEFT OUTER JOIN users ON (registered_users.id = users.id)\n" +
                 " INNER JOIN band ON (registered_users.id = band.id) WHERE registered_users.id = ?";
 
@@ -88,6 +89,7 @@ public class BandDao {
                 bandUser.setPassword(resultSet.getString("password"));
                 bandUser.setEncodedImg(resultSet.getString("encoded_profile_img"));
                 bandUser.setBandName(resultSet.getString("band_name"));
+                bandUser.setCity(resultSet.getString("city"));
 
             }
         }catch (SQLException exc) {
@@ -96,6 +98,16 @@ public class BandDao {
     }
 
 
-
-
+    public void updateName(String name, Band band) {
+        String sql = "UPDATE band SET band_name = ? WHERE id = ?";
+        try (PreparedStatement preparedStatement = connector.getConnection().prepareStatement(sql)) {
+            preparedStatement.setString(1, name);
+            preparedStatement.setInt(2, band.getId());
+            if (preparedStatement.executeUpdate() == 1) {
+                band.setBandName(name);
+            }
+        } catch (SQLException sqlException) {
+            throw new UpdateException("Error updating name, SQLException: "+sqlException.getMessage());
+        }
+    }
 }

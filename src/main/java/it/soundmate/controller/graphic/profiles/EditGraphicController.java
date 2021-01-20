@@ -9,7 +9,9 @@ package it.soundmate.controller.graphic.profiles;
 import it.soundmate.controller.logic.profiles.EditController;
 import it.soundmate.exceptions.InputException;
 import it.soundmate.exceptions.UpdateException;
+import it.soundmate.model.Band;
 import it.soundmate.model.RoomRenter;
+import it.soundmate.model.Solo;
 import it.soundmate.model.User;
 import it.soundmate.utils.Cache;
 import it.soundmate.utils.ImagePicker;
@@ -66,6 +68,15 @@ public class EditGraphicController {
         }
     }
 
+    public void updateNameBand(String name, Band band) {
+        if ("".equals(name)) throw new InputException("Name is empty");
+        try {
+            editController.updateNameBand(name, band);
+        } catch (UpdateException updateException) {
+            throw new UpdateException(updateException.getMessage());
+        }
+    }
+
     public void updateCity(String city, User user) {
         if ("".equals(city)) throw new InputException("City is empty");
         try {
@@ -79,6 +90,24 @@ public class EditGraphicController {
         if ("".equals(address)) throw new InputException("Address is empty");
         try {
             editController.updateAddress(address, roomRenter);
+        } catch (UpdateException updateException) {
+            throw new UpdateException(updateException.getMessage());
+        }
+    }
+
+    public void updateFirstName(String firstName, Solo solo) {
+        if ("".equals(firstName)) throw new InputException("First name is empty");
+        try {
+            editController.updateFirstName(firstName, solo);
+        } catch (UpdateException updateException) {
+            throw new UpdateException(updateException.getMessage());
+        }
+    }
+
+    public void updateLastName(String lastName, Solo solo) {
+        if ("".equals(lastName)) throw new InputException("Last name is empty");
+        try {
+            editController.updateLastName(lastName, solo);
         } catch (UpdateException updateException) {
             throw new UpdateException(updateException.getMessage());
         }

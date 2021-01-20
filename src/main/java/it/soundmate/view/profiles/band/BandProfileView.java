@@ -7,35 +7,33 @@
 package it.soundmate.view.profiles.band;
 
 import it.soundmate.constants.Style;
+import it.soundmate.controller.graphic.profiles.BandProfileGraphicController;
 import it.soundmate.model.Band;
-import it.soundmate.model.User;
-import it.soundmate.utils.Cache;
 import it.soundmate.view.UIUtils;
 import it.soundmate.view.main.ProfileView;
-import it.soundmate.view.profiles.renter.RenterProfileView;
-import it.soundmate.view.profiles.solo.SoloProfileView;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
-import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
-import javafx.scene.image.Image;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
-import javafx.scene.paint.ImagePattern;
 import javafx.scene.shape.Rectangle;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 
 public class BandProfileView extends VBox {
 
+    private static final Logger logger = LoggerFactory.getLogger(BandProfileView.class);
+    BandProfileGraphicController bandProfileGraphicController = new BandProfileGraphicController();
     private final ProfileView profileView;
     private final Band band;
 
     //UI
     private final Rectangle coverImg = new Rectangle();
-    private StackPane stackPane;
 
     //Buttons
     private final Button addCoverImgBtn = UIUtils.createStyledButton("Add cover image", new AddImageAction());
@@ -51,7 +49,7 @@ public class BandProfileView extends VBox {
     }
 
     private void buildBandProfileView(Band band) {
-        this.stackPane = this.profileView.buildStackPane(band, addCoverImgBtn, coverImg);
+        StackPane stackPane = this.profileView.buildStackPane(band, addCoverImgBtn, coverImg);
         HBox userInfoVBox = buildUserInfoVBox(band);
         HBox photosHBox = this.profileView.buildMediaHBox(band, new ManageMediaAction());
         HBox membersHBox = buildMembersHBox(band);
@@ -61,7 +59,7 @@ public class BandProfileView extends VBox {
         nameLabel.setStyle(Style.HEADER_TEXT);
         nameLabel.setPadding(new Insets(0, 0,0, 25));
 
-        this.getChildren().addAll(this.stackPane, nameLabel, userInfoVBox, membersHBox, photosHBox, socialLinksHBox);
+        this.getChildren().addAll(stackPane, nameLabel, userInfoVBox, membersHBox, photosHBox, socialLinksHBox);
     }
 
     private HBox buildSocialLinksHBox(Band band) {
@@ -102,42 +100,44 @@ public class BandProfileView extends VBox {
     private class AddImageAction implements EventHandler<ActionEvent> {
         @Override
         public void handle(ActionEvent event) {
-
+            logger.info("Add image clicked");
+            bandProfileGraphicController.navigateToEditView(profileView, band);
         }
     }
 
     private class ManageMediaAction implements EventHandler<ActionEvent> {
         @Override
         public void handle(ActionEvent event) {
-
+            logger.info("Manage media click");
         }
     }
 
     private class AddGenreAction implements EventHandler<ActionEvent> {
         @Override
         public void handle(ActionEvent event) {
-
+            logger.info("Add genre click");
         }
     }
 
     private class EditProfileAction implements EventHandler<ActionEvent> {
         @Override
         public void handle(ActionEvent event) {
-
+            logger.info("Edit profile info clicked");
+            bandProfileGraphicController.navigateToEditView(profileView, band);
         }
     }
 
     private class SearchSoloAction implements EventHandler<ActionEvent> {
         @Override
         public void handle(ActionEvent event) {
-
+            logger.info("Search solo click");
         }
     }
 
     private class AddSocialAction implements EventHandler<ActionEvent> {
         @Override
         public void handle(ActionEvent event) {
-
+            logger.info("Social action clicked");
         }
     }
 }

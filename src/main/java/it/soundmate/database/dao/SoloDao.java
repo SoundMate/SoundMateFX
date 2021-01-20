@@ -9,7 +9,7 @@ package it.soundmate.database.dao;
 import it.soundmate.bean.registerbeans.RegisterSoloBean;
 import it.soundmate.database.Connector;
 import it.soundmate.database.dbexceptions.RepositoryException;
-import it.soundmate.model.AnagraphicData;
+import it.soundmate.exceptions.UpdateException;
 import it.soundmate.model.Genre;
 import it.soundmate.model.Solo;
 import org.slf4j.Logger;
@@ -87,25 +87,25 @@ public class SoloDao {
         }
     }
 
-    public boolean updateFirstName(Solo solo, String firstName) {
+    public void updateFirstName(Solo solo, String firstName) {
         String query = "update solo set first_name = ? where id = ?";
         try (PreparedStatement preparedStatement = connector.getConnection().prepareStatement(query)) {
             preparedStatement.setString(1, firstName);
             preparedStatement.setInt(2, solo.getId());
-            return preparedStatement.executeUpdate() == 1;
+            if (preparedStatement.executeUpdate() == 1) solo.setFirstName(firstName);
         } catch (SQLException e) {
-            return false;
+            throw new UpdateException("Unable to update first name, SQLException: "+e.getMessage());
         }
     }
 
-    public boolean updateLastName(Solo solo, String lastName) {
+    public void updateLastName(Solo solo, String lastName) {
         String query = "update solo set last_name = ? where id = ?";
         try (PreparedStatement preparedStatement = connector.getConnection().prepareStatement(query)) {
             preparedStatement.setString(1, lastName);
             preparedStatement.setInt(2, solo.getId());
-            return preparedStatement.executeUpdate() == 1;
+            if (preparedStatement.executeUpdate() == 1) solo.setLastName(lastName);
         } catch (SQLException e) {
-            return false;
+            throw new UpdateException("Unable to update last name, SQLException: "+e.getMessage());
         }
     }
 
