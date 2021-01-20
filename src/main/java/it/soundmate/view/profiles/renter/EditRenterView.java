@@ -159,6 +159,7 @@ public class EditRenterView extends EditProfileView {
                     break;
                 case 1:
                     logger.info("Edit password");
+                    updatePassword(roomRenterProfileGraphicController, roomRenter, passwordTextField, errorLabel);
                     break;
                 case 2:
                     logger.info("Edit name");
@@ -166,9 +167,11 @@ public class EditRenterView extends EditProfileView {
                     break;
                 case 3:
                     logger.info("Edit city");
+                    updateCity(roomRenterProfileGraphicController, roomRenter, cityTextField, errorLabel);
                     break;
                 case 4:
                     logger.info("Edit address");
+                    updateAddress(roomRenterProfileGraphicController, roomRenter, addressTextField, errorLabel);
                     break;
                 default:
                     throw new InputException("No edit field found");

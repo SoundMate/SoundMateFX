@@ -2,6 +2,7 @@ package it.soundmate.database.dao;
 
 import it.soundmate.bean.registerbeans.RegisterBandBean;
 import it.soundmate.database.Connector;
+import it.soundmate.database.dbexceptions.DuplicatedEmailException;
 import it.soundmate.database.dbexceptions.RepositoryException;
 import it.soundmate.model.Band;
 import org.slf4j.Logger;
@@ -19,56 +20,51 @@ public class BandDao {
     private final Connector connector = Connector.getInstance();
     private static final Logger log = LoggerFactory.getLogger(BandDao.class);
 
-//    private final UserDao
-
-
     public BandDao(UserDao userDao) {
         this.userDao = userDao;
     }
 
-    public int regiBandController(RegisterBandBean bandBean){
-
+    public int registerBand(RegisterBandBean bandBean){
         ResultSet resultSet;
-
-        int userID = 0;
         if (userDao.checkIfBanned(bandBean.getEmail())){
             log.error(ACC_BANNED_ERR);
-            return -1;
+            throw new RepositoryException("Account has been banned");
         }else if (userDao.checkEmailBoolean(bandBean.getEmail())){
             log.error(EMAIL_EXISTS_ERR);
-            return -2;
+            throw new DuplicatedEmailException("Duplicated email "+bandBean.getEmail());
         } else {
             String sql = " WITH ins1 AS (\n" +
-                    "     INSERT INTO registered_users (email, password, user_type)\n" +
-                    "         VALUES (?, ?, ?)\n" +
+                    "     INSERT INTO registered_users (email, password, user_type, city)\n" +
+                    "         VALUES (?, ?, ?, ?)\n" +
                     " -- ON     CONFLICT DO NOTHING         -- optional addition in Postgres 9.5+\n" +
                     "         RETURNING id AS sample_id\n" +
                     " ), ins2 AS (\n" +
-                    "     INSERT INTO users (id, encoded_profile_img)\n" +
-                    "         SELECT sample_id, ? FROM ins1\n" +
+                    "     INSERT INTO users (id)\n" +
+                    "         SELECT sample_id FROM ins1\n" +
                     " )\n" +
                     "INSERT INTO band (id, band_name)\n" +
                     "SELECT sample_id, ? FROM ins1;";
 
             try (Connection conn = connector.getConnection();
-                 PreparedStatement pstmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
+                 PreparedStatement preparedStmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
 
-                pstmt.setString(1, bandBean.getEmail());
-                pstmt.setString(2, bandBean.getPassword());
-                pstmt.setString(3, bandBean.getUserType().toString());
-                pstmt.setString(4, "qui c'è un'img cod.");
-                pstmt.setString(5, bandBean.getBandName());
+                preparedStmt.setString(1, bandBean.getEmail());
+                preparedStmt.setString(2, bandBean.getPassword());
+                preparedStmt.setString(3, bandBean.getUserType().toString());
+                preparedStmt.setString(4, bandBean.getCity());
+                preparedStmt.setString(5, bandBean.getBandName());
 
-                int rowAffected = pstmt.executeUpdate();
+                int rowAffected = preparedStmt.executeUpdate();
                 if (rowAffected == 1) {
+                    resultSet = preparedStmt.getGeneratedKeys();
+                    if (resultSet.next()) {
+                        return resultSet.getInt(1);
+                    } else throw new RepositoryException("Unable to register new User");
+                } else throw new RepositoryException("Unable to register new User, RowAffected != 1");
 
-                    resultSet = pstmt.getGeneratedKeys();
-                    if (resultSet.next())
-                        userID = resultSet.getInt(1);
-                }
             } catch (SQLException ex) {
                 throw new RepositoryException(ERR_INSERT, ex);
-            } return userID;
+            }
         }
     }
 

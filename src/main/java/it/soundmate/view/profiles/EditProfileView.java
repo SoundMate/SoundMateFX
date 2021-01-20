@@ -51,6 +51,19 @@ public class EditProfileView extends VBox {
         }
     }
 
+    public void updatePassword(EditGraphicController editGraphicController, User user, TextField textField, Label resultLabel) {
+        try {
+            editGraphicController.updatePassword(textField.getText(), user);
+            updateUIStatus(resultLabel, "Password updated successfully", false);
+        } catch (UpdateException updateException) {
+            logger.error(UPDATE_EXCEPTION, updateException.getMessage());
+            updateUIStatus(resultLabel, SOMETHING_WENT_WRONG, true);
+        } catch (InputException inputException) {
+            logger.error(INPUT_EXCEPTION, inputException.getMessage());
+            updateUIStatus(resultLabel, "Password must be > 5 characters", true);
+        }
+    }
+
     public void updateCity(EditGraphicController editGraphicController, User user, TextField textField, Label resultLabel) {
         try {
             editGraphicController.updateCity(textField.getText(), user);
@@ -61,6 +74,19 @@ public class EditProfileView extends VBox {
         } catch (InputException inputException) {
             logger.error(INPUT_EXCEPTION, inputException.getMessage());
             updateUIStatus(resultLabel, "Invalid city", true);
+        }
+    }
+
+    public void updateAddress(EditGraphicController editGraphicController, RoomRenter roomRenter, TextField textField, Label resultLabel) {
+        try {
+            editGraphicController.updateAddress(textField.getText(), roomRenter);
+            updateUIStatus(resultLabel, "Address updated successfully", false);
+        } catch (UpdateException updateException) {
+            logger.error(UPDATE_EXCEPTION, updateException.getMessage());
+            updateUIStatus(resultLabel, SOMETHING_WENT_WRONG, true);
+        } catch (InputException inputException) {
+            logger.error(INPUT_EXCEPTION, inputException.getMessage());
+            updateUIStatus(resultLabel, "Invalid address", true);
         }
     }
 

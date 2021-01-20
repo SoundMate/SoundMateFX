@@ -49,9 +49,9 @@ public class RenterProfileView extends VBox {
     }
 
     private void buildRenterProfileView(RoomRenter roomRenter) {
-        stackPane = buildStackPane(roomRenter);
+        this.stackPane = this.profileView.buildStackPane(roomRenter, addCoverImgBtn, coverImg);
         HBox userInfoVBox = buildUserInfoVBox(roomRenter);
-        HBox photosHBox = buildPhotosHBox(roomRenter);
+        HBox photosHBox = this.profileView.buildMediaHBox(roomRenter, new ManageMediaAction());
         HBox roomsHBox = buildRoomsHBox(roomRenter);
         this.getChildren().addAll(stackPane, userInfoVBox, photosHBox, roomsHBox);
     }
@@ -92,10 +92,6 @@ public class RenterProfileView extends VBox {
         return roomsHBox;
     }
 
-    private HBox buildPhotosHBox(RoomRenter roomRenter) {
-        return this.profileView.buildMediaHBox(roomRenter, new ManageMediaAction());
-    }
-
     private HBox buildUserInfoVBox(RoomRenter roomRenter) {
         HBox hBox = new HBox();
         hBox.setAlignment(Pos.CENTER);
@@ -134,26 +130,6 @@ public class RenterProfileView extends VBox {
         hBox.getChildren().add(buttonsVBox);
         return hBox;
     }
-
-    private StackPane buildStackPane(RoomRenter roomRenter) {
-        StackPane tempStackPane = new StackPane();
-        tempStackPane.setPrefHeight(175);
-        tempStackPane.setPrefWidth(USE_COMPUTED_SIZE);
-        tempStackPane.setAlignment(Pos.CENTER);
-
-        //Profile Picture
-        coverImg.setHeight(175);
-        coverImg.setWidth(600);
-        if (roomRenter.getEncodedImg() != null) {
-            coverImg.setFill(new ImagePattern(new Image(Cache.getInstance().getProfilePicFromCache(roomRenter.getId()))));
-            tempStackPane.getChildren().add(coverImg);
-        } else {
-            tempStackPane.getChildren().add(coverImg);
-            tempStackPane.getChildren().add(addCoverImgBtn);
-        }
-        return tempStackPane;
-    }
-
 
     private class AddImageAction implements EventHandler<ActionEvent> {
         @Override

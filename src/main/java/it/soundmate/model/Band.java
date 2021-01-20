@@ -15,6 +15,7 @@ public class Band extends User{
     private List<Solo> members;
     private String bandName;
     private List<String> genres;
+    private List<String> socialLinks;
     private static final UserType userType = BAND;
 
     public Band() {
@@ -52,6 +53,14 @@ public class Band extends User{
 
     public void setGenres(List<String> genres) {
         this.genres = genres;
+    }
+
+    public List<String> getSocialLinks() {
+        return socialLinks;
+    }
+
+    public void setSocialLinks(List<String> socialLinks) {
+        this.socialLinks = socialLinks;
     }
 
     @Override

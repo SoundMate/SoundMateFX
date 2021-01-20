@@ -32,8 +32,6 @@ public class RegisterRoomRenterView extends BorderPane {
     private final TextField emailTextField = new TextField();
     private final TextField passwordTextField = new TextField();
     private final TextField roomRenterNameTextField = new TextField();
-    private final TextField firstNameTextField = new TextField();
-    private final TextField lastNameTextField = new TextField();
     private final TextField addressTextField = new TextField();
     private final TextField cityTextField = new TextField();
 
@@ -65,44 +63,22 @@ public class RegisterRoomRenterView extends BorderPane {
 
         VBox emailVBox = UIUtils.textFieldWithLabel("Email", this.emailTextField);
         VBox passwordVBox = UIUtils.textFieldWithLabel("Password", this.passwordTextField);
-        VBox firstNameVBox = UIUtils.textFieldWithLabel("First Name", this.firstNameTextField);
-        VBox lastNameVBox = UIUtils.textFieldWithLabel("Last Name", this.lastNameTextField);
+        VBox cityVBox = UIUtils.textFieldWithLabel("City", this.cityTextField);
+        VBox addressVBox = UIUtils.textFieldWithLabel("Address", this.addressTextField);
+        fieldsHBox.getChildren().addAll(emailVBox, passwordVBox, cityVBox, addressVBox);
 
-        HBox emailAndPasswordHBox = RegisterView.createEmailAndPasswordHBox(emailVBox, passwordVBox);
-        HBox firstAndLastNameHBox = RegisterView.createEmailAndPasswordHBox(firstNameVBox, lastNameVBox);
-
-        //Email, password, first name, last name
-        VBox userFields = new VBox();
-        userFields.setAlignment(Pos.CENTER);
-        userFields.setPrefWidth(USE_COMPUTED_SIZE);
-        userFields.setPrefHeight(USE_COMPUTED_SIZE);
-        userFields.setSpacing(10);
-
-        //Room renter name, city, address
-        VBox addressAndNameVBox = new VBox();
-        addressAndNameVBox.setAlignment(Pos.CENTER);
-        addressAndNameVBox.setPrefWidth(USE_COMPUTED_SIZE);
-        addressAndNameVBox.setPrefHeight(USE_COMPUTED_SIZE);
-        addressAndNameVBox.setSpacing(10);
 
         this.roomRenterNameTextField.setStyle(Style.TEXT_FIELD_REGISTER);
         this.roomRenterNameTextField.setPromptText("Room Renter Name...");
         this.roomRenterNameTextField.setPrefWidth(250);
         this.roomRenterNameTextField.setAlignment(Pos.CENTER);
 
-        VBox cityVBox = UIUtils.textFieldWithLabel("City", this.cityTextField);
-        VBox addressVBox = UIUtils.textFieldWithLabel("Address", this.addressTextField);
-        HBox cityAndAddressHBox = RegisterView.createEmailAndPasswordHBox(cityVBox, addressVBox);
 
-        addressAndNameVBox.getChildren().addAll(this.roomRenterNameTextField, cityAndAddressHBox);
 
         //Buttons
         Button registerBtn = UIUtils.createStyledButton("Register", new RegisterAction());
         registerBtn.setPrefWidth(300);
-
-        userFields.getChildren().addAll(emailAndPasswordHBox, firstAndLastNameHBox);
-        fieldsHBox.getChildren().addAll(userFields, addressAndNameVBox);
-        allVBox.getChildren().addAll(fieldsHBox , registerBtn);
+        allVBox.getChildren().addAll(this.roomRenterNameTextField, fieldsHBox , registerBtn);
         return allVBox;
     }
 
@@ -111,8 +87,7 @@ public class RegisterRoomRenterView extends BorderPane {
         @Override
         public void handle(ActionEvent event) {
             RegisterRenterGraphicController registerRenterGraphicController = new RegisterRenterGraphicController();
-            RegisterRenterBean registerRenterBean = new RegisterRenterBean(emailTextField.getText(), passwordTextField.getText(), firstNameTextField.getText(),
-                    lastNameTextField.getText(), addressTextField.getText(), roomRenterNameTextField.getText(), cityTextField.getText());
+            RegisterRenterBean registerRenterBean = new RegisterRenterBean(emailTextField.getText(), passwordTextField.getText(), addressTextField.getText(), roomRenterNameTextField.getText(), cityTextField.getText());
             try {
                 User user = registerRenterGraphicController.registerUser(registerRenterBean);
                 registerRenterGraphicController.navigateToMainView(user, (Stage) emailTextField.getScene().getWindow());

@@ -19,18 +19,16 @@ public class RoomRenter extends User {
     private String address;
     private String name;
     private static final UserType userType = ROOM_RENTER;
-    private AnagraphicData registryData = new AnagraphicData();
 
     public RoomRenter(){
         super();
     }
 
-    public RoomRenter(int id, String email, String password, String address, String name, AnagraphicData registryData) {
+    public RoomRenter(int id, String email, String password, String address, String name) {
         super.setId(id);
         super.setEmail(email);
         super.setPassword(password);
         this.address = address;
-        this.registryData = registryData;
         this.name = name;
     }
 
@@ -42,36 +40,12 @@ public class RoomRenter extends User {
         this.name = name;
     }
 
-    public String getCity() {
-        return this.registryData.getCity();
-    }
-
-    public void setCity(String city) {
-        this.registryData.setCity(city);
-    }
-
     public String getAddress() {
         return address;
     }
 
     public void setAddress(String address) {
         this.address = address;
-    }
-
-    public String getFirstName() {
-        return this.registryData.getFirstName();
-    }
-
-    public void setFirstName(String firstName) {
-        this.registryData.setFirstName(firstName);
-    }
-
-    public String getLastName() {
-        return this.registryData.getLastName();
-    }
-
-    public void setLastName(String lastName) {
-        this.registryData.setLastName(lastName);
     }
 
     public List<Room> getRooms() {

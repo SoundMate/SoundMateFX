@@ -16,13 +16,6 @@ import javafx.stage.Stage;
 
 public interface RegisterGraphicController {
 
-     default void backNavigation(Stage stage) {
-        Parent chooseRegisterView = new ChooseRegisterView();
-        Scene scene = new Scene(chooseRegisterView, 800, 600);
-        stage.setScene(scene);
-        stage.show();
-     }
-
     default void navigateToMainView(User user, Stage stage){
         Parent mainView = new MainView(user).getBorderPane();
         Scene scene = new Scene(mainView, 800, 600);

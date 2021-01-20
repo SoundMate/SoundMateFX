@@ -74,4 +74,13 @@ public class EditGraphicController {
             throw new UpdateException(updateException.getMessage());
         }
     }
+
+    public void updateAddress(String address, RoomRenter roomRenter) {
+        if ("".equals(address)) throw new InputException("Address is empty");
+        try {
+            editController.updateAddress(address, roomRenter);
+        } catch (UpdateException updateException) {
+            throw new UpdateException(updateException.getMessage());
+        }
+    }
 }

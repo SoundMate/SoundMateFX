@@ -6,7 +6,12 @@
 
 package it.soundmate.view.registerview;
 
+import it.soundmate.bean.registerbeans.RegisterBandBean;
 import it.soundmate.constants.Style;
+import it.soundmate.controller.graphic.register.RegisterBandGraphicController;
+import it.soundmate.exceptions.InputException;
+import it.soundmate.model.Band;
+import it.soundmate.model.User;
 import it.soundmate.view.UIUtils;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
@@ -18,12 +23,18 @@ import javafx.scene.control.TextField;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
+import javafx.stage.Stage;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class RegisterBandView extends BorderPane {
+
+    private static final Logger logger = LoggerFactory.getLogger(RegisterBandView.class);
 
     private final TextField emailTextField = new TextField();
     private final TextField passwordTextField = new TextField();
     private final TextField bandNameTextField = new TextField();
+    private final TextField cityTextField = new TextField();
 
     public RegisterBandView(){
         VBox fieldsVBox = buildFieldsVBox();
@@ -43,23 +54,39 @@ public class RegisterBandView extends BorderPane {
 
         VBox emailVBox = UIUtils.textFieldWithLabel("Email", this.emailTextField);
         VBox passwordVBox = UIUtils.textFieldWithLabel("Password", this.passwordTextField);
+        VBox cityVBox = UIUtils.textFieldWithLabel("City", this.cityTextField);
+
         this.bandNameTextField.setStyle(Style.TEXT_FIELD_REGISTER);
         this.bandNameTextField.setPromptText("Band Name...");
         this.bandNameTextField.setPrefWidth(250);
         this.bandNameTextField.setAlignment(Pos.CENTER);
 
-        HBox emailAndPassword = RegisterView.createEmailAndPasswordHBox(emailVBox, passwordVBox);
+        HBox fieldsHBox = new HBox();
+        fieldsHBox.setAlignment(Pos.CENTER);
+        fieldsHBox.setPrefWidth(USE_COMPUTED_SIZE);
+        fieldsHBox.setPrefHeight(USE_COMPUTED_SIZE);
+        fieldsHBox.setSpacing(20);
+        fieldsHBox.getChildren().addAll(emailVBox, passwordVBox, cityVBox);
 
         Button registerBtn = UIUtils.createStyledButton("Register", new RegisterAction());
         registerBtn.setPrefWidth(200);
-        fieldsVBox.getChildren().addAll(emailAndPassword, this.bandNameTextField, registerBtn);
+        fieldsVBox.getChildren().addAll(this.bandNameTextField, fieldsHBox, registerBtn);
         return fieldsVBox;
     }
 
     private class RegisterAction implements EventHandler<ActionEvent> {
         @Override
         public void handle(ActionEvent event) {
-            //Controller qua
+            try {
+                RegisterBandBean registerBandBean = new RegisterBandBean(emailTextField.getText(), passwordTextField.getText(),
+                        bandNameTextField.getText(), cityTextField.getText());
+                RegisterBandGraphicController registerBandGraphicController = new RegisterBandGraphicController();
+                User user = registerBandGraphicController.registerUser(registerBandBean);
+                registerBandGraphicController.navigateToMainView(user, (Stage) bandNameTextField.getScene().getWindow());
+            } catch (InputException inputException) {
+                logger.error("Input Exception: {}", inputException.getMessage());
+            }
+
         }
     }
 }

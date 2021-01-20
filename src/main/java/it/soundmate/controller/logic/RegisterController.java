@@ -9,13 +9,17 @@ package it.soundmate.controller.logic;
 
 import it.soundmate.bean.LoggedBean;
 import it.soundmate.bean.LoginBean;
+import it.soundmate.bean.registerbeans.RegisterBandBean;
 import it.soundmate.bean.registerbeans.RegisterRenterBean;
 import it.soundmate.bean.registerbeans.RegisterSoloBean;
+import it.soundmate.database.dao.BandDao;
 import it.soundmate.database.dao.RoomRenterDao;
 import it.soundmate.database.dao.SoloDao;
 import it.soundmate.database.dao.UserDao;
+import it.soundmate.database.dbexceptions.DuplicatedEmailException;
 import it.soundmate.database.dbexceptions.RepositoryException;
 import it.soundmate.exceptions.InputException;
+import it.soundmate.model.Band;
 import it.soundmate.model.RoomRenter;
 import it.soundmate.model.Solo;
 import org.slf4j.Logger;
@@ -44,8 +48,18 @@ public class RegisterController {
         }
     }
 
-    public LoggedBean registerBand() {
-        return null;
+    public Band registerBand(RegisterBandBean registerBandBean) {
+        try {
+            BandDao bandDao = new BandDao(userDao);
+            int id = bandDao.registerBand(registerBandBean);
+            LoginBean loginBean = new LoginBean(registerBandBean.getEmail(), registerBandBean.getPassword());
+            LoginController loginController = new LoginController(loginBean);
+            return loginController.getFullBand(id);
+        } catch (RepositoryException repositoryException) {
+            throw new RepositoryException(repositoryException.getMessage());
+        } catch (DuplicatedEmailException d) {
+            throw new DuplicatedEmailException(d.getMessage());
+        }
     }
 
     public RoomRenter registerRoomRenter(RegisterRenterBean registerRenterBean) {

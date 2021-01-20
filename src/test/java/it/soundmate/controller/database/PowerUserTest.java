@@ -19,9 +19,9 @@ class PowerUserTest {
     @Test
 //    @Order(2)
     void banTest(){
-        RegisterBandBean registerBandBean = new RegisterBandBean("DT@", "sasa", "DT");
+        RegisterBandBean registerBandBean = new RegisterBandBean("DT@", "sasa", "DT", "Boston");
         BandDao bandDao = new BandDao(userDao);
-        bandDao.regiBandController(registerBandBean);
+        bandDao.registerBand(registerBandBean);
         Assertions.assertTrue(powerUserDao.banUser("DT@"));
     }
 

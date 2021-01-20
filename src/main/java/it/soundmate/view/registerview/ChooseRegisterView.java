@@ -47,7 +47,7 @@ public class ChooseRegisterView extends Pane {
         chooseHBox.setAlignment(Pos.CENTER);
         chooseHBox.setSpacing(100);
         Button registerBandBtn = new Button("Band");
-        Button registerRoomBtn = new Button("Band Room");
+        Button registerRoomBtn = new Button("Room Renter");
         Button registerSoloBtn = new Button("Solo");
         registerBandBtn.setStyle(Style.REGISTER_BTN);
         registerRoomBtn.setStyle(Style.REGISTER_BTN);

@@ -58,4 +58,12 @@ public class EditController {
             throw new UpdateException(updateException.getMessage());
         }
     }
+
+    public void updateAddress(String address, RoomRenter roomRenter) {
+        try {
+            roomRenterDao.updateAddress(address, roomRenter);
+        } catch (UpdateException updateException){
+            throw new UpdateException(updateException.getMessage());
+        }
+    }
 }

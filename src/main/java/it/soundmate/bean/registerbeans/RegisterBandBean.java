@@ -1,5 +1,6 @@
 package it.soundmate.bean.registerbeans;
 
+import it.soundmate.exceptions.InputException;
 import it.soundmate.model.UserType;
 
 import static it.soundmate.model.UserType.BAND;
@@ -13,6 +14,9 @@ public class RegisterBandBean extends RegisterBean {
     public RegisterBandBean(String email, String password, String bandName, String city) {
         super(email, password, city);
         this.bandName = bandName;
+        if (!this.checkFields()) {
+            throw new InputException("Some fields are empty");
+        }
     }
 
     public String getBandName() {

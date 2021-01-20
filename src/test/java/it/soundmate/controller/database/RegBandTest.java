@@ -15,8 +15,8 @@ class RegBandTest {
 
     @Test
     void testBandReg() {
-        RegisterBandBean registerBandBean = new RegisterBandBean("DreamTheater@qualcosa.com", "DTSoundMate", "Dream Theater");
-        Assertions.assertNotEquals(0, bandDao.regiBandController(registerBandBean), "SI E' ROTTO");
+        RegisterBandBean registerBandBean = new RegisterBandBean("DreamTheater@qualcosa.com", "DTSoundMate", "Dream Theater", "Chicago");
+        Assertions.assertNotEquals(0, bandDao.registerBand(registerBandBean), "SI E' ROTTO");
     }
 
 
