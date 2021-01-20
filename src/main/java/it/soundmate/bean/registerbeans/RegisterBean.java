@@ -7,11 +7,12 @@ public abstract class RegisterBean {
 
     private String email;
     private String password;
+    private String city;
 
-
-    protected RegisterBean(String email, String password){
+    protected RegisterBean(String email, String password, String city){
         this.email = email;
         this.password = password;
+        this.city = city;
     }
 
 
@@ -33,13 +34,21 @@ public abstract class RegisterBean {
 
     public abstract UserType getUserType();
 
+    public String getCity() {
+        return city;
+    }
+
+    public void setCity(String city) {
+        this.city = city;
+    }
+
     /**
      * checkFields()
      * @return true if fields are not empty, false otherwise
      */
 
     public boolean checkFields() {
-        return !"".equals(this.email) && !"".equals(this.password) && this.email.contains("@");
+        return !"".equals(this.email) && !"".equals(this.password) && this.email.contains("@") && !"".equals(this.city);
     }
 
 }

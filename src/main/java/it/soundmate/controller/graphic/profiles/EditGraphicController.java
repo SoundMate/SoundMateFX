@@ -9,6 +9,7 @@ package it.soundmate.controller.graphic.profiles;
 import it.soundmate.controller.logic.profiles.EditController;
 import it.soundmate.exceptions.InputException;
 import it.soundmate.exceptions.UpdateException;
+import it.soundmate.model.RoomRenter;
 import it.soundmate.model.User;
 import it.soundmate.utils.Cache;
 import it.soundmate.utils.ImagePicker;
@@ -51,6 +52,24 @@ public class EditGraphicController {
         if (password.length() < 5) throw new InputException("Password length must be at least 5 characters");
         try {
             editController.updatePassword(password, user);
+        } catch (UpdateException updateException) {
+            throw new UpdateException(updateException.getMessage());
+        }
+    }
+
+    public void updateNameRoomRenter(String name, RoomRenter roomRenter) {
+        if ("".equals(name)) throw new InputException("Name is empty");
+        try {
+            editController.updateNameRoomRenter(name, roomRenter);
+        } catch (UpdateException updateException) {
+            throw new UpdateException(updateException.getMessage());
+        }
+    }
+
+    public void updateCity(String city, User user) {
+        if ("".equals(city)) throw new InputException("City is empty");
+        try {
+            editController.updateCity(city, user);
         } catch (UpdateException updateException) {
             throw new UpdateException(updateException.getMessage());
         }

@@ -162,6 +162,7 @@ public class EditRenterView extends EditProfileView {
                     break;
                 case 2:
                     logger.info("Edit name");
+                    updateNameRoomRenter(roomRenterProfileGraphicController, roomRenter, nameTextField, errorLabel);
                     break;
                 case 3:
                     logger.info("Edit city");

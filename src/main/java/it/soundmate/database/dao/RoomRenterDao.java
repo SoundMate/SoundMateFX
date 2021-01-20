@@ -5,6 +5,7 @@ import it.soundmate.database.Connector;
 import it.soundmate.database.dbexceptions.DBException;
 import it.soundmate.database.dbexceptions.DuplicatedEmailException;
 import it.soundmate.database.dbexceptions.RepositoryException;
+import it.soundmate.exceptions.UpdateException;
 import it.soundmate.model.RoomRenter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -99,6 +100,19 @@ public class RoomRenterDao {
             }
         } catch (SQLException exc) {
             throw new RepositoryException("Err Fetching User", exc);
+        }
+    }
+
+    public void updateName(String name, RoomRenter roomRenter) {
+        String sql = "UPDATE room_renter SET name = ? WHERE id = ?";
+        try (PreparedStatement preparedStatement = connector.getConnection().prepareStatement(sql)) {
+            preparedStatement.setString(1, name);
+            preparedStatement.setInt(2, roomRenter.getId());
+            if (preparedStatement.executeUpdate() == 1) {
+                roomRenter.setName(name);
+            }
+        } catch (SQLException sqlException) {
+            throw new UpdateException("Error updating name, SQLException: "+sqlException.getMessage());
         }
     }
 }

@@ -17,13 +17,15 @@ public abstract class User {
     private String password;
     private List<File> photos;
     private String encodedImg;
+    private AnagraphicData anagraphicData = new AnagraphicData();
 
     protected User(){}
 
-    protected User(int id, String email, String password) {
+    protected User(int id, String email, String password, AnagraphicData anagraphicData) {
         this.id = id;
         this.email = email;
         this.password = password;
+        this.anagraphicData = anagraphicData;
     }
 
     public String getEmail() {
@@ -64,4 +66,35 @@ public abstract class User {
 
     public abstract UserType getUserType();
 
+    public void setCity(String city) {
+        this.anagraphicData.setCity(city);
+    }
+
+    public String getCity() {
+        return this.anagraphicData.getCity();
+    }
+
+    public void setFirstName(String firstName){
+        this.anagraphicData.setFirstName(firstName);
+    }
+
+    public String getFirstName(){
+        return this.anagraphicData.getFirstName();
+    }
+
+    public void setLastName(String lastName){
+        this.anagraphicData.setLastName(lastName);
+    }
+
+    public String getLastName(){
+        return this.anagraphicData.getLastName();
+    }
+
+    public void setAge(int age){
+        this.anagraphicData.setAge(age);
+    }
+
+    public int getAge(){
+        return this.anagraphicData.getAge();
+    }
 }

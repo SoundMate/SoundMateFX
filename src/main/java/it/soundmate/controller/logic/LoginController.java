@@ -20,6 +20,7 @@ import it.soundmate.model.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.security.auth.login.LoginException;
 import java.sql.SQLException;
 
 public class LoginController {
@@ -36,18 +37,28 @@ public class LoginController {
         if (checkFields()) {
             return null;
         } else {
-            LoggedBean loggedBean = this.userDao.login(this.loginBean);
-            switch (loggedBean.getUserType()) {
-                case SOLO:
-                    return this.getFullSolo(loggedBean.getUserID());
-                case BAND:
-                    return this.getFullBand(loggedBean.getUserID());
-                case ROOM_RENTER:
-                    return this.getFullRenter(loggedBean.getUserID());
-                default:
-                    logger.error("LoginController: usertype error");
-                    throw new UserNotFoundException("User type doesn't exist");
+            LoggedBean loggedBean = null;
+            try {
+                loggedBean = this.userDao.login(this.loginBean);
+                switch (loggedBean.getUserType()) {
+                    case SOLO:
+                        return this.getFullSolo(loggedBean.getUserID());
+                    case BAND:
+                        return this.getFullBand(loggedBean.getUserID());
+                    case ROOM_RENTER:
+                        return this.getFullRenter(loggedBean.getUserID());
+                    default:
+                        logger.error("LoginController: usertype error");
+                        throw new UserNotFoundException("User type doesn't exist");
+                }
+            } catch (LoginException e) {
+                logger.error("Login Exception: {}", e.getMessage());
+                return null;
+            } catch (NullPointerException e) {
+                logger.error("Null Pointer Exception: {}", e.getMessage());
+                return null;
             }
+
         }
     }
 

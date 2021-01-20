@@ -17,6 +17,7 @@ import it.soundmate.utils.ImgBase64Repo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.security.auth.login.LoginException;
 import java.io.IOException;
 import java.io.UncheckedIOException;
 import java.nio.file.Path;
@@ -32,16 +33,14 @@ public class UserDao implements Dao<User> {
     private static final String PASSWORD = "password";
 
 
-
-    //Cambiato nome per farlo implementare l'interfaccia Dao
     @Override
     public int register(RegisterBean registerBean){
         ResultSet resultSet;
         int userID = 0;
 
         String sql = "WITH ins1 AS (\n" +
-                "     INSERT INTO registered_users (email, password, user_type)\n" +
-                "         VALUES (?, ?, ?)\n" +
+                "     INSERT INTO registered_users (email, password, user_type, city)\n" +
+                "         VALUES (?, ?, ?, ?)\n" +
                 "         RETURNING id AS sample_id),\n" +
                 "     ins2 AS (\n" +
                 "     INSERT INTO users (id)\n" +
@@ -54,6 +53,7 @@ public class UserDao implements Dao<User> {
             pstmt.setString(1, registerBean.getEmail());
             pstmt.setString(2, registerBean.getPassword());
             pstmt.setString(3, registerBean.getUserType().toString());
+            pstmt.setString(4, registerBean.getCity());
 
             resultSet = pstmt.executeQuery();
             if (resultSet.next())
@@ -65,13 +65,13 @@ public class UserDao implements Dao<User> {
         } return userID;
     }
 
-    public LoggedBean login(LoginBean loginBean){
+    public LoggedBean login(LoginBean loginBean) throws LoginException {
 
         String sql = "SELECT id, email, password, user_type FROM registered_users WHERE email = ? AND password = ?";
         ResultSet resultSet;
 
         try(Connection conn = connector.getConnection();
-            PreparedStatement preparedStatement = conn.prepareStatement(sql)){
+            PreparedStatement preparedStatement = conn.prepareStatement(sql)) {
             preparedStatement.setString(1, loginBean.getEmail());
             preparedStatement.setString(2, loginBean.getPassword());
             resultSet = preparedStatement.executeQuery();
@@ -90,10 +90,9 @@ public class UserDao implements Dao<User> {
                 }
             }
         } catch (SQLException sqlException){
-
             throw new RepositoryException("Error: DB not responding! \n Check stacktrace for details");
         }
-        return new LoggedBean(); //ritorna un bean "negativo" che ha un campo false, l'id = 0, e usertype null.
+        throw new LoginException("User not found");
     }
 
     public void deleteAll() {
@@ -257,6 +256,16 @@ public class UserDao implements Dao<User> {
         }
     }
 
+    public void updateCity(String city, User user) {
+        String sql = "UPDATE registered_users SET city = ? WHERE id = ?";
+        try (PreparedStatement preparedStatement = connector.getConnection().prepareStatement(sql)) {
+            preparedStatement.setString(1, city);
+            preparedStatement.setInt(2, user.getId());
+            if (preparedStatement.executeUpdate() == 1) user.setCity(city);
+        } catch (SQLException sqlException) {
+            throw new UpdateException("Error updating city, SQL Exception: "+sqlException.getMessage());
+        }
+    }
 
 
     @Override
@@ -273,4 +282,5 @@ public class UserDao implements Dao<User> {
     public User get(int id) {
         return null;
     }
+
 }

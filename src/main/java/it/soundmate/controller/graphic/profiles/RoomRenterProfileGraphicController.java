@@ -16,4 +16,5 @@ public class RoomRenterProfileGraphicController extends EditGraphicController {
     public void navigateToEditView(ProfileView profileView, RoomRenter roomRenter) {
         profileView.setProfilePage(new EditRenterView(roomRenter, profileView));
     }
+
 }

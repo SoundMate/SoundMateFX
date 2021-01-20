@@ -35,6 +35,7 @@ public class RegisterSoloView extends BorderPane {
     private final TextField passwordTextField = new TextField();
     private final TextField firstNameTextField = new TextField();
     private final TextField lastNameTextField = new TextField();
+    private final TextField cityTextField = new TextField();
 
 
     public RegisterSoloView(){
@@ -57,6 +58,7 @@ public class RegisterSoloView extends BorderPane {
         VBox passwordVBox = UIUtils.textFieldWithLabel("Password", this.passwordTextField);
         VBox firstNameVBox = UIUtils.textFieldWithLabel("First Name", this.firstNameTextField);
         VBox lastNameVBox = UIUtils.textFieldWithLabel("Last Name", this.lastNameTextField);
+        VBox cityVBox = UIUtils.textFieldWithLabel("City", this.cityTextField);
 
         HBox emailAndPassword = new HBox();
         emailAndPassword.setAlignment(Pos.CENTER);
@@ -66,7 +68,7 @@ public class RegisterSoloView extends BorderPane {
         HBox names = new HBox();
         names.setAlignment(Pos.CENTER);
         names.setSpacing(10);
-        names.getChildren().addAll(firstNameVBox, lastNameVBox);
+        names.getChildren().addAll(firstNameVBox, lastNameVBox, cityVBox);
 
         //Button
         Button registerBtn = UIUtils.createStyledButton("Register", new RegisterAction());
@@ -84,8 +86,9 @@ public class RegisterSoloView extends BorderPane {
             String password = passwordTextField.getText();
             String firstName = firstNameTextField.getText();
             String lastName = lastNameTextField.getText();
+            String city = cityTextField.getText();
             try {
-                RegisterSoloBean registerSoloBean = new RegisterSoloBean(email, password, firstName, lastName);
+                RegisterSoloBean registerSoloBean = new RegisterSoloBean(email, password, firstName, lastName, city);
                 RegisterSoloGraphicController registerSoloGraphicController = new RegisterSoloGraphicController();
                 User user = registerSoloGraphicController.registerUser(registerSoloBean);
                 if (user!=null) {

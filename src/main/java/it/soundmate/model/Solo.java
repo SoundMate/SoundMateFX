@@ -12,9 +12,8 @@ import java.util.List;
 import static it.soundmate.model.UserType.SOLO;
 
 
-public class  Solo extends User {
+public class Solo extends User {
 
-    private AnagraphicData registryData = new AnagraphicData();
     private List<Band> bands;
     private List<Genre> favGenres;
     private List<String> instruments;
@@ -23,43 +22,10 @@ public class  Solo extends User {
     public Solo() {
     }
 
-    public Solo(int id, AnagraphicData registryData, String email, String password) {
+    public Solo(int id, String email, String password) {
         super.setId(id);
         super.setEmail(email);
         super.setPassword(password);
-        this.registryData = registryData;
-    }
-
-    public void setFirstName(String firstName){
-        this.registryData.setFirstName(firstName);
-    }
-
-    public String getFirstName(){
-        return this.registryData.getFirstName();
-    }
-
-    public void setLastName(String lastName){
-        this.registryData.setLastName(lastName);
-    }
-
-    public String getLastName(){
-        return this.registryData.getLastName();
-    }
-
-    public void setAge(int age){
-        this.registryData.setAge(age);
-    }
-
-    public int getAge(){
-        return this.registryData.getAge();
-    }
-
-    public void setCity(String city){
-        this.registryData.setCity(city);
-    }
-
-    public String getCity(){
-        return this.registryData.getCity();
     }
 
     public List<Band> getBands() {

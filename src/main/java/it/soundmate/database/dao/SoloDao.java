@@ -9,6 +9,7 @@ package it.soundmate.database.dao;
 import it.soundmate.bean.registerbeans.RegisterSoloBean;
 import it.soundmate.database.Connector;
 import it.soundmate.database.dbexceptions.RepositoryException;
+import it.soundmate.model.AnagraphicData;
 import it.soundmate.model.Genre;
 import it.soundmate.model.Solo;
 import org.slf4j.Logger;
@@ -52,8 +53,8 @@ public class SoloDao {
             return -2;
         } else {
             String sql = " WITH ins1 AS (\n" +
-                    "     INSERT INTO registered_users (email, password, user_type)\n" +
-                    "         VALUES (?, ?, ?)\n" +
+                    "     INSERT INTO registered_users (email, password, user_type, city)\n" +
+                    "         VALUES (?, ?, ?, ?)\n" +
                     " -- ON     CONFLICT DO NOTHING         -- optional addition in Postgres 9.5+\n" +
                     "         RETURNING id AS sample_id\n" +
                     " ), ins2 AS (\n" +
@@ -68,8 +69,9 @@ public class SoloDao {
                 pstmt.setString(1, soloBean.getEmail());
                 pstmt.setString(2, soloBean.getPassword());
                 pstmt.setString(3, soloBean.getUserType().toString());
-                pstmt.setString(4, soloBean.getFirstName());
-                pstmt.setString(5, soloBean.getLastName());
+                pstmt.setString(4, soloBean.getCity());
+                pstmt.setString(5, soloBean.getFirstName());
+                pstmt.setString(6, soloBean.getLastName());
 
 
                 int rowAffected = pstmt.executeUpdate();
@@ -111,7 +113,7 @@ public class SoloDao {
     public Solo getSoloByID(int id) throws SQLException {
         ResultSet resultSet;
         Solo soloUser = new Solo();
-        String query = "SELECT email, password, encoded_profile_img, age, first_name, last_name\n" +
+        String query = "SELECT email, password, encoded_profile_img, age, first_name, last_name, city\n" +
         " FROM registered_users LEFT OUTER JOIN users ON (registered_users.id = users.id)\n" +
         " INNER JOIN solo ON (registered_users.id = solo.id) WHERE registered_users.id = ?";
 
@@ -128,10 +130,12 @@ public class SoloDao {
                 soloUser.setEncodedImg(resultSet.getString("encoded_profile_img"));
                 soloUser.setFirstName(resultSet.getString("first_name"));
                 soloUser.setLastName(resultSet.getString("last_name"));
+                soloUser.setCity(resultSet.getString("city"));
             }
+            return soloUser;
         }catch (SQLException exc) {
             throw new RepositoryException("Err Fetching User", exc);
-        }return soloUser;
+        }
     }
 
 

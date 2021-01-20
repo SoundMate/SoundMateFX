@@ -10,8 +10,8 @@ public class RegisterBandBean extends RegisterBean {
     private static final UserType USER_TYPE = BAND;
 
 
-    public RegisterBandBean(String email, String password, String bandName) {
-        super(email, password);
+    public RegisterBandBean(String email, String password, String bandName, String city) {
+        super(email, password, city);
         this.bandName = bandName;
     }
 

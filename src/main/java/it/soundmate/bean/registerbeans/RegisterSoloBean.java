@@ -12,8 +12,8 @@ public class RegisterSoloBean extends RegisterBean {
     private String lastName;
     private static final UserType USER_TYPE = SOLO;
 
-    public RegisterSoloBean(String email, String password, String firstName, String lastName) {
-        super(email, password);
+    public RegisterSoloBean(String email, String password, String firstName, String lastName, String city) {
+        super(email, password, city);
         this.firstName = firstName;
         this.lastName = lastName;
         if (!this.checkFields()) throw new InputException("Some fields are empty");
