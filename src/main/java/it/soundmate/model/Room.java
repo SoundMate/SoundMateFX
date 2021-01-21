@@ -16,6 +16,13 @@ public class Room {
     private String encodedImg;
     private boolean roomIsFree; //true means the room is free to be booked...
 
+    public Room(String name, Double price, String description, String encodedImg){
+        this.name = name;
+        this.price = price;
+        this.description = description;
+        this.encodedImg = encodedImg;
+    }
+
     public Room(int code, String name, Double price, String description, String encodedImg) {
         this.code = code;
         this.name = name;
