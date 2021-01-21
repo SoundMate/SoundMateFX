@@ -10,6 +10,7 @@ import it.soundmate.constants.Style;
 import it.soundmate.controller.graphic.profiles.RoomRenterProfileGraphicController;
 import it.soundmate.exceptions.InputException;
 import it.soundmate.exceptions.UpdateException;
+import it.soundmate.model.Room;
 import it.soundmate.model.RoomRenter;
 import it.soundmate.utils.Cache;
 import it.soundmate.view.UIUtils;
@@ -40,6 +41,7 @@ public class RenterProfileView extends VBox {
     private final Rectangle coverImg = new Rectangle();
     private StackPane stackPane;
     private final Button addCoverImgBtn = UIUtils.createStyledButton("Add cover image", new AddImageAction());
+    private final Button manageRoomsBtn = UIUtils.createStyledButton("Manage Rooms", new ManageRoomsAction());
 
 
     public RenterProfileView(ProfileView profileView, RoomRenter roomRenter) {
@@ -57,39 +59,19 @@ public class RenterProfileView extends VBox {
     }
 
     private HBox buildRoomsHBox(RoomRenter roomRenter) {
-        HBox roomsHBox = new HBox();
-        roomsHBox.setAlignment(Pos.CENTER_LEFT);
-        roomsHBox.setPadding(new Insets(25));
+        HBox[] roomsHBoxes = profileView.buildProfileSection("Rooms", "Add rooms to let users book them", manageRoomsBtn);
 
-        //Title and content
-        VBox titleAndContent = new VBox();
-        titleAndContent.setSpacing(10);
-        titleAndContent.setAlignment(Pos.TOP_LEFT);
-        titleAndContent.setPrefHeight(USE_COMPUTED_SIZE);
-        titleAndContent.setPrefWidth(USE_COMPUTED_SIZE);
+        HBox mainHBox = roomsHBoxes[0];
+        HBox roomsHBox = roomsHBoxes[1];
 
-        Label roomsLabel = new Label("Rooms");
-        roomsLabel.setStyle(Style.MID_LABEL);
-
-        //Content
-        HBox contentHBox = new HBox();
-        contentHBox.setAlignment(Pos.CENTER_LEFT);
-        contentHBox.setPrefHeight(USE_COMPUTED_SIZE);
-        contentHBox.setPrefWidth(USE_COMPUTED_SIZE);
-
-        if (roomRenter.getRooms() == null || roomRenter.getRooms().isEmpty()) {
-            Label defaultLabel = new Label("Add rooms to let users book them");
-            defaultLabel.setStyle(Style.LOW_LABEL);
-            contentHBox.getChildren().add(defaultLabel);
-        }  //else insert rooms in content HBox
-
-        titleAndContent.getChildren().addAll(roomsLabel, contentHBox);
-
-        Button manageRoomsBtn = UIUtils.createStyledButton("Manage Rooms", new ManageRoomsAction());
-        roomsHBox.getChildren().add(titleAndContent);
-        UIUtils.addRegion(null, roomsHBox);
-        roomsHBox.getChildren().add(manageRoomsBtn);
-        return roomsHBox;
+        if (roomRenter.getRooms() != null && !roomRenter.getRooms().isEmpty()) {
+            roomsHBox.getChildren().remove(0);
+            for (Room room : roomRenter.getRooms()) {
+                RoomUI roomUI = new RoomUI(room, roomRenter.getId());
+                roomsHBox.getChildren().add(roomUI);
+            }
+        }
+        return mainHBox;
     }
 
     private HBox buildUserInfoVBox(RoomRenter roomRenter) {
@@ -147,7 +129,6 @@ public class RenterProfileView extends VBox {
             }
         }
 
-
         private void updateUIErrorImage() {
             stackPane.getChildren().remove(addCoverImgBtn);
             VBox errorVBox = new VBox();
@@ -178,6 +159,7 @@ public class RenterProfileView extends VBox {
         @Override
         public void handle(ActionEvent event) {
             logger.info("Manage Rooms click");
+            profileView.setProfilePage(new ManageRoomsView(profileView, roomRenter));
         }
     }
 

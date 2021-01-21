@@ -32,7 +32,6 @@ public class SoloResults extends ListView<SoloResultBean> {
 
     private static final Logger logger = LoggerFactory.getLogger(SoloResults.class);
     private final SearchResultsGraphicController searchResultsGraphicController = new SearchResultsGraphicController();
-    private VBox resultVBox;
     private final SearchView searchView;
 
     public SoloResults(SearchView searchView) {
@@ -66,7 +65,7 @@ public class SoloResults extends ListView<SoloResultBean> {
 
         @NotNull
         private VBox buildResultVBox(SoloResultBean solo) {
-            resultVBox = new VBox();
+            VBox resultVBox = new VBox();
             resultVBox.setAlignment(Pos.CENTER);
             resultVBox.setPadding(new Insets(5));
             resultVBox.setSpacing(10);

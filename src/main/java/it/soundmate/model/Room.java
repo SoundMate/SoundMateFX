@@ -6,19 +6,38 @@
 
 package it.soundmate.model;
 
+
 public class Room {
 
     private int code;
     private Double price;
     private String description;
-    private String roomAddress;
+    private String name;
+    private String encodedImg;
     private boolean roomIsFree; //true means the room is free to be booked...
 
-    public Room(int code, Double price, String description, String roomAddress) {
+    public Room(int code, String name, Double price, String description, String encodedImg) {
         this.code = code;
+        this.name = name;
         this.price = price;
+        this.encodedImg = encodedImg;
         this.description = description;
-        this.roomAddress = roomAddress;
+    }
+
+    public String getEncodedImg() {
+        return encodedImg;
+    }
+
+    public void setEncodedImg(String encodedImg) {
+        this.encodedImg = encodedImg;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 
     public int getCode() {
@@ -45,13 +64,6 @@ public class Room {
         this.description = description;
     }
 
-    public String getRoomAddress() {
-        return roomAddress;
-    }
-
-    public void setRoomAddress(String roomAddress) {
-        this.roomAddress = roomAddress;
-    }
 
     public boolean isRoomIsFree() {
         return roomIsFree;

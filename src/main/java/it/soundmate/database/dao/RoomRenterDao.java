@@ -1,16 +1,20 @@
 package it.soundmate.database.dao;
 
+import it.soundmate.bean.AddRoomBean;
 import it.soundmate.bean.registerbeans.RegisterRenterBean;
 import it.soundmate.database.Connector;
 import it.soundmate.database.dbexceptions.DBException;
 import it.soundmate.database.dbexceptions.DuplicatedEmailException;
 import it.soundmate.database.dbexceptions.RepositoryException;
 import it.soundmate.exceptions.UpdateException;
+import it.soundmate.model.Room;
 import it.soundmate.model.RoomRenter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.sql.*;
+import java.util.ArrayList;
+import java.util.List;
 
 public class RoomRenterDao {
 
@@ -89,8 +93,8 @@ public class RoomRenterDao {
                 roomRenter.setName(resultSet.getString("name"));
                 roomRenter.setCity(resultSet.getString("city"));
                 roomRenter.setAddress(resultSet.getString("address"));
+                roomRenter.setRooms(this.getRenterRooms(id));
             return roomRenter;
-
             } else {
                 throw new RepositoryException("Error ResultSet in getRenterByID");
             }
@@ -124,4 +128,49 @@ public class RoomRenterDao {
             throw new UpdateException("Error updating address, SQLException: "+sqlException.getMessage());
         }
     }
+
+    public int addRoom(AddRoomBean addRoomBean, RoomRenter roomRenter) {
+        String sql = "INSERT INTO room (id, room_price, photo, description, name) VALUES (?, ?, ?, ?, ?) RETURNING room_code";
+        try (PreparedStatement preparedStatement = connector.getConnection().prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
+            preparedStatement.setInt(1, roomRenter.getId());
+            preparedStatement.setInt(2, addRoomBean.getPrice());
+            preparedStatement.setString(3, addRoomBean.getEncodedImg());
+            preparedStatement.setString(4, addRoomBean.getDescription());
+            preparedStatement.setString(5, addRoomBean.getName());
+            if (preparedStatement.executeUpdate() == 1) {
+                 ResultSet resultSet = preparedStatement.getGeneratedKeys();
+                 roomRenter.setRooms(this.getRenterRooms(roomRenter.getId()));
+                 if (resultSet.next()) {
+                     log.info("Returning generated key: {}",  resultSet.getInt(1));
+                     return resultSet.getInt(1);
+                 } else throw new UpdateException("Unable to get generated key");
+            } else throw new UpdateException("Error adding room");
+        } catch (SQLException sqlException) {
+            throw new UpdateException("Error adding room, SQLException: "+sqlException.getMessage());
+        }
+    }
+
+    public List<Room> getRenterRooms(int renterID) {
+        String sql = "SELECT * FROM room WHERE id = ?";
+        ResultSet resultSet;
+        List<Room> roomList = new ArrayList<>();
+        try (PreparedStatement preparedStatement = connector.getConnection().prepareStatement(sql)) {
+            preparedStatement.setInt(1, renterID);
+            resultSet = preparedStatement.executeQuery();
+            while (resultSet.next()) {
+                String name = resultSet.getString("name");
+                String description = resultSet.getString("description");
+                int roomPrice = resultSet.getInt("room_price");
+                String encodedImg = resultSet.getString("photo");
+                int roomCode = resultSet.getInt("room_code");
+                Room room = new Room(roomCode, name, (double) roomPrice, description, encodedImg);
+                roomList.add(room);
+            }
+            return roomList;
+        } catch (SQLException sqlException) {
+            throw new UpdateException("Error getting room, SQLException: "+sqlException.getMessage());
+        }
+    }
+
+
 }

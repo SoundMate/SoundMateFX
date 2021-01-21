@@ -27,12 +27,43 @@ public class Cache {
         return instance;
     }
 
+    public String buildRoomCacheName(int renterID, int roomCode) {
+        return "src/main/resources/soundmate/userCache/"+renterID+"_room"+roomCode+"Img.png";
+    }
+
+    public InputStream getRoomPicFromCache(int renterID, int roomCode) {
+        String cacheName = buildRoomCacheName(renterID, roomCode);
+        return getImageFromCache(cacheName);
+    }
+
+    private InputStream getImageFromCache(String cacheName) {
+        try {
+            BufferedImage bufferedImage = ImageIO.read(new File(cacheName));
+            ByteArrayOutputStream os = new ByteArrayOutputStream();
+            ImageIO.write(bufferedImage, "png", os);
+            return new ByteArrayInputStream(os.toByteArray());
+        } catch (IOException e) {
+            logger.error("IO Exception: {}", e.getMessage());
+            e.printStackTrace();
+            return null;
+        }
+    }
+
     public String buildProfilePicCacheName(int id) {
         return "src/main/resources/soundmate/userCache/" + id + "_profilePic.png";
     }
 
     public boolean saveProfilePicToCache(User user, File image) {
         String cacheName = buildProfilePicCacheName(user.getId());
+        return saveImageToCache(image, cacheName);
+    }
+
+    public boolean saveRoomPhotoToCache(int renterID, int roomCode, File image) {
+        String cacheName = buildRoomCacheName(renterID, roomCode);
+        return saveImageToCache(image, cacheName);
+    }
+
+    private boolean saveImageToCache(File image, String cacheName) {
         try (InputStream initialStream = new FileInputStream(image)) {
             byte[] buffer = new byte[initialStream.available()];
             if (initialStream.read(buffer) > 0){
@@ -44,22 +75,14 @@ public class Cache {
             }
             return false;
         } catch (IOException e) {
-            logger.info(e.getMessage());
+            logger.error(e.getMessage());
             return false;
         }
     }
 
     public InputStream getProfilePicFromCache(int id) {
         String cacheName = buildProfilePicCacheName(id);
-        try {
-            BufferedImage bufferedImage = ImageIO.read(new File(cacheName));
-            ByteArrayOutputStream os = new ByteArrayOutputStream();
-            ImageIO.write(bufferedImage, "png", os);
-            return new ByteArrayInputStream(os.toByteArray());
-        } catch (IOException e) {
-            e.printStackTrace();
-            return null;
-        }
+        return getImageFromCache(cacheName);
     }
 
     public boolean checkProfilePicInCache(User user) {
