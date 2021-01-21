@@ -172,5 +172,61 @@ public class RoomRenterDao {
         }
     }
 
+    public int insertRoom(Room room, int id){
+        int roomCode = 0;
+        ResultSet resultSet;
+        String sql = "INSERT INTO room (id, room_price, room_is_free, photo, description, name) VALUES (?, ?, ?, ?, ?, ?)";
+
+        try(PreparedStatement preparedStatement = connector.getConnection().prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
+
+            preparedStatement.setInt(1, id);
+            preparedStatement.setDouble(2, room.getPrice());
+            preparedStatement.setBoolean(3, room.isRoomIsFree());
+            preparedStatement.setString(4, room.getEncodedImg());
+            preparedStatement.setString(5, room.getDescription());
+            preparedStatement.setString(6, room.getName());
+
+            int rowAffected = preparedStatement.executeUpdate();
+            if (rowAffected == 1) {
+
+                resultSet = preparedStatement.getGeneratedKeys();
+                if (resultSet.next())
+                    roomCode = resultSet.getInt("room_code");
+            }
+
+        } catch (SQLException ex){
+            throw new RepositoryException("Error inserting", ex);
+        } return roomCode;
+    }
+
+
+    public void deleteAllRoom() {
+        String sql = "DELETE FROM room";
+        int delRecs;
+        try (Connection conn = connector.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            delRecs = stmt.executeUpdate();
+            if (delRecs >= 1) log.info("\t ***** user entries successfully cleaned! *****");
+            resetCode();
+
+        } catch (SQLException ex) {
+            throw new RepositoryException("Error Delete All", ex);
+        }
+    }
+
+    private void resetCode() {
+        String sql = "ALTER SEQUENCE room_room_code_seq RESTART WITH 1";
+
+        try (Connection conn = connector.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            stmt.executeUpdate();
+            log.info("\t ***** RoomCode Values resetted successfully! *****");
+        } catch (SQLException ex) {
+            throw new RepositoryException("Error ResetID", ex);
+        }
+    }
+
 
 }
