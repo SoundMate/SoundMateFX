@@ -2,29 +2,37 @@ package it.soundmate.database;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
+import java.util.Objects;
+import java.util.Properties;
 
 
 public class Connector {
 
-    private static final String HOST = "jdbc:postgresql://localhost:5432/SoundmateDB";
-    private static final String USER = "postgres";
-    private static final String PASSWORD = "soundmate";
+    private static String host;
+    private static String user;
+    private static String password;
     private static final Logger log = LoggerFactory.getLogger( Connector.class );
     private static Connector instance = null;
     private Connection connection;
 
-    private Connector(){}
+    private Connector(){
+        getConnectorProperties();
+    }
 
 
     public Connection getConnection() throws SQLException {
         if (connection == null) {
-            connection = DriverManager.getConnection(HOST, USER, PASSWORD);
+            connection = DriverManager.getConnection(host, user, password);
             log.info("Connected to the Database! {}",connection.getClientInfo());
         }else if (connection.isClosed()){
-            connection = DriverManager.getConnection(HOST, USER, PASSWORD);
+            connection = DriverManager.getConnection(host, user, password);
         }
         return connection;
     }
@@ -36,6 +44,37 @@ public class Connector {
         return instance;
     }
 
+    private static void getConnectorProperties(){
+        String rootPath = Objects.requireNonNull(Thread.currentThread().getContextClassLoader().getResource("connector.properties")).getPath();
+        Properties connProp = new Properties();
+
+        try(FileInputStream inputStream = new FileInputStream(rootPath)){
+
+            connProp.load(inputStream);
+            host = connProp.getProperty("HOST");
+            user = connProp.getProperty("USER");
+            password = connProp.getProperty("PASSWORD");
+
+
+        } catch (NullPointerException | FileNotFoundException ex){
+            throw new NullPointerException();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+
+    public String getHOST() {
+        return host;
+    }
+
+    public String getUSER() {
+        return user;
+    }
+
+    public String getPASSWORD() {
+        return password;
+    }
 }
 
 
