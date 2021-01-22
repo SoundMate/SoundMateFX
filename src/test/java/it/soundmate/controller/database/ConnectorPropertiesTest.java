@@ -4,7 +4,7 @@ import it.soundmate.database.Connector;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-public class ConnectorPropertiesTest {
+class ConnectorPropertiesTest {
 
     static Connector connector = Connector.getInstance();
 
