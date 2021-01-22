@@ -62,8 +62,7 @@ public class Connector {
             log.error("IOException error, check stacktrace", e);
         }
     }
-
-
+    //For testing purposes
     public String getHOST() {
         return host;
     }
