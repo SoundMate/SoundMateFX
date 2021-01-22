@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 2021.
- * Created by Lorenzo Pantano on 12/01/21, 13:40
- * Last edited: 12/01/21, 13:40
+ * Created by Lorenzo Pantano on 22/01/21, 15:58
+ * Last edited: 22/01/21, 15:58
  */
 
 package it.soundmate.bean.searchbeans;
@@ -10,14 +10,18 @@ import it.soundmate.model.UserType;
 
 public class RoomRenterResultBean extends UserResultBean {
 
-    private final String roomRenterName;
+    private String name;
 
-    public RoomRenterResultBean(int id, String email, String encodedImg, String roomRenterName) {
+    public RoomRenterResultBean(int id, String email, String encodedImg, String name) {
         super(id, email, encodedImg, UserType.ROOM_RENTER);
-        this.roomRenterName = roomRenterName;
+        this.name = name;
     }
 
-    public String getRoomRenterName() {
-        return roomRenterName;
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 }

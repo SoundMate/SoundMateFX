@@ -7,7 +7,7 @@ import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-public class GenericTest {
+class GenericTest {
 
     static UserDao userDao = new UserDao();
     static RoomRenterDao renterDao = new RoomRenterDao(userDao);

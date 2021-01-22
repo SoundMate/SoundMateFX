@@ -5,6 +5,8 @@ import it.soundmate.bean.searchbeans.RoomRenterResultBean;
 import it.soundmate.bean.searchbeans.SoloResultBean;
 import it.soundmate.bean.searchbeans.UserResultBean;
 import it.soundmate.database.Connector;
+import it.soundmate.database.searchengine.SearchBand;
+import it.soundmate.database.searchengine.SearchRenter;
 import it.soundmate.database.searchengine.SearchSolo;
 
 import java.sql.Connection;
@@ -35,8 +37,8 @@ public class SearchModel {
     public List<UserResultBean> searchByName(String searchString, String[] advancedFilters) {
         List<UserResultBean> results = new ArrayList<>();
         results.addAll(searchSolos(searchString, advancedFilters));
-        results.addAll(searchBands());
-        results.addAll(searchRooms());
+        results.addAll(searchBands(searchString, advancedFilters[0], advancedFilters[2]));
+        results.addAll(searchRooms(searchString, advancedFilters[2]));
         return results;
     }
 
@@ -67,13 +69,37 @@ public class SearchModel {
         return searchSolo.getResults();
     }
 
-    public List<BandResultBean> searchBands() {
-        //Perform search in bands
-        return new ArrayList<>();
+    public List<BandResultBean> searchBands(String searchString, String genres, String city) {
+        SearchBand searchBand;
+        if (searchString.equals("")) {
+            searchBand = new SearchBand(null, this.connection, genres, city);
+        }
+        else searchBand = new SearchBand(searchString, this.connection, genres, city);
+        Thread searchThread = new Thread(searchBand);
+        searchThread.start();
+        try {
+            searchThread.join();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+            searchThread.interrupt();
+        }
+        return searchBand.getResults();
     }
 
-    public List<RoomRenterResultBean> searchRooms() {
-        //Perform search in rooms
-        return new ArrayList<>();
+    public List<RoomRenterResultBean> searchRooms(String searchString, String city) {
+        SearchRenter searchRenter;
+        if (searchString.equals("")) {
+            searchRenter = new SearchRenter(null, this.connection, city);
+        }
+        else searchRenter = new SearchRenter(searchString, this.connection, city);
+        Thread searchThread = new Thread(searchRenter);
+        searchThread.start();
+        try {
+            searchThread.join();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+            searchThread.interrupt();
+        }
+        return searchRenter.getResults();
     }
 }

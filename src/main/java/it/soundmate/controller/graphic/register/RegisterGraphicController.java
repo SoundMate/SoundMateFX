@@ -9,7 +9,6 @@ package it.soundmate.controller.graphic.register;
 import it.soundmate.bean.registerbeans.RegisterBean;
 import it.soundmate.model.User;
 import it.soundmate.view.main.MainView;
-import it.soundmate.view.registerview.ChooseRegisterView;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;

@@ -9,11 +9,8 @@ package it.soundmate.controller.graphic.register;
 import it.soundmate.bean.registerbeans.RegisterBandBean;
 import it.soundmate.bean.registerbeans.RegisterBean;
 import it.soundmate.controller.logic.RegisterController;
-import it.soundmate.database.dao.BandDao;
-import it.soundmate.database.dao.UserDao;
 import it.soundmate.database.dbexceptions.DuplicatedEmailException;
 import it.soundmate.database.dbexceptions.RepositoryException;
-import it.soundmate.model.Band;
 import it.soundmate.model.User;
 
 public class RegisterBandGraphicController implements RegisterGraphicController {

@@ -1,12 +1,12 @@
 /*
  * Copyright (c) 2021.
- * Created by Lorenzo Pantano on 10/01/21, 12:34
- * Last edited: 10/01/21, 12:34
+ * Created by Lorenzo Pantano on 22/01/21, 15:40
+ * Last edited: 22/01/21, 15:40
  */
 
 package it.soundmate.view.search;
 
-import it.soundmate.bean.searchbeans.SoloResultBean;
+import it.soundmate.bean.searchbeans.RoomRenterResultBean;
 import it.soundmate.constants.Style;
 import it.soundmate.controller.graphic.search.SearchResultsGraphicController;
 import it.soundmate.view.UIUtils;
@@ -25,16 +25,14 @@ import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-
-public class SoloResults extends ListView<SoloResultBean> {
-
-    private static final Logger logger = LoggerFactory.getLogger(SoloResults.class);
+public class RenterResults extends ListView<RoomRenterResultBean> {
+    private static final Logger logger = LoggerFactory.getLogger(RenterResults.class);
     private final SearchResultsGraphicController searchResultsGraphicController = new SearchResultsGraphicController();
     private final SearchView searchView;
 
-    public SoloResults(SearchView searchView) {
+    public RenterResults(SearchView searchView) {
         this.searchView = searchView;
-        this.setCellFactory(param -> new SoloResult());
+        this.setCellFactory(param -> new RenterResult());
         this.setOrientation(Orientation.HORIZONTAL);
         this.setPrefHeight(150);
         this.setPrefWidth(525);
@@ -48,12 +46,12 @@ public class SoloResults extends ListView<SoloResultBean> {
         return this.getItems().size();
     }
 
-    public class SoloResult extends ListCell<SoloResultBean> {
+    public class RenterResult extends ListCell<RoomRenterResultBean> {
         @Override
-        protected void updateItem(SoloResultBean solo, boolean empty) {
-            super.updateItem(solo, empty);
-            if (solo != null) {
-                VBox vBox = buildResultVBox(solo);
+        protected void updateItem(RoomRenterResultBean renter, boolean empty) {
+            super.updateItem(renter, empty);
+            if (renter != null) {
+                VBox vBox = buildResultVBox(renter);
                 this.setStyle("-fx-background-color: #232323;");
                 setGraphic(vBox);
             } else {
@@ -62,35 +60,34 @@ public class SoloResults extends ListView<SoloResultBean> {
         }
 
         @NotNull
-        private VBox buildResultVBox(SoloResultBean solo) {
+        private VBox buildResultVBox(RoomRenterResultBean renter) {
             VBox resultVBox = ResultsView.buildResultVBox();
             Circle profilePic = new Circle();
             profilePic.setRadius(25);
-            if (solo.getProfileImgIs() != null) {
-                ImagePattern imagePattern = new ImagePattern(solo.getProfileImg());
+            if (renter.getProfileImgIs() != null) {
+                ImagePattern imagePattern = new ImagePattern(renter.getProfileImg());
                 profilePic.setFill(imagePattern);
             }
-            Label name = new Label(solo.getFirstName()+" "+ solo.getLastName());
+            Label name = new Label(renter.getName());
             name.setStyle(Style.MID_LABEL);
-            Button btn = UIUtils.createStyledButton("View Profile", new SelectedSoloResult(solo));
+            Button btn = UIUtils.createStyledButton("View Profile", new SelectedRenterAction(renter));
             resultVBox.getChildren().addAll(profilePic, name, btn);
             return resultVBox;
         }
 
-        private class SelectedSoloResult implements EventHandler<ActionEvent> {
+        private class SelectedRenterAction implements EventHandler<ActionEvent> {
 
-            private final SoloResultBean solo;
+            private final RoomRenterResultBean renter;
 
-            public SelectedSoloResult(SoloResultBean solo){
-                this.solo = solo;
+            public SelectedRenterAction(RoomRenterResultBean renter){
+                this.renter = renter;
             }
 
             @Override
             public void handle(ActionEvent event) {
-                logger.info("Item selected {} {}", solo.getFirstName(), solo.getLastName());
-                searchResultsGraphicController.navigateToSoloResult(solo, searchView);
+                logger.info("Item selected {}", renter.getName());
+                //Navigate to renter result
             }
         }
     }
-
 }

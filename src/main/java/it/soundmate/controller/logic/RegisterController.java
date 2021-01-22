@@ -7,7 +7,6 @@
 package it.soundmate.controller.logic;
 
 
-import it.soundmate.bean.LoggedBean;
 import it.soundmate.bean.LoginBean;
 import it.soundmate.bean.registerbeans.RegisterBandBean;
 import it.soundmate.bean.registerbeans.RegisterRenterBean;

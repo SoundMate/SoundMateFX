@@ -5,6 +5,7 @@ import it.soundmate.constants.Style;
 import it.soundmate.controller.graphic.search.DefaultSearchGraphicController;
 import it.soundmate.exceptions.InputException;
 import it.soundmate.model.Genre;
+import it.soundmate.model.User;
 import it.soundmate.view.UIUtils;
 import it.soundmate.view.main.SearchView;
 import javafx.event.ActionEvent;
@@ -24,7 +25,9 @@ public class DefaultSearchView extends BorderPane {
 
     private static final Logger logger = LoggerFactory.getLogger(DefaultSearchView.class);
     public static final String FX_BACKGROUND_COLOR_BLACK = "-fx-background-color: black";
+    public static final String COLOR_232323 = "-fx-background-color: #232323";
     private final SearchView searchView;
+    private final User searcher;
 
     private final TextField searchTextField = new TextField();
     private final Button searchBtn = new Button();
@@ -37,8 +40,9 @@ public class DefaultSearchView extends BorderPane {
     private final List<ComboBox<Label>> advancedFilters = new ArrayList<>();
 
 
-    public DefaultSearchView(SearchView searchView) {
+    public DefaultSearchView(SearchView searchView, User searcher) {
         this.searchView = searchView;
+        this.searcher = searcher;
         buildDefaultView();
     }
 
@@ -177,6 +181,9 @@ public class DefaultSearchView extends BorderPane {
 
 
     private class SearchAction implements EventHandler<ActionEvent> {
+
+        public static final String RESULTS_LENGTH = "Results Length: {}";
+
         @Override
         public void handle(ActionEvent event) {
             resultsVBox.getChildren().clear();
@@ -200,7 +207,7 @@ public class DefaultSearchView extends BorderPane {
 
 
         private void buildResultsScreen(List<UserResultBean> results) {
-            ResultsView resultsView = new ResultsView(results, searchView);
+            ResultsView resultsView = new ResultsView(results, searchView, searcher.getId());
             resultsVBox.getChildren().clear();
 
             Label bandResultsLabel = new Label("Bands");
@@ -221,12 +228,36 @@ public class DefaultSearchView extends BorderPane {
                 noSoloResultsLabel.setStyle(Style.LOW_LABEL);
                 resultsVBox.getChildren().add(noSoloResultsLabel);
             } else {
-                soloResults.setStyle("-fx-background-color: #232323");
-                logger.info("Results Length: {}", soloResults.length());
-                resultsVBox.getChildren().addAll(soloResults, bandResultsLabel);
+                soloResults.setStyle(COLOR_232323);
+                logger.info(RESULTS_LENGTH, soloResults.length());
+                resultsVBox.getChildren().add(soloResults);
             }
+            resultsVBox.getChildren().add(bandResultsLabel);
 
             //Results for BAND
+            BandResults bandResults = resultsView.getBandResult();
+            if (bandResults.isEmpty()) {
+                Label noBandsLabel = new Label("No bands found");
+                noBandsLabel.setStyle(Style.LOW_LABEL);
+                resultsVBox.getChildren().add(noBandsLabel);
+            } else {
+                bandResults.setStyle(COLOR_232323);
+                logger.info(RESULTS_LENGTH, bandResults.length());
+                resultsVBox.getChildren().addAll(bandResults);
+            }
+            resultsVBox.getChildren().add(roomResultsLabel);
+
+            //Results for ROOM RENTER
+            RenterResults renterResults = resultsView.getRenterResults();
+            if (renterResults.isEmpty()) {
+                Label noRenterLabel = new Label("No room renters found");
+                noRenterLabel.setStyle(Style.LOW_LABEL);
+                resultsVBox.getChildren().add(noRenterLabel);
+            } else {
+                renterResults.setStyle(COLOR_232323);
+                logger.info(RESULTS_LENGTH, renterResults.length());
+                resultsVBox.getChildren().addAll(renterResults);
+            }
         }
 
         private void buildNoResultsScreen() {

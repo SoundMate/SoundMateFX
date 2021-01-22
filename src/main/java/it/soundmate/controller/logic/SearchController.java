@@ -34,11 +34,11 @@ public class SearchController {
             }
             if (filters[1]) {
                 logger.info("Searching bands...");
-                results.addAll(this.searchModel.searchBands());
+                results.addAll(this.searchModel.searchBands(searchString, advancedFilters[0], advancedFilters[2]));
             }
             if (filters[2] && advancedFiltersSearchOff) {
                 logger.info("Searching rooms...");
-                results.addAll(this.searchModel.searchRooms());
+                results.addAll(this.searchModel.searchRooms(searchString, advancedFilters[2]));
             }
         }
         return results;

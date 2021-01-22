@@ -10,7 +10,6 @@ import it.soundmate.bean.registerbeans.RegisterBandBean;
 import it.soundmate.constants.Style;
 import it.soundmate.controller.graphic.register.RegisterBandGraphicController;
 import it.soundmate.exceptions.InputException;
-import it.soundmate.model.Band;
 import it.soundmate.model.User;
 import it.soundmate.view.UIUtils;
 import javafx.event.ActionEvent;

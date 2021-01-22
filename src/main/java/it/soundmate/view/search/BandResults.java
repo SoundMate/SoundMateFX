@@ -1,12 +1,12 @@
 /*
  * Copyright (c) 2021.
- * Created by Lorenzo Pantano on 10/01/21, 12:34
- * Last edited: 10/01/21, 12:34
+ * Created by Lorenzo Pantano on 22/01/21, 15:52
+ * Last edited: 22/01/21, 15:52
  */
 
 package it.soundmate.view.search;
 
-import it.soundmate.bean.searchbeans.SoloResultBean;
+import it.soundmate.bean.searchbeans.BandResultBean;
 import it.soundmate.constants.Style;
 import it.soundmate.controller.graphic.search.SearchResultsGraphicController;
 import it.soundmate.view.UIUtils;
@@ -26,15 +26,15 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 
-public class SoloResults extends ListView<SoloResultBean> {
+public class BandResults extends ListView<BandResultBean> {
 
-    private static final Logger logger = LoggerFactory.getLogger(SoloResults.class);
+    private static final Logger logger = LoggerFactory.getLogger(BandResults.class);
     private final SearchResultsGraphicController searchResultsGraphicController = new SearchResultsGraphicController();
     private final SearchView searchView;
 
-    public SoloResults(SearchView searchView) {
+    public BandResults(SearchView searchView) {
         this.searchView = searchView;
-        this.setCellFactory(param -> new SoloResult());
+        this.setCellFactory(param -> new BandResult());
         this.setOrientation(Orientation.HORIZONTAL);
         this.setPrefHeight(150);
         this.setPrefWidth(525);
@@ -48,12 +48,12 @@ public class SoloResults extends ListView<SoloResultBean> {
         return this.getItems().size();
     }
 
-    public class SoloResult extends ListCell<SoloResultBean> {
+    public class BandResult extends ListCell<BandResultBean> {
         @Override
-        protected void updateItem(SoloResultBean solo, boolean empty) {
-            super.updateItem(solo, empty);
-            if (solo != null) {
-                VBox vBox = buildResultVBox(solo);
+        protected void updateItem(BandResultBean band, boolean empty) {
+            super.updateItem(band, empty);
+            if (band != null) {
+                VBox vBox = buildResultVBox(band);
                 this.setStyle("-fx-background-color: #232323;");
                 setGraphic(vBox);
             } else {
@@ -62,35 +62,34 @@ public class SoloResults extends ListView<SoloResultBean> {
         }
 
         @NotNull
-        private VBox buildResultVBox(SoloResultBean solo) {
+        private VBox buildResultVBox(BandResultBean band) {
             VBox resultVBox = ResultsView.buildResultVBox();
             Circle profilePic = new Circle();
             profilePic.setRadius(25);
-            if (solo.getProfileImgIs() != null) {
-                ImagePattern imagePattern = new ImagePattern(solo.getProfileImg());
+            if (band.getProfileImgIs() != null) {
+                ImagePattern imagePattern = new ImagePattern(band.getProfileImg());
                 profilePic.setFill(imagePattern);
             }
-            Label name = new Label(solo.getFirstName()+" "+ solo.getLastName());
+            Label name = new Label(band.getBandName());
             name.setStyle(Style.MID_LABEL);
-            Button btn = UIUtils.createStyledButton("View Profile", new SelectedSoloResult(solo));
+            Button btn = UIUtils.createStyledButton("View Profile", new SelectedBandAction(band));
             resultVBox.getChildren().addAll(profilePic, name, btn);
             return resultVBox;
         }
 
-        private class SelectedSoloResult implements EventHandler<ActionEvent> {
+        private class SelectedBandAction implements EventHandler<ActionEvent> {
 
-            private final SoloResultBean solo;
+            private final BandResultBean band;
 
-            public SelectedSoloResult(SoloResultBean solo){
-                this.solo = solo;
+            public SelectedBandAction(BandResultBean renter){
+                this.band = renter;
             }
 
             @Override
             public void handle(ActionEvent event) {
-                logger.info("Item selected {} {}", solo.getFirstName(), solo.getLastName());
-                searchResultsGraphicController.navigateToSoloResult(solo, searchView);
+                logger.info("Item selected {}", band.getBandName());
+                //Navigate to renter result
             }
         }
     }
-
 }

@@ -1,5 +1,6 @@
 package it.soundmate.view.main;
 
+import it.soundmate.model.User;
 import it.soundmate.view.UIUtils;
 import it.soundmate.view.search.DefaultSearchView;
 import it.soundmate.view.search.MapSearchView;
@@ -25,11 +26,11 @@ public class SearchView extends Pane {
         return contentVBox;
     }
 
-    public SearchView(){
+    public SearchView(User searcher){
         this.contentVBox = new VBox();
         this.contentVBox.setAlignment(Pos.TOP_CENTER);
         UIUtils.setBackgroundPane("#232323", this.contentVBox);
-        this.searchBorderPane = new DefaultSearchView(this);
+        this.searchBorderPane = new DefaultSearchView(this, searcher);
         this.contentVBox.getChildren().add(this.searchBorderPane);
     }
 
