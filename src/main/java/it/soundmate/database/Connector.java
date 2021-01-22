@@ -9,8 +9,10 @@ import java.io.IOException;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
+import java.util.NoSuchElementException;
 import java.util.Objects;
 import java.util.Properties;
+import java.util.stream.Stream;
 
 
 public class Connector {
@@ -40,6 +42,9 @@ public class Connector {
         if(instance == null){
             instance = new Connector();
             getConnectorProperties();
+            boolean isNull = Stream.of(host, user, password)
+                    .anyMatch(Objects::isNull);
+            if (isNull) throw new NoSuchElementException();
         }
         return instance;
     }
@@ -55,13 +60,12 @@ public class Connector {
             user = connProp.getProperty("USER");
             password = connProp.getProperty("PASSWORD");
 
-
-        } catch (NullPointerException | FileNotFoundException ex){
-            log.error("File not found or properties not present", ex);
         } catch (IOException e) {
             log.error("IOException error, check stacktrace", e);
         }
     }
+
+
     //For testing purposes
     public String getHOST() {
         return host;
@@ -77,6 +81,8 @@ public class Connector {
 }
 
 
+
+//.forEach(s -> {if (s == null) throw new NoSuchElementException();});
 
 
 

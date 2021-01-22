@@ -4,23 +4,19 @@ import it.soundmate.database.Connector;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
+
 class ConnectorPropertiesTest {
 
-    static Connector connector = Connector.getInstance();
 
 
     @Test
-    void hostTest(){
-        Assertions.assertEquals("jdbc:postgresql://localhost:5432/SoundmateDB", connector.getHOST());
+    void connectionTest(){
+        Assertions.assertDoesNotThrow(() -> Connector.getInstance().getConnection(), "Server is Down!");
     }
 
     @Test
-    void userTest(){
-        Assertions.assertEquals("postgres", connector.getUSER());
+    void connectorTest(){
+        Assertions.assertDoesNotThrow(Connector::getInstance, "Error, illegal properties");
     }
 
-    @Test
-    void pswTest(){
-        Assertions.assertEquals("soundmate", connector.getPASSWORD());
-    }
 }
