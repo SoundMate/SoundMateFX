@@ -38,8 +38,8 @@ public class Connector {
 
     public static Connector getInstance(){
         if(instance == null){
-            getConnectorProperties();
             instance = new Connector();
+            getConnectorProperties();
         }
         return instance;
     }
