@@ -59,7 +59,7 @@ public class Connector {
         } catch (NullPointerException | FileNotFoundException ex){
             throw new NullPointerException();
         } catch (IOException e) {
-            e.printStackTrace();
+            log.error("IOException error, check stacktrace", e);
         }
     }
 
