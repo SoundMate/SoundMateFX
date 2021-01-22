@@ -23,7 +23,6 @@ public class Connector {
     private Connection connection;
 
     private Connector(){
-        getConnectorProperties();
     }
 
 
@@ -39,6 +38,7 @@ public class Connector {
 
     public static Connector getInstance(){
         if(instance == null){
+            getConnectorProperties();
             instance = new Connector();
         }
         return instance;
