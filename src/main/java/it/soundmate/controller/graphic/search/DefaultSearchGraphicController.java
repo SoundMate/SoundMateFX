@@ -8,8 +8,6 @@ package it.soundmate.controller.graphic.search;
 
 import it.soundmate.bean.searchbeans.UserResultBean;
 import it.soundmate.controller.logic.SearchController;
-import javafx.scene.control.ComboBox;
-import javafx.scene.control.Label;
 import javafx.scene.control.RadioButton;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -23,20 +21,22 @@ public class DefaultSearchGraphicController {
     private final boolean[] filters;
     private final String[] advancedFilters;
 
-    public DefaultSearchGraphicController(List<RadioButton> filters, List<ComboBox<Label>> advancedFilters) {
+    public DefaultSearchGraphicController(List<RadioButton> filters, String genreFilter, String instrumentFilter, String cityFilter) {
         this.filters = getFilterValues(filters);
-        this.advancedFilters = getAdvancedFilterValues(advancedFilters);
+        this.advancedFilters = getAdvancedFilterValues(genreFilter, instrumentFilter, cityFilter);
     }
 
-    private String[] getAdvancedFilterValues(List<ComboBox<Label>> advancedFilters) {
+    private String[] getAdvancedFilterValues(String genreFilter, String instrumentFilter, String cityFilter) {
         String[] advancedFilterValues = new String[3];
-        for (int i = 0; i < 3; i++) {
-            if (advancedFilters.get(i).getSelectionModel().getSelectedItem() == null) {
-                advancedFilterValues[i] = "";
-                continue;
-            }
-            advancedFilterValues[i] = advancedFilters.get(i).getSelectionModel().getSelectedItem().getText();
-        }
+        if (genreFilter == null || genreFilter.equals("NONE")) {
+            advancedFilterValues[0] = "";
+        } else advancedFilterValues[0] = genreFilter;
+        if (instrumentFilter == null || instrumentFilter.equals("NONE")) {
+            advancedFilterValues[1] = "";
+        } else advancedFilterValues[1] = instrumentFilter;
+        if (cityFilter == null || cityFilter.equals("")) {
+            advancedFilterValues[2] = "";
+        } else advancedFilterValues[2] = cityFilter;
         logger.info("Selected values: Genre {}, Instrument {}, City {}", advancedFilterValues[0], advancedFilterValues[1], advancedFilterValues[2]);
         return advancedFilterValues;
     }

@@ -27,7 +27,6 @@ public class SearchController {
         if ((filtersAllTrue(filters) || filtersAllFalse(filters))) {
             results.addAll(this.searchModel.searchByName(searchString, advancedFilters));
         } else {
-            boolean advancedFiltersSearchOff = this.advancedFiltersAllNull(advancedFilters);
             if (filters[0]) {
                 logger.info("Searching solos...");
                 results.addAll(this.searchModel.searchSolos(searchString, advancedFilters));
@@ -36,7 +35,7 @@ public class SearchController {
                 logger.info("Searching bands...");
                 results.addAll(this.searchModel.searchBands(searchString, advancedFilters[0], advancedFilters[2]));
             }
-            if (filters[2] && advancedFiltersSearchOff) {
+            if (filters[2]) {
                 logger.info("Searching rooms...");
                 results.addAll(this.searchModel.searchRooms(searchString, advancedFilters[2]));
             }
@@ -54,10 +53,4 @@ public class SearchController {
         return true;
     }
 
-    private boolean advancedFiltersAllNull(String[] advancedFilters) {
-        for (int i = 0; i < 3; i++) {
-            if (!advancedFilters[i].equals("")) return false;
-        }
-        return true;
-    }
 }

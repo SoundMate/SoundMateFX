@@ -30,19 +30,18 @@ public class SearchRenter implements SearchEngine<RoomRenterResultBean>, Runnabl
     }
 
     @Override
-    public List<RoomRenterResultBean> searchByName(String name) {
-        String sql = "SELECT users.id, email, encoded_profile_img, name FROM users JOIN room_renter rr on users.id = rr.id JOIN registered_users ru on users.id = ru.id WHERE LOWER(name) LIKE LOWER(?)";
-        ResultSet resultSet;
+    public List<RoomRenterResultBean> searchByNameAndCity(String name, String city) {
+        String sql = "SELECT users.id, email, encoded_profile_img, name, city FROM users JOIN room_renter rr on users.id = rr.id JOIN registered_users ru on users.id = ru.id WHERE LOWER(name) LIKE LOWER(?) AND LOWER(city) LIKE LOWER(?)";
         List<RoomRenterResultBean> roomRenterResultBeanList = new ArrayList<>();
         try (PreparedStatement preparedStatement = this.connection.prepareStatement(sql)) {
-            preparedStatement.setString(1, name+"%");
-            resultSet = preparedStatement.executeQuery();
+            ResultSet resultSet = prepareBasicStatement(name, city, preparedStatement);
             while (resultSet.next()) {
                 int id = resultSet.getInt("id");
                 String email = resultSet.getString("email");
                 String encodedImg = resultSet.getString("encoded_profile_img");
                 String renterName = resultSet.getString("name");
-                RoomRenterResultBean resultBean = new RoomRenterResultBean(id, email, encodedImg, renterName);
+                String renterCity = resultSet.getString("city");
+                RoomRenterResultBean resultBean = new RoomRenterResultBean(id, email, encodedImg, renterName, renterCity);
                 roomRenterResultBeanList.add(resultBean);
             }
         } catch (SQLException sqlException) {
@@ -54,7 +53,7 @@ public class SearchRenter implements SearchEngine<RoomRenterResultBean>, Runnabl
 
     @Override
     public void run() {
-        this.results.addAll(this.searchByName(this.searchString));
+        this.results.addAll(this.searchByNameAndCity(this.searchString,this.city));
     }
 
     public List<RoomRenterResultBean> getResults() {

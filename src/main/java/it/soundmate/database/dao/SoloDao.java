@@ -8,6 +8,7 @@ package it.soundmate.database.dao;
 
 import it.soundmate.bean.registerbeans.RegisterSoloBean;
 import it.soundmate.database.Connector;
+import it.soundmate.database.dbexceptions.DuplicatedEmailException;
 import it.soundmate.database.dbexceptions.RepositoryException;
 import it.soundmate.exceptions.UpdateException;
 import it.soundmate.model.Genre;
@@ -41,16 +42,14 @@ public class SoloDao {
     }
 
     public int registerSolo(RegisterSoloBean soloBean){
-
         ResultSet resultSet;
-
-        int userID = 0;
+        int userID;
         if (userDao.checkIfBanned(soloBean.getEmail())){
             log.error(ACC_BANNED_ERR);
-            return -1;
+            throw new UpdateException("Account has been banned");
         }else if (userDao.checkEmailBoolean(soloBean.getEmail())){
             log.error(EMAIL_EXISTS_ERR);
-            return -2;
+            throw new DuplicatedEmailException("Duplicated email "+soloBean.getEmail());
         } else {
             String sql = " WITH ins1 AS (\n" +
                     "     INSERT INTO registered_users (email, password, user_type, city)\n" +
@@ -63,27 +62,35 @@ public class SoloDao {
                     " )\n" +
                     "INSERT INTO solo (id,first_name, last_name)\n" +
                     "SELECT sample_id, ?, ? FROM ins1;";
-
             try (PreparedStatement pstmt = connector.getConnection().prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
-
                 pstmt.setString(1, soloBean.getEmail());
                 pstmt.setString(2, soloBean.getPassword());
                 pstmt.setString(3, soloBean.getUserType().toString());
                 pstmt.setString(4, soloBean.getCity());
                 pstmt.setString(5, soloBean.getFirstName());
                 pstmt.setString(6, soloBean.getLastName());
-
-
                 int rowAffected = pstmt.executeUpdate();
                 if (rowAffected == 1) {
-
                     resultSet = pstmt.getGeneratedKeys();
-                    if (resultSet.next())
+                    if (resultSet.next()) {
                         userID = resultSet.getInt(1);
-                }
+                        if (this.createGenresEntry(userID)) return userID;
+                        else throw new UpdateException("Error creating genre entry");
+                    } else throw new UpdateException("Error inserting new user");
+                } else throw new UpdateException("Error inserting new user");
             } catch (SQLException ex) {
                 throw new RepositoryException(ERR_INSERT, ex);
-            } return userID;
+            }
+        }
+    }
+
+    private boolean createGenresEntry(int userID) {
+        String sql = "insert into fav_genres (id) values (?)";
+        try (PreparedStatement preparedStatement = this.connector.getConnection().prepareStatement(sql)) {
+            preparedStatement.setInt(1, userID);
+            return preparedStatement.executeUpdate() == 1;
+        } catch (SQLException sqlException) {
+            return false;
         }
     }
 
@@ -236,20 +243,20 @@ public class SoloDao {
 
     public List<Genre> getGenres(int id) {
         String sql = "SELECT genre FROM fav_genres WHERE id = ?";
-        List<String> genreList = new ArrayList<>();
-
+        List<String> genreList;
+        List<Genre> genres = new ArrayList<>();
         try (PreparedStatement preparedStatement = connector.getConnection().prepareStatement(sql)){
-
             preparedStatement.setInt(1, id);
             ResultSet resultSet = preparedStatement.executeQuery();
-
-            while(resultSet.next()){
-                String [] temp = (String []) resultSet.getArray("genre").getArray();
-                genreList = Arrays.asList(temp);
-            }
-            List<Genre> genres = new ArrayList<>();
-            for (String genre : genreList) {
-                genres.add(Genre.returnGenre(genre));
+            if(resultSet.next()){
+                if (resultSet.getArray("genre") == null) return new ArrayList<>();
+                else {
+                    String [] temp = (String []) resultSet.getArray("genre").getArray();
+                    genreList = Arrays.asList(temp);
+                    for (String genre : genreList) {
+                        genres.add(Genre.returnGenre(genre));
+                    }
+                }
             }
             return genres;
         } catch (SQLException ex){

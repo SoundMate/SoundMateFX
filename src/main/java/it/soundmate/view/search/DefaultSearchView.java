@@ -37,7 +37,9 @@ public class DefaultSearchView extends BorderPane {
     private final VBox resultsVBox = new VBox();
 
     //Advanced Filters
-    private final List<ComboBox<Label>> advancedFilters = new ArrayList<>();
+    private ComboBox<Label> genreFilter = new ComboBox<>();
+    private final ComboBox<Label> instrumentFilter = new ComboBox<>();
+    private final TextField cityFilter = new TextField();
 
 
     public DefaultSearchView(SearchView searchView, User searcher) {
@@ -93,33 +95,26 @@ public class DefaultSearchView extends BorderPane {
         filtersHBox.setAlignment(Pos.CENTER);
         filtersHBox.setSpacing(20);
 
-        ComboBox<Label> genresComboBox = buildGenresComboBox();
-        ComboBox<Label> instrumentsComboBox = new ComboBox<>();
-        ComboBox<Label> cityComboBox = new ComboBox<>();
+        this.genreFilter = buildGenresComboBox();
 
-        //City comboBox
-        cityComboBox.setPromptText("City");
-        cityComboBox.getItems().add(new Label("Rome, IT"));
-        cityComboBox.setStyle(FX_BACKGROUND_COLOR_BLACK);
-
-        //Instrument ComboBox
-        instrumentsComboBox.setPromptText("Instruments");
-        instrumentsComboBox.getItems().add(new Label("Guitar"));
-        instrumentsComboBox.getItems().add(new Label("Drums"));
-        instrumentsComboBox.setStyle(FX_BACKGROUND_COLOR_BLACK);
-
-        this.advancedFilters.add(genresComboBox);
-        this.advancedFilters.add(instrumentsComboBox);
-        this.advancedFilters.add(cityComboBox);
+        this.instrumentFilter.setPromptText("Instruments");
+        this.instrumentFilter.getItems().add(new Label("Guitar"));
+        this.instrumentFilter.getItems().add(new Label("Drums"));
+        this.instrumentFilter.setStyle(FX_BACKGROUND_COLOR_BLACK);
 
 
         Label label = new Label("Filter by: ");
         label.setStyle(Style.MID_LABEL);
-        filtersHBox.getChildren().addAll(label, genresComboBox);
-        UIUtils.addRegion(null, filtersHBox);
-        filtersHBox.getChildren().add(instrumentsComboBox);
-        UIUtils.addRegion(null, filtersHBox);
-        filtersHBox.getChildren().add(cityComboBox);
+        filtersHBox.getChildren().addAll(label, this.genreFilter);
+        UIUtils.addSizedRegion(filtersHBox, 10, 10);
+        filtersHBox.getChildren().add(this.instrumentFilter);
+        UIUtils.addSizedRegion(filtersHBox, 10, 10);
+        Label cityFilterLabel = new Label("City:");
+        cityFilterLabel.setStyle(Style.TEXT_FIELD_LABEL);
+        cityFilterLabel.setPadding(new Insets(0, 5, 0, 0));
+        filtersHBox.getChildren().add(cityFilterLabel);
+        cityFilter.setStyle(Style.TEXT_FIELD);
+        filtersHBox.getChildren().add(cityFilter);
         return filtersHBox;
     }
 
@@ -193,8 +188,17 @@ public class DefaultSearchView extends BorderPane {
             Label loadingLabel = new Label("Loading results...");
             loadingLabel.setStyle(Style.LOW_LABEL);
             resultsVBox.getChildren().add(loadingLabel);
-
-            DefaultSearchGraphicController searchGraphicController = new DefaultSearchGraphicController(filters, advancedFilters);
+            String selectedGenre;
+            String selectedInstrument;
+            if (genreFilter.getSelectionModel().getSelectedItem() == null) {
+                selectedGenre = "NONE";
+            }
+            else selectedGenre = genreFilter.getSelectionModel().getSelectedItem().getText();
+            if (instrumentFilter.getSelectionModel().getSelectedItem() == null) {
+                selectedInstrument = "NONE";
+            }
+            else selectedInstrument = instrumentFilter.getSelectionModel().getSelectedItem().getText();
+            DefaultSearchGraphicController searchGraphicController = new DefaultSearchGraphicController(filters, selectedGenre, selectedInstrument, cityFilter.getText());
             try {
                 List<UserResultBean> results = searchGraphicController.performSearch(searchTextField.getText());
                 buildResultsScreen(results);

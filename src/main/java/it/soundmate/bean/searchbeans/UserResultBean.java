@@ -19,11 +19,13 @@ public class UserResultBean {
     private final InputStream profileImgIs;
     private final Image profileImg;
     private final UserType userType;
+    private final String city;
 
-    public UserResultBean(int id, String email, String encodedImg, UserType userType) {
+    public UserResultBean(int id, String email, String encodedImg, String city, UserType userType) {
         this.id = id;
         this.email = email;
         this.profileImgIs = Cache.getInstance().buildProfileImg(id, encodedImg);
+        this.city = city;
         this.profileImg = new Image(this.profileImgIs);
         this.userType = userType;
     }
@@ -46,5 +48,9 @@ public class UserResultBean {
 
     public UserType getUserType() {
         return userType;
+    }
+
+    public String getCity() {
+        return city;
     }
 }

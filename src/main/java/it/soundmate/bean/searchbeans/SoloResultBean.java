@@ -18,8 +18,8 @@ public class SoloResultBean extends UserResultBean {
     private final String lastName;
     private final List<String> genreList = new ArrayList<>();
 
-    public SoloResultBean(int id, String email, String encodedProfileImg, String firstName, String lastName) {
-        super(id, email, encodedProfileImg, UserType.SOLO);
+    public SoloResultBean(int id, String email, String encodedProfileImg, String firstName, String lastName, String city) {
+        super(id, email, encodedProfileImg, city, UserType.SOLO);
         this.firstName = firstName;
         this.lastName = lastName;
     }
