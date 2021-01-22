@@ -57,7 +57,7 @@ public class Connector {
 
 
         } catch (NullPointerException | FileNotFoundException ex){
-            throw new NullPointerException();
+            log.error("File not found or properties not present", ex);
         } catch (IOException e) {
             log.error("IOException error, check stacktrace", e);
         }
