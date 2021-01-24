@@ -190,6 +190,7 @@ public class DefaultSearchView extends BorderPane {
             Label loadingLabel = new Label("Loading results...");
             loadingLabel.setStyle(Style.LOW_LABEL);
             resultsVBox.getChildren().add(loadingLabel);
+            String searchString;
             String selectedGenre;
             String selectedInstrument;
             if (genreFilter.getSelectionModel().getSelectedItem() == null) {
@@ -198,11 +199,13 @@ public class DefaultSearchView extends BorderPane {
             else selectedGenre = genreFilter.getSelectionModel().getSelectedItem().getText();
             if (instrumentFilter.getSelectionModel().getSelectedItem() == null) {
                 selectedInstrument = "NONE";
-            }
-            else selectedInstrument = instrumentFilter.getSelectionModel().getSelectedItem().getText();
+            } else selectedInstrument = instrumentFilter.getSelectionModel().getSelectedItem().getText();
+            if (searchTextField.getText() == null) {
+                searchString = "";
+            } else searchString = searchTextField.getText();
             DefaultSearchGraphicController searchGraphicController = new DefaultSearchGraphicController(filters, selectedGenre, selectedInstrument, cityFilter.getText());
             try {
-                List<UserResultBean> results = searchGraphicController.performSearch(searchTextField.getText());
+                List<UserResultBean> results = searchGraphicController.performSearch(searchString);
                 buildResultsScreen(results);
             } catch (InputException inputException) {
                 logger.error("Input Exception: {}", inputException.getMessage());

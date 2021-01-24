@@ -7,6 +7,7 @@
 package it.soundmate.database.searchengine;
 
 import it.soundmate.bean.searchbeans.SoloResultBean;
+import it.soundmate.model.Solo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -47,11 +48,13 @@ public class SearchSolo implements SearchEngine<SoloResultBean>, Runnable {
      * @param name: searchString to be searched
      * @return List of SoloResultBean found
      */
-    public List<SoloResultBean> search(String name, String city, String sql) {
+    public List<SoloResultBean> search(String name, String city) {
+        String sql = "SELECT users.id, email, encoded_profile_img, first_name, last_name, city, genre, instruments FROM users JOIN solo s on users.id = s.id JOIN registered_users ru on users.id = ru.id LEFT JOIN fav_genres fg on s.id = fg.id JOIN played_instruments pi on s.id = pi.id WHERE LOWER(s.first_name) LIKE LOWER(?) AND LOWER(city) LIKE LOWER(?)";
         logger.info("Searching solos with name {} city {}", name, city);
         List<SoloResultBean> soloResults = new ArrayList<>();
-        try (PreparedStatement preparedStatement = this.connection.prepareStatement(sql)) {
-            prepareStatementWithFilters(name, city, this.advancedFilters[0], this.advancedFilters[1], preparedStatement);
+        try (PreparedStatement preparedStatement = connection.prepareStatement(sql)){
+            preparedStatement.setString(1, name+'%');
+            preparedStatement.setString(2, city+'%');
             ResultSet resultSet = preparedStatement.executeQuery();
             while (resultSet.next()) {
                 buildSoloResult(resultSet, soloResults);
@@ -62,26 +65,22 @@ public class SearchSolo implements SearchEngine<SoloResultBean>, Runnable {
         return soloResults;
     }
 
-    public List<SoloResultBean> searchWithFilters(String name, String city, String genre, String instrument) {
-        String sql = "SELECT users.id, email, encoded_profile_img, first_name, last_name, city FROM users JOIN solo s on users.id = s.id JOIN registered_users ru on users.id = ru.id LEFT JOIN fav_genres fg on s.id = fg.id JOIN played_instruments pi on s.id = pi.id WHERE LOWER(s.first_name) LIKE LOWER(?) AND LOWER(city) LIKE LOWER(?) AND (?) LIKE ANY(genre) AND (?) LIKE ANY(instruments)";
-        logger.info("Searching solos with name {} city {} genre {} instrument {}", name, city, genre, instrument);
+    public List<SoloResultBean> searchWithGenre(String name, String city, String genre) {
+        String sql = "SELECT users.id, email, encoded_profile_img, first_name, last_name, city, genre, instruments FROM users JOIN solo s on users.id = s.id JOIN registered_users ru on users.id = ru.id LEFT JOIN fav_genres fg on s.id = fg.id JOIN played_instruments pi on s.id = pi.id WHERE LOWER(s.first_name) LIKE LOWER(?) AND LOWER(city) LIKE LOWER(?) AND (?) LIKE ANY(genre)";
         List<SoloResultBean> soloResults = new ArrayList<>();
-        try (PreparedStatement preparedStatement = this.connection.prepareStatement(sql)) {
-            prepareStatementWithFilters(name, city, genre, instrument, preparedStatement);
+        try (PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
+            preparedStatement.setString(1, name+'%');
+            preparedStatement.setString(2, city+'%');
+            preparedStatement.setString(3, genre);
             ResultSet resultSet = preparedStatement.executeQuery();
             while (resultSet.next()) {
                 buildSoloResult(resultSet, soloResults);
             }
+            return soloResults;
         } catch (SQLException sqlException) {
-            sqlException.printStackTrace();
+            logger.info("SQL Exception searching with genre: {}", sqlException.getMessage());
+            return new ArrayList<>();
         }
-        return soloResults;
-    }
-
-    private void prepareStatementWithFilters(String name, String city, String genre, String instrument, PreparedStatement preparedStatement) throws SQLException {
-        prepareStatementGeneric(name, city, preparedStatement);
-        if (genre != null && !genre.equals("NONE")) preparedStatement.setString(3, genre);
-        if (instrument != null && !instrument.equals("NONE")) preparedStatement.setString(4, instrument);
     }
 
 
@@ -119,23 +118,55 @@ public class SearchSolo implements SearchEngine<SoloResultBean>, Runnable {
 
     @Override
     public void run() {
-        String sql = determineStatement(this.advancedFilters[0], this.advancedFilters[1]);
-        logger.info("Running solo search with NAME: {} CITY: {}",this.searchString, this.city);
-        results.addAll(this.search(this.searchString, this.city, sql));
-
+        if (!this.advancedFilters[0].equals("NONE") && !this.advancedFilters[1].equals("NONE")) {
+            //GENRE AND INSTRUMENT FILTER
+            this.results.addAll(this.searchWithGenreAndInstrument(this.searchString, this.city, this.advancedFilters[0], this.advancedFilters[1]));
+        } else if (!this.advancedFilters[0].equals("NONE")) {
+            //ONLY GENRE FILTER
+            this.results.addAll(this.searchWithGenre(this.searchString, this.city, this.advancedFilters[0]));
+        } else if (!this.advancedFilters[1].equals("NONE")){
+            //ONLY INSTRUMENT FILTER
+            this.results.addAll(this.searchWithInstrument(this.searchString, this.city, this.advancedFilters[1]));
+        } else {
+            this.results.addAll(this.search(this.searchString, this.city));
+        }
     }
 
-    private String determineStatement(String genre, String instrument) {
-        StringBuilder stringBuilder = new StringBuilder();
-        String basicStatement = "SELECT users.id, email, encoded_profile_img, first_name, last_name, city FROM users JOIN solo s on users.id = s.id JOIN registered_users ru on users.id = ru.id WHERE LOWER(s.first_name) LIKE LOWER(?) AND LOWER(city) LIKE LOWER(?)";
-        stringBuilder.append(basicStatement);
-        if (genre != null && !genre.equals("NONE")) {
-            stringBuilder.append(" AND ").append(genre).append(" LIKE ANY(genre)");
+    private List<SoloResultBean> searchWithInstrument(String name, String city, String instrument) {
+        String sql = "SELECT users.id, email, encoded_profile_img, first_name, last_name, city, genre, instruments FROM users JOIN solo s on users.id = s.id JOIN registered_users ru on users.id = ru.id LEFT JOIN fav_genres fg on s.id = fg.id JOIN played_instruments pi on s.id = pi.id WHERE LOWER(s.first_name) LIKE LOWER(?) AND LOWER(city) LIKE LOWER(?) AND (?) LIKE ANY(instruments)";
+        List<SoloResultBean> soloResults = new ArrayList<>();
+        try (PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
+            preparedStatement.setString(1, name+'%');
+            preparedStatement.setString(2, city+'%');
+            preparedStatement.setString(3, instrument);
+            ResultSet resultSet = preparedStatement.executeQuery();
+            while (resultSet.next()) {
+                buildSoloResult(resultSet, soloResults);
+            }
+            return soloResults;
+        } catch (SQLException sqlException) {
+            logger.info("SQL Exception searching with instrument: {}", sqlException.getMessage());
+            return new ArrayList<>();
         }
-        if (instrument != null && !instrument.equals("NONE")) {
-            stringBuilder.append(" AND ").append(instrument).append(" LIKE ANY(instruments)");
+    }
+
+    private List<SoloResultBean> searchWithGenreAndInstrument(String name, String city, String genre, String instrument) {
+        String sql = "SELECT users.id, email, encoded_profile_img, first_name, last_name, city, genre, instruments FROM users JOIN solo s on users.id = s.id JOIN registered_users ru on users.id = ru.id LEFT JOIN fav_genres fg on s.id = fg.id JOIN played_instruments pi on s.id = pi.id WHERE LOWER(s.first_name) LIKE LOWER(?) AND LOWER(city) LIKE LOWER(?) AND (?) LIKE ANY(genre) AND (?) LIKE ANY(instruments)";
+        List<SoloResultBean> soloResults = new ArrayList<>();
+        try (PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
+            preparedStatement.setString(1, name+'%');
+            preparedStatement.setString(2, city+'%');
+            preparedStatement.setString(3, genre);
+            preparedStatement.setString(4, instrument);
+            ResultSet resultSet = preparedStatement.executeQuery();
+            while (resultSet.next()) {
+                buildSoloResult(resultSet, soloResults);
+            }
+            return soloResults;
+        } catch (SQLException sqlException) {
+            logger.info("SQL Exception searching with genre: {}", sqlException.getMessage());
+            return new ArrayList<>();
         }
-        return stringBuilder.toString();
     }
 
     public List<SoloResultBean> getResults() {

@@ -57,6 +57,7 @@ public class SearchBand implements SearchEngine<BandResultBean>, Runnable {
         return bandResultBeanList;
     }
 
+    /*
     public List<BandResultBean> searchWithGenre(String name, String genre, String city) {
         String sql = "SELECT users.id, email, encoded_profile_img, band_name, city FROM users JOIN band ON users.id = band.id JOIN registered_users ru on users.id = ru.id LEFT JOIN played_genres pg on band.id = pg.id WHERE LOWER(band_name) LIKE LOWER(?) AND LOWER(city) LIKE LOWER(?) AND LOWER(genre) LIKE LOWER(?)";
         ResultSet resultSet;
@@ -70,6 +71,8 @@ public class SearchBand implements SearchEngine<BandResultBean>, Runnable {
         }
         return bandResultBeanList;
     }
+
+     */
 
 
     public List<BandResultBean> advancedSearchWithName(String name, String genre, String city) {
@@ -118,11 +121,17 @@ public class SearchBand implements SearchEngine<BandResultBean>, Runnable {
         return bandResultBeanList;
     }
 
-
+    /*
     @Override
     public void run() {
        if (this.genre == null || "NONE".equals(this.genre)) this.results.addAll(this.searchByNameAndCity(this.searchString, this.city));
        else this.results.addAll(this.searchWithGenre(this.searchString, this.genre, this.city));
+    }
+     */
+
+    @Override
+    public void run() {
+
     }
 
     public List<BandResultBean> getResults() {
