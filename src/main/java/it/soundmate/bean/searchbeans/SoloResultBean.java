@@ -17,6 +17,7 @@ public class SoloResultBean extends UserResultBean {
     private final String firstName;
     private final String lastName;
     private final List<String> genreList = new ArrayList<>();
+    private final List<String> instrumentList = new ArrayList<>();
 
     public SoloResultBean(int id, String email, String encodedProfileImg, String firstName, String lastName, String city) {
         super(id, email, encodedProfileImg, city, UserType.SOLO);
@@ -34,10 +35,20 @@ public class SoloResultBean extends UserResultBean {
     }
 
     public void setGenres(List<String> genreList) {
+        this.genreList.clear();
         this.genreList.addAll(genreList);
     }
 
     public List<String> getGenreList() {
         return genreList;
+    }
+
+    public List<String> getInstrumentList() {
+        return instrumentList;
+    }
+
+    public void setInstrumentList(List<String> instrumentList) {
+        this.instrumentList.clear();
+        this.instrumentList.addAll(instrumentList);
     }
 }

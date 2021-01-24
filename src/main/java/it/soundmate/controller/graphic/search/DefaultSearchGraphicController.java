@@ -29,10 +29,10 @@ public class DefaultSearchGraphicController {
     private String[] getAdvancedFilterValues(String genreFilter, String instrumentFilter, String cityFilter) {
         String[] advancedFilterValues = new String[3];
         if (genreFilter == null || genreFilter.equals("NONE")) {
-            advancedFilterValues[0] = "";
+            advancedFilterValues[0] = "NONE";
         } else advancedFilterValues[0] = genreFilter;
         if (instrumentFilter == null || instrumentFilter.equals("NONE")) {
-            advancedFilterValues[1] = "";
+            advancedFilterValues[1] = "NONE";
         } else advancedFilterValues[1] = instrumentFilter;
         if (cityFilter == null || cityFilter.equals("")) {
             advancedFilterValues[2] = "";

@@ -33,6 +33,7 @@ public class SoloProfileView extends VBox {
     //UI
     private HBox favGenresHBoxList;
     private Button addGenreBtn;
+    private final HBox instrumentList = new HBox();
 
     public SoloProfileView(Solo solo, ProfileView profileView) {
         this.soloUser = solo;
@@ -157,10 +158,23 @@ public class SoloProfileView extends VBox {
         Label instrumentLabelHeader = new Label("Instruments");
         instrumentLabelHeader.setStyle(Style.MID_LABEL);
 
-        HBox instrumentList = new HBox();
         instrumentList.setAlignment(Pos.CENTER);
         //Get solo instrument list and for every instrument add a circle with the corresponding icon
         //and label
+
+        //Add new instrument VBox
+        VBox addInstrumentVBox = new VBox();
+        addInstrumentVBox.setAlignment(Pos.CENTER);
+        addInstrumentVBox.setPadding(new Insets(10));
+
+        Circle addInstrumentCircle = new Circle();
+        addInstrumentCircle.setRadius(25);
+        addInstrumentCircle.setFill(new ImagePattern(new Image("soundmate/icons/add.png")));
+        addInstrumentVBox.getChildren().add(addInstrumentCircle);
+
+        UIUtils.addStyledButton("Add", new AddInstrumentAction(),addInstrumentVBox);
+        instrumentList.getChildren().add(addInstrumentVBox);
+
         if (this.soloUser.getInstruments() != null) {
             for (String instrument : this.soloUser.getInstruments()) {
                 VBox instrumentVBox = new VBox();
@@ -183,19 +197,6 @@ public class SoloProfileView extends VBox {
                 instrumentList.getChildren().add(instrumentVBox);
             }
         }
-
-        //Add new instrument VBox
-        VBox addInstrumentVBox = new VBox();
-        addInstrumentVBox.setAlignment(Pos.CENTER);
-        addInstrumentVBox.setPadding(new Insets(10));
-
-        Circle addInstrumentCircle = new Circle();
-        addInstrumentCircle.setRadius(25);
-        addInstrumentCircle.setFill(new ImagePattern(new Image("soundmate/icons/add.png")));
-        addInstrumentVBox.getChildren().add(addInstrumentCircle);
-
-        UIUtils.addStyledButton("Add", new AddInstrumentAction(),addInstrumentVBox);
-        instrumentList.getChildren().add(addInstrumentVBox);
 
         instrumentSection.setPrefWidth(USE_COMPUTED_SIZE);
         instrumentSection.setPrefHeight(200);
@@ -221,7 +222,21 @@ public class SoloProfileView extends VBox {
         }
 
         private void updateInstrumentUI(InstrumentGraphics instrument) {
+            VBox instrumentVBox = new VBox();
+            instrumentVBox.setAlignment(Pos.CENTER);
+            instrumentVBox.setPadding(new Insets(10));
 
+            Label instrumentLabel = new Label(instrument.getName());
+            instrumentLabel.setStyle(Style.MID_LABEL);
+            instrumentLabel.setPadding(new Insets(10, 0, 0, 0));
+
+            ImageView instrumentImageView = new ImageView();
+            instrumentImageView.setFitWidth(32);
+            instrumentImageView.setFitHeight(32);
+            instrumentImageView.setImage(instrument.getSource());
+
+            instrumentVBox.getChildren().addAll(instrumentImageView, instrumentLabel);
+            instrumentList.getChildren().add(instrumentVBox);
         }
     }
 

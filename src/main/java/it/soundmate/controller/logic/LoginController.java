@@ -66,6 +66,7 @@ public class LoginController {
         SoloDao soloDao = new SoloDao(userDao);
         Solo soloUser = soloDao.getSoloByID(id);
         soloUser.setFavGenres(soloDao.getGenres(id));
+        soloUser.setInstruments(soloDao.getInstruments(id));
         return soloUser;
     }
 

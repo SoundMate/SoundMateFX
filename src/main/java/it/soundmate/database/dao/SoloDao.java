@@ -154,18 +154,18 @@ public class SoloDao implements Dao<Solo>{
         }
     }
 
-    public List<String> getInstruments(Solo solo){
+    public List<String> getInstruments(int id){
         String sql = "SELECT instruments FROM played_instruments WHERE id = ?";
         List<String> instrumentList = new ArrayList<>();
         try (PreparedStatement preparedStatement = connector.getConnection().prepareStatement(sql)){
-            preparedStatement.setInt(1, solo.getId());
+            preparedStatement.setInt(1, id);
             ResultSet resultSet = preparedStatement.executeQuery();
             while(resultSet.next()){
+                if (resultSet.getArray("instruments") == null) return instrumentList;
                 String [] temp = (String []) resultSet.getArray("instruments").getArray();
                 instrumentList = Arrays.asList(temp);
             }
             return instrumentList;
-
         } catch (SQLException ex){
             throw new RepositoryException(ERR_MESSAGE, ex);
         }
