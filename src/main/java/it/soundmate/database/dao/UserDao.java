@@ -36,8 +36,6 @@ public class UserDao implements Dao<User> {
     @Override
     public int register(RegisterBean registerBean){
         ResultSet resultSet;
-        int userID = 0;
-
         String sql = "WITH ins1 AS (\n" +
                 "     INSERT INTO registered_users (email, password, user_type, city)\n" +
                 "         VALUES (?, ?, ?, ?)\n" +
@@ -49,20 +47,17 @@ public class UserDao implements Dao<User> {
 
         try (Connection conn = connector.getConnection();
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
-
             pstmt.setString(1, registerBean.getEmail());
             pstmt.setString(2, registerBean.getPassword());
             pstmt.setString(3, registerBean.getUserType().toString());
             pstmt.setString(4, registerBean.getCity());
-
             resultSet = pstmt.executeQuery();
-            if (resultSet.next())
-                userID = resultSet.getInt(1);
+            if (resultSet.next()) return resultSet.getInt(1);
+            else throw new RepositoryException("Error registering user");
         }
-
         catch (SQLException ex) {
             throw new RepositoryException(ERR_INSERT, ex);
-        } return userID;
+        }
     }
 
     public LoggedBean login(LoginBean loginBean) throws LoginException {

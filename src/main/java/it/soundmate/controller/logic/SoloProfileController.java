@@ -13,33 +13,24 @@ import it.soundmate.exceptions.InputException;
 import it.soundmate.model.Genre;
 import it.soundmate.model.Solo;
 
-import java.util.ArrayList;
-import java.util.List;
-
 public class SoloProfileController extends EditController {
 
     private final UserDao userDao = new UserDao();
-
-    public List<String> getSoloInstruments(Solo solo) {
-        return solo.getInstruments();
-    }
+    private final SoloDao soloDao = new SoloDao(userDao);
 
     public Genre addGenre(Genre genre, Solo solo) {
-        SoloDao soloDao = new SoloDao(userDao);
-        if (solo.getFavGenres().isEmpty()) {
-            List<Genre> genreList = new ArrayList<>();
-            genreList.add(genre);
-            if (soloDao.insertGenres(solo, genreList)) {
-                return genre;
-            } else {
-                throw new InputException("Genre not added (Controller Insert)");
-            }
+        if (soloDao.updateGenre(solo, genre)) {
+            return genre;
         } else {
-            if (soloDao.updateGenre(solo, genre)) {
-                return genre;
-            } else {
-                throw new InputException("Genre not added (Controller Update)");
-            }
+            throw new InputException("Genre not added (Controller Insert)");
+        }
+    }
+
+    public String addInstrument(String instrument, Solo solo) {
+        if (soloDao.updateInstrument(solo, instrument)) {
+            return instrument;
+        } else {
+            throw new InputException("Instrument not added");
         }
     }
 }

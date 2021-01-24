@@ -36,11 +36,12 @@ public class SearchBand implements SearchEngine<BandResultBean>, Runnable {
 
     @Override
     public List<BandResultBean> searchByNameAndCity(String name, String city) {
-        String sql = "SELECT users.id, email, encoded_profile_img, band_name, city FROM users JOIN band ON users.id = band.id JOIN registered_users ru on users.id = ru.id WHERE LOWER(band_name) LIKE LOWER(?) AND LOWER(city) LIKE (?)";
+        String sql = "SELECT users.id, email, encoded_profile_img, band_name, city FROM users JOIN band ON users.id = band.id JOIN registered_users ru on users.id = ru.id WHERE LOWER(band_name) LIKE LOWER(?) AND LOWER(city) LIKE LOWER(?)";
         ResultSet resultSet;
         List<BandResultBean> bandResultBeanList = new ArrayList<>();
         try (PreparedStatement preparedStatement = this.connection.prepareStatement(sql)) {
-            resultSet = prepareBasicStatement(name, city, preparedStatement);
+            prepareStatementGeneric(name, city, preparedStatement);
+            resultSet = preparedStatement.executeQuery();
             while (resultSet.next()) {
                 int id = resultSet.getInt("id");
                 String email = resultSet.getString("email");
@@ -56,6 +57,19 @@ public class SearchBand implements SearchEngine<BandResultBean>, Runnable {
         return bandResultBeanList;
     }
 
+    public List<BandResultBean> searchWithGenre(String name, String genre, String city) {
+        String sql = "SELECT users.id, email, encoded_profile_img, band_name, city FROM users JOIN band ON users.id = band.id JOIN registered_users ru on users.id = ru.id LEFT JOIN played_genres pg on band.id = pg.id WHERE LOWER(band_name) LIKE LOWER(?) AND LOWER(city) LIKE LOWER(?) AND LOWER(genre) LIKE LOWER(?)";
+        ResultSet resultSet;
+        List<BandResultBean> bandResultBeanList = new ArrayList<>();
+        try (PreparedStatement preparedStatement = this.connection.prepareStatement(sql)) {
+            prepareStatementWithGenre(name, city, genre, preparedStatement);
+            resultSet = preparedStatement.executeQuery();
+            buildBandResults(bandResultBeanList, resultSet);
+        } catch (SQLException sqlException) {
+            sqlException.printStackTrace();
+        }
+        return bandResultBeanList;
+    }
 
 
     public List<BandResultBean> advancedSearchWithName(String name, String genre, String city) {
@@ -65,7 +79,8 @@ public class SearchBand implements SearchEngine<BandResultBean>, Runnable {
             preparedStatement.setString(1, genre);
             preparedStatement.setString(2, name+"%");
             preparedStatement.setString(3, Objects.requireNonNullElse(city, "%"));
-            return buildBandResults(bandResultBeanList, preparedStatement);
+            ResultSet resultSet = preparedStatement.executeQuery();
+            return buildBandResults(bandResultBeanList, resultSet);
         } catch (SQLException sqlException) {
             sqlException.printStackTrace();
             throw new RepositoryException("Error advanced searching solo in DB");
@@ -78,16 +93,15 @@ public class SearchBand implements SearchEngine<BandResultBean>, Runnable {
         try (PreparedStatement preparedStatement = Connector.getInstance().getConnection().prepareStatement(sql)) {
             preparedStatement.setString(1, genre);
             preparedStatement.setString(2, city);
-            return buildBandResults(bandResultBeanList, preparedStatement);
+            ResultSet resultSet = preparedStatement.executeQuery();
+            return buildBandResults(bandResultBeanList, resultSet);
         } catch (SQLException sqlException) {
             sqlException.printStackTrace();
             throw new RepositoryException("Error advanced searching solo in DB");
         }
     }
 
-    private List<BandResultBean> buildBandResults(List<BandResultBean> bandResultBeanList, PreparedStatement preparedStatement) throws SQLException {
-        ResultSet resultSet;
-        resultSet = preparedStatement.executeQuery();
+    private List<BandResultBean> buildBandResults(List<BandResultBean> bandResultBeanList, ResultSet resultSet) throws SQLException {
         while (resultSet.next()) {
             int id = resultSet.getInt("id");
             String email = resultSet.getString("email");
@@ -107,7 +121,8 @@ public class SearchBand implements SearchEngine<BandResultBean>, Runnable {
 
     @Override
     public void run() {
-       this.results.addAll(this.searchByNameAndCity(this.searchString, this.city));
+       if (this.genre == null || "NONE".equals(this.genre)) this.results.addAll(this.searchByNameAndCity(this.searchString, this.city));
+       else this.results.addAll(this.searchWithGenre(this.searchString, this.genre, this.city));
     }
 
     public List<BandResultBean> getResults() {

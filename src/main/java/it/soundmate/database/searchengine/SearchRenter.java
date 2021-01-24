@@ -34,7 +34,8 @@ public class SearchRenter implements SearchEngine<RoomRenterResultBean>, Runnabl
         String sql = "SELECT users.id, email, encoded_profile_img, name, city FROM users JOIN room_renter rr on users.id = rr.id JOIN registered_users ru on users.id = ru.id WHERE LOWER(name) LIKE LOWER(?) AND LOWER(city) LIKE LOWER(?)";
         List<RoomRenterResultBean> roomRenterResultBeanList = new ArrayList<>();
         try (PreparedStatement preparedStatement = this.connection.prepareStatement(sql)) {
-            ResultSet resultSet = prepareBasicStatement(name, city, preparedStatement);
+            prepareStatementGeneric(name, city, preparedStatement);
+            ResultSet resultSet = preparedStatement.executeQuery();
             while (resultSet.next()) {
                 int id = resultSet.getInt("id");
                 String email = resultSet.getString("email");

@@ -204,10 +204,24 @@ public class SoloProfileView extends VBox {
     }
 
 
-    private static class AddInstrumentAction implements EventHandler<ActionEvent> {
+    private class AddInstrumentAction implements EventHandler<ActionEvent> {
         @Override
         public void handle(ActionEvent event) {
             logger.info("Add instrument Clicked");
+            SoloProfileGraphicController soloProfileGraphicController = new SoloProfileGraphicController();
+            try {
+                InstrumentGraphics instrument = soloProfileGraphicController.addInstrument(soloUser);
+                if (instrument != null) {
+                    logger.info("Added new instrument {} to {}", instrument.getName(), soloUser.getEmail());
+                    updateInstrumentUI(instrument);
+                }
+            } catch (InputException inputException) {
+                logger.error("Input Exception: {}", inputException.getMessage());
+            }
+        }
+
+        private void updateInstrumentUI(InstrumentGraphics instrument) {
+
         }
     }
 
@@ -217,7 +231,7 @@ public class SoloProfileView extends VBox {
             logger.info("Add Genre Clicked");
             SoloProfileGraphicController soloProfileGraphicController = new SoloProfileGraphicController();
             try {
-                Genre newGenre = soloProfileGraphicController.addGenreDialog(soloUser);
+                Genre newGenre = soloProfileGraphicController.addGenre(soloUser);
                 if (newGenre != null) {
                     updateUI(newGenre);
                 }

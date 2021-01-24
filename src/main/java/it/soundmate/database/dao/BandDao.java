@@ -59,6 +59,7 @@ public class BandDao {
                 if (rowAffected == 1) {
                     resultSet = preparedStmt.getGeneratedKeys();
                     if (resultSet.next()) {
+                        this.createGenreEntry(resultSet.getInt(1));
                         return resultSet.getInt(1);
                     } else throw new RepositoryException("Unable to register new User");
                 } else throw new RepositoryException("Unable to register new User, RowAffected != 1");
@@ -66,6 +67,15 @@ public class BandDao {
             } catch (SQLException ex) {
                 throw new RepositoryException(ERR_INSERT, ex);
             }
+        }
+    }
+
+    private void createGenreEntry(int userID) {
+        String sql = "insert into played_genres (id) values (?)";
+        try (PreparedStatement preparedStatement = this.connector.getConnection().prepareStatement(sql)) {
+            preparedStatement.setInt(1, userID);
+        } catch (SQLException sqlException) {
+            sqlException.printStackTrace();
         }
     }
 

@@ -114,6 +114,7 @@ public class DefaultSearchView extends BorderPane {
         cityFilterLabel.setPadding(new Insets(0, 5, 0, 0));
         filtersHBox.getChildren().add(cityFilterLabel);
         cityFilter.setStyle(Style.TEXT_FIELD);
+        cityFilter.setPrefWidth(70);
         filtersHBox.getChildren().add(cityFilter);
         return filtersHBox;
     }
@@ -122,6 +123,7 @@ public class DefaultSearchView extends BorderPane {
         ComboBox<Label> genresComboBox = new ComboBox<>();
         genresComboBox.setPromptText("Genres");
         genresComboBox.setVisibleRowCount(5);
+        genresComboBox.getItems().add(new Label("NONE"));
         for (Genre genre : Genre.values()) {
             Label genreLabel = new Label(genre.name());
             genresComboBox.getItems().add(genreLabel);

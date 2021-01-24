@@ -10,6 +10,7 @@ import it.soundmate.controller.logic.SoloProfileController;
 import it.soundmate.exceptions.InputException;
 import it.soundmate.model.Genre;
 import it.soundmate.model.Solo;
+import it.soundmate.view.uicomponents.InstrumentGraphics;
 import javafx.scene.control.ChoiceDialog;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -22,7 +23,7 @@ public class SoloProfileGraphicController extends EditGraphicController {
     private final SoloProfileController soloProfileController = new SoloProfileController();
     private static final Logger logger = LoggerFactory.getLogger(SoloProfileGraphicController.class);
 
-    public Genre addGenreDialog(Solo solo){
+    public Genre addGenre(Solo solo){
         Genre selectedGenre = favGenreDialog();
         if (selectedGenre == null) {
             throw new InputException("Genre was not selected");
@@ -46,6 +47,38 @@ public class SoloProfileGraphicController extends EditGraphicController {
         if (result.isPresent()){
             logger.info("Your choice: {}", result.get());
             return Genre.returnGenre(result.get());
+        }
+        return null;
+    }
+
+    public InstrumentGraphics addInstrument(Solo solo) {
+        InstrumentGraphics instrument = instrumentDialog();
+        if (instrument == null) throw new InputException("Instrument not selected");
+        else {
+            try {
+                soloProfileController.addInstrument(instrument.getName(), solo);
+                return instrument;
+            } catch (InputException inputException) {
+                throw new InputException(inputException.getMessage());
+            }
+        }
+    }
+
+    private InstrumentGraphics instrumentDialog() {
+        List<String> choices = new ArrayList<>();
+        for (InstrumentGraphics instrumentGraphics : InstrumentGraphics.values()) {
+            choices.add(instrumentGraphics.name());
+        }
+
+        ChoiceDialog<String> dialog = new ChoiceDialog<>("INSTRUMENT", choices);
+        dialog.setTitle("Add instrument");
+        dialog.setHeaderText("Add instrument");
+        dialog.setContentText("Choose instrument:");
+
+        Optional<String> result = dialog.showAndWait();
+        if (result.isPresent()){
+            logger.info("Your choice: {}", result.get());
+            return InstrumentGraphics.returnInsrument(result.get());
         }
         return null;
     }

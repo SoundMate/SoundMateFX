@@ -6,6 +6,7 @@
 
 package it.soundmate.database.dao;
 
+import it.soundmate.bean.registerbeans.RegisterBean;
 import it.soundmate.bean.registerbeans.RegisterSoloBean;
 import it.soundmate.database.Connector;
 import it.soundmate.database.dbexceptions.DuplicatedEmailException;
@@ -24,7 +25,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-public class SoloDao {
+public class SoloDao implements Dao<Solo>{
 
 
     private final UserDao userDao;
@@ -35,62 +36,58 @@ public class SoloDao {
     private static final String ERR_INSERT = "Error inserting user";
     private static final String ERR_MESSAGE = "Error, check stack trace for details";
 
-
-    //Modificato il costruttore per il Connector (attributo come UserDao)
     public SoloDao(UserDao userDao) {
         this.userDao = userDao;
     }
 
+    String sqlSolo = " WITH ins1 AS (\\n\" +\n" +
+            "                    \"     INSERT INTO registered_users (email, password, user_type, city)\\n\" +\n" +
+            "                    \"         VALUES (?, ?, ?, ?)\\n\" +\n" +
+            "                    \" -- ON     CONFLICT DO NOTHING         -- optional addition in Postgres 9.5+\\n\" +\n" +
+            "                    \"         RETURNING id AS sample_id\\n\" +\n" +
+            "                    \" ), ins2 AS (\\n\" +\n" +
+            "                    \"     INSERT INTO users (id)\\n\" +\n" +
+            "                    \"         SELECT sample_id FROM ins1\\n\" +\n" +
+            "                    \" )\\n\" +\n" +
+            "                    \"INSERT INTO solo (id,first_name, last_name)\\n\" +\n" +
+            "                    \"SELECT sample_id, ?, ? FROM ins1;";
+
+
     public int registerSolo(RegisterSoloBean soloBean){
-        ResultSet resultSet;
-        int userID;
         if (userDao.checkIfBanned(soloBean.getEmail())){
             log.error(ACC_BANNED_ERR);
             throw new UpdateException("Account has been banned");
-        }else if (userDao.checkEmailBoolean(soloBean.getEmail())){
+        } else if (userDao.checkEmailBoolean(soloBean.getEmail())){
             log.error(EMAIL_EXISTS_ERR);
             throw new DuplicatedEmailException("Duplicated email "+soloBean.getEmail());
         } else {
-            String sql = " WITH ins1 AS (\n" +
-                    "     INSERT INTO registered_users (email, password, user_type, city)\n" +
-                    "         VALUES (?, ?, ?, ?)\n" +
-                    " -- ON     CONFLICT DO NOTHING         -- optional addition in Postgres 9.5+\n" +
-                    "         RETURNING id AS sample_id\n" +
-                    " ), ins2 AS (\n" +
-                    "     INSERT INTO users (id)\n" +
-                    "         SELECT sample_id FROM ins1\n" +
-                    " )\n" +
-                    "INSERT INTO solo (id,first_name, last_name)\n" +
-                    "SELECT sample_id, ?, ? FROM ins1;";
-            try (PreparedStatement pstmt = connector.getConnection().prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
-                pstmt.setString(1, soloBean.getEmail());
-                pstmt.setString(2, soloBean.getPassword());
-                pstmt.setString(3, soloBean.getUserType().toString());
-                pstmt.setString(4, soloBean.getCity());
-                pstmt.setString(5, soloBean.getFirstName());
-                pstmt.setString(6, soloBean.getLastName());
-                int rowAffected = pstmt.executeUpdate();
+            String sql = "INSERT INTO solo (id, first_name, last_name) VALUES (?, ?, ?)";
+            ResultSet resultSet;
+            int id = userDao.register(soloBean);
+            try (PreparedStatement prepStmt = connector.getConnection().prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
+                prepStmt.setInt(1, id);
+                prepStmt.setString(2, soloBean.getFirstName());
+                prepStmt.setString(3, soloBean.getLastName());
+                int rowAffected = prepStmt.executeUpdate();
                 if (rowAffected == 1) {
-                    resultSet = pstmt.getGeneratedKeys();
+                    resultSet = prepStmt.getGeneratedKeys();
                     if (resultSet.next()) {
-                        userID = resultSet.getInt(1);
-                        if (this.createGenresEntry(userID)) return userID;
-                        else throw new UpdateException("Error creating genre entry");
-                    } else throw new UpdateException("Error inserting new user");
-                } else throw new UpdateException("Error inserting new user");
+                        return resultSet.getInt(1);
+                    } else throw new RepositoryException("Error registering solo user");
+                } else throw new RepositoryException("Error registering solo user (ROW AFFECTED != 1");
             } catch (SQLException ex) {
-                throw new RepositoryException(ERR_INSERT, ex);
+                throw new RepositoryException(ex.getMessage(), ex);
             }
         }
     }
 
-    private boolean createGenresEntry(int userID) {
+    private void createGenresEntry(int userID) {
         String sql = "insert into fav_genres (id) values (?)";
         try (PreparedStatement preparedStatement = this.connector.getConnection().prepareStatement(sql)) {
             preparedStatement.setInt(1, userID);
-            return preparedStatement.executeUpdate() == 1;
+            preparedStatement.executeUpdate();
         } catch (SQLException sqlException) {
-            return false;
+            throw new RepositoryException("Error creating genres entry");
         }
     }
 
@@ -117,7 +114,7 @@ public class SoloDao {
     }
 
 
-    public Solo getSoloByID(int id) throws SQLException {
+    public Solo getSoloByID(int id) {
         ResultSet resultSet;
         Solo soloUser = new Solo();
         String query = "SELECT email, password, encoded_profile_img, age, first_name, last_name, city\n" +
@@ -145,39 +142,13 @@ public class SoloDao {
         }
     }
 
-
-    public boolean insertInstruments(Solo solo, List<String> genres) {
-
-        String sql = "INSERT INTO played_instruments (id, instruments) VALUES (?, ?)";
-
-        try (PreparedStatement preparedStatement = connector.getConnection().prepareStatement(sql)){
-
-            preparedStatement.setInt(1,solo.getId());
-            preparedStatement.setArray(2, connector.getConnection().createArrayOf("text", genres.toArray()));
-
-            if (preparedStatement.executeUpdate() == 1)
-                return true;
-
-        } catch (SQLException e){
-            throw new RepositoryException("Error, check the stack trace for details", e);
-        }return false;
-    }
-
-
     public boolean updateInstrument(Solo solo, String instrument){
-
         //::text is the parsing for sql queries (the value in ? must be a text type)
         String sql = "UPDATE played_instruments SET instruments = array_append(instruments, ?::text) WHERE id = ?";
-
-
-
         try (PreparedStatement preparedStatement = connector.getConnection().prepareStatement(sql)){
-
             preparedStatement.setString(1, instrument);
             preparedStatement.setInt(2, solo.getId());
-
             return preparedStatement.executeUpdate() == 1;
-
         }catch (SQLException ex){
             throw new RepositoryException(ERR_MESSAGE, ex);
         }
@@ -186,50 +157,22 @@ public class SoloDao {
     public List<String> getInstruments(Solo solo){
         String sql = "SELECT instruments FROM played_instruments WHERE id = ?";
         List<String> instrumentList = new ArrayList<>();
-
         try (PreparedStatement preparedStatement = connector.getConnection().prepareStatement(sql)){
-
             preparedStatement.setInt(1, solo.getId());
             ResultSet resultSet = preparedStatement.executeQuery();
-
             while(resultSet.next()){
-
                 String [] temp = (String []) resultSet.getArray("instruments").getArray();
                 instrumentList = Arrays.asList(temp);
-
             }
             return instrumentList;
 
         } catch (SQLException ex){
             throw new RepositoryException(ERR_MESSAGE, ex);
         }
-
-    }
-
-
-
-    public boolean insertGenres(Solo solo, List<Genre> genreList){
-        String sql = "INSERT INTO fav_genres (id, genre) VALUES (?, ?)";
-
-        try (PreparedStatement preparedStatement = connector.getConnection().prepareStatement(sql)){
-
-            preparedStatement.setInt(1,solo.getId());
-            preparedStatement.setArray(2, connector.getConnection().createArrayOf("text", genreList.toArray()));
-
-            if (preparedStatement.executeUpdate() == 1) {
-                solo.setFavGenres(genreList);
-                return true;
-            }
-
-        } catch (SQLException e){
-            throw new RepositoryException("Error, check the stack trace for details", e);
-        }return false;
     }
 
     public boolean updateGenre(Solo solo, Genre genre){
-        //::text is the parsing for sql queries (the value in ? must be a text type)
         String sql = "UPDATE fav_genres SET genre = array_append(genre, ?::text) WHERE id = ?";
-
         try (PreparedStatement preparedStatement = connector.getConnection().prepareStatement(sql)){
             preparedStatement.setString(1, genre.toString());
             preparedStatement.setInt(2, solo.getId());
@@ -262,6 +205,43 @@ public class SoloDao {
         } catch (SQLException ex){
             throw new RepositoryException(ERR_MESSAGE, ex);
         }
+    }
+
+    @Override
+    public int register(RegisterBean registerBean) {
+        try {
+            int id = this.registerSolo((RegisterSoloBean) registerBean);
+            this.createGenresEntry(id);
+            this.createInstrumentsEntry(id);
+            return id;
+        } catch (RepositoryException repositoryException) {
+            throw new RepositoryException(repositoryException.getMessage());
+        }
+    }
+
+    private void createInstrumentsEntry(int id) {
+        String sql = "INSERT INTO played_instruments (id) VALUES (?)";
+        try (PreparedStatement preparedStatement = connector.getConnection().prepareStatement(sql)){
+            preparedStatement.setInt(1,id);
+            preparedStatement.executeUpdate();
+        } catch (SQLException e){
+            throw new RepositoryException("Error creating instruments entry: SQLException: "+e.getMessage(), e);
+        }
+    }
+
+    @Override
+    public int update(Solo solo) {
+        return 0;
+    }
+
+    @Override
+    public int delete(Solo solo) {
+        return 0;
+    }
+
+    @Override
+    public Solo get(int id) {
+        return null;
     }
 }
 

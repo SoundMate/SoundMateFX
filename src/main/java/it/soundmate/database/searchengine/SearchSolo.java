@@ -44,11 +44,12 @@ public class SearchSolo implements SearchEngine<SoloResultBean>, Runnable {
      */
     @Override
     public List<SoloResultBean> searchByNameAndCity(String name, String city) {
-        String sql = "SELECT users.id, email, encoded_profile_img, first_name, last_name, city, genre FROM users JOIN solo s on users.id = s.id JOIN registered_users ru on users.id = ru.id LEFT JOIN fav_genres fg on s.id = fg.id WHERE LOWER(s.first_name) LIKE LOWER(?) AND LOWER(city) LIKE LOWER(?)";
+        String sql = "SELECT users.id, email, encoded_profile_img, first_name, last_name, city FROM users JOIN solo s on users.id = s.id JOIN registered_users ru on users.id = ru.id WHERE LOWER(s.first_name) LIKE LOWER(?) AND LOWER(city) LIKE LOWER(?)";
         logger.info("Searching solos with name {} city {}", name, city);
         List<SoloResultBean> soloResults = new ArrayList<>();
         try (PreparedStatement preparedStatement = this.connection.prepareStatement(sql)) {
-            ResultSet resultSet = prepareBasicStatement(name, city, preparedStatement);
+            prepareStatementGeneric(name, city, preparedStatement);
+            ResultSet resultSet = preparedStatement.executeQuery();
             while (resultSet.next()) {
                 buildSoloResult(resultSet, soloResults);
             }
@@ -56,6 +57,29 @@ public class SearchSolo implements SearchEngine<SoloResultBean>, Runnable {
             sqlException.printStackTrace();
         }
         return soloResults;
+    }
+
+    //NON FUNZIONA PERCHè DEVI METTERE LA ENTRY NELLA TAB STRUMENTI
+    public List<SoloResultBean> searchWithFilters(String name, String city, String genre, String instrument) {
+        String sql = "SELECT users.id, email, encoded_profile_img, first_name, last_name, city FROM users JOIN solo s on users.id = s.id JOIN registered_users ru on users.id = ru.id LEFT JOIN fav_genres fg on s.id = fg.id JOIN played_instruments pi on s.id = pi.id WHERE LOWER(s.first_name) LIKE LOWER(?) AND LOWER(city) LIKE LOWER(?) AND (?) = ANY(genre) AND (?) = ANY(instruments)";
+        logger.info("Searching solos with name {} city {} genre {} instrument {}", name, city, genre, instrument);
+        List<SoloResultBean> soloResults = new ArrayList<>();
+        try (PreparedStatement preparedStatement = this.connection.prepareStatement(sql)) {
+            prepareStatementWithFilters(name, city, genre, instrument, preparedStatement);
+            ResultSet resultSet = preparedStatement.executeQuery();
+            while (resultSet.next()) {
+                buildSoloResult(resultSet, soloResults);
+            }
+        } catch (SQLException sqlException) {
+            sqlException.printStackTrace();
+        }
+        return soloResults;
+    }
+
+    private void prepareStatementWithFilters(String name, String city, String genre, String instrument, PreparedStatement preparedStatement) throws SQLException {
+        prepareStatementWithGenre(name, city, genre, preparedStatement);
+        if (instrument == null || "".equals(instrument)) preparedStatement.setString(4, "%");
+        else preparedStatement.setString(4, instrument);
     }
 
 
@@ -82,7 +106,9 @@ public class SearchSolo implements SearchEngine<SoloResultBean>, Runnable {
     @Override
     public void run() {
         logger.info("Running solo search with NAME: {} CITY: {}",this.searchString, this.city);
-        results.addAll(this.searchByNameAndCity(this.searchString, this.city));
+        if (this.advancedFilters[1] == null || this.advancedFilters[1].equals("NONE")) results.addAll(this.searchByNameAndCity(this.searchString, this.city));
+        else results.addAll(this.searchWithFilters(this.searchString, this.city, this.advancedFilters[0], this.advancedFilters[1]));
+
     }
 
     public List<SoloResultBean> getResults() {

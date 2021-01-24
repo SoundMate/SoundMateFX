@@ -34,7 +34,7 @@ public class RegisterController {
     public Solo registerSolo(RegisterSoloBean registerSoloBean) {
         try {
             SoloDao soloDao = new SoloDao(userDao);
-            int id = soloDao.registerSolo(registerSoloBean);
+            int id = soloDao.register(registerSoloBean);
             LoginBean loginBean = new LoginBean(registerSoloBean.getEmail(), registerSoloBean.getPassword());
             LoginController loginController = new LoginController(loginBean);
             return loginController.getFullSolo(id);
