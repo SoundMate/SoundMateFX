@@ -10,7 +10,7 @@ import it.soundmate.bean.searchbeans.BandResultBean;
 import it.soundmate.constants.Style;
 import it.soundmate.controller.graphic.search.SearchResultsGraphicController;
 import it.soundmate.view.UIUtils;
-import it.soundmate.view.main.SearchView;
+import it.soundmate.view.main.SearchingView;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Orientation;
@@ -30,10 +30,10 @@ public class BandResults extends ListView<BandResultBean> {
 
     private static final Logger logger = LoggerFactory.getLogger(BandResults.class);
     private final SearchResultsGraphicController searchResultsGraphicController = new SearchResultsGraphicController();
-    private final SearchView searchView;
+    private final SearchingView searchingView;
 
-    public BandResults(SearchView searchView) {
-        this.searchView = searchView;
+    public BandResults(SearchingView searchingView) {
+        this.searchingView = searchingView;
         this.setCellFactory(param -> new BandResult());
         this.setOrientation(Orientation.HORIZONTAL);
         this.setPrefHeight(150);

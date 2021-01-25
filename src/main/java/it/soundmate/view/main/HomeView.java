@@ -1,110 +1,119 @@
 package it.soundmate.view.main;
 
+import it.soundmate.bean.searchbeans.BandResultBean;
+import it.soundmate.bean.searchbeans.RoomRenterResultBean;
+import it.soundmate.bean.searchbeans.SoloResultBean;
 import it.soundmate.constants.Style;
+import it.soundmate.controller.logic.HomeController;
+import it.soundmate.database.dbexceptions.RepositoryException;
 import it.soundmate.model.User;
 import it.soundmate.view.UIUtils;
+import it.soundmate.view.search.BandResults;
+import it.soundmate.view.search.RenterResults;
+import it.soundmate.view.search.SoloResults;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
-import javafx.geometry.Pos;
-import javafx.scene.Node;
 import javafx.scene.control.Label;
-import javafx.scene.layout.BorderPane;
-import javafx.scene.layout.HBox;
-import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class HomeView extends Pane {
+import java.util.List;
 
-    private final BorderPane homeBorderPane;
+public class HomeView extends SearchingView {
+
+    public static final String REPOSITORY_EXCEPTION = "Repository Exception: {}";
+    public static final String STYLE = "-fx-background-color: #232323; -fx-border-color: #232323";
+    private final VBox contentVBox;
     private static final Logger logger = LoggerFactory.getLogger(HomeView.class);
+    private final HomeController homeController;
+
+    //UI
+    private final SoloResults soloResultBeanListView = new SoloResults(this);
+    private final BandResults bandResultBeanListView = new BandResults(this);
+    private final RenterResults roomRenterResultBeanListView = new RenterResults(this);
 
     public HomeView(User user) {
-        this.homeBorderPane = buildHomeBorderPane(user);
+        this.homeController = new HomeController(user);
+        this.contentVBox = buildContentVBox(user);
     }
 
-    private BorderPane buildHomeBorderPane(User user) {
-        logger.info("Home View for user: {}", user.getEmail());
-        BorderPane borderPane = new BorderPane();
-        Node top = buildTopNode();
-        Node center = buildCenterNode();
-        borderPane.setTop(top);
-        borderPane.setCenter(center);
-        UIUtils.setBackgroundPane("#232323", borderPane);
-        return borderPane;
+    public VBox buildContentVBox(User user) {
+        VBox vBox = new VBox();
+        UIUtils.setBackgroundPane("#232323", vBox);
+        vBox.setPadding(new Insets(25));
+        vBox.setSpacing(10);
+        vBox.setPrefHeight(USE_COMPUTED_SIZE);
+
+        //Welcome Label
+        Label welcomeLabel = new Label("Welcome");
+        welcomeLabel.setStyle(Style.HEADER_TEXT);
+        vBox.getChildren().add(welcomeLabel);
+
+        //Musicians around you
+        buildMusiciansAroundYou(user, vBox);
+        //Bands you may like
+        buildBandsYouMayLike(user, vBox);
+        //Room Renters near you
+        buildRoomRentersNearYou(user, vBox);
+
+        return vBox;
     }
 
-    private VBox buildTopNode() {
-        VBox topVBox = new VBox();
-        topVBox.setAlignment(Pos.CENTER_LEFT);
-        topVBox.setPadding(new Insets(25));
+    private void buildRoomRentersNearYou(User user, VBox vBox) {
+        Label rentersLabel = new Label("Room Renters near you");
+        rentersLabel.setStyle(Style.MID_LABEL);
+        vBox.getChildren().add(rentersLabel);
 
-        Label homeLabel = new Label("Welcome");
-        homeLabel.setStyle(Style.HEADER_TEXT);
-        topVBox.getChildren().add(homeLabel);
-        return topVBox;
+        this.roomRenterResultBeanListView.setStyle(STYLE);
+        try {
+            List<RoomRenterResultBean> roomRenterResultBeanList = homeController.searchHomeRenters(user.getCity());
+            ObservableList<RoomRenterResultBean> renterResultBeanObservableList = FXCollections.observableArrayList(roomRenterResultBeanList);
+            this.roomRenterResultBeanListView.setItems(renterResultBeanObservableList);
+            vBox.getChildren().addAll(this.roomRenterResultBeanListView);
+        } catch (RepositoryException repositoryException) {
+            logger.error(REPOSITORY_EXCEPTION, repositoryException.getMessage());
+            vBox.getChildren().add(new Label("Error fetching near bands"));
+        }
     }
 
-    private Node buildCenterNode() {
-        VBox mainVBox = new VBox();
-        mainVBox.setAlignment(Pos.TOP_LEFT);
-        mainVBox.setPadding(new Insets(25));
-        mainVBox.setSpacing(10);
-
-        Label musiciansLabel = new Label("Musicians you may know");
-        musiciansLabel.setStyle(Style.MID_LABEL);
-        musiciansLabel.setPadding(new Insets(10,0,10,0));
-        HBox musiciansHBox = buildMusiciansHBox();
-        mainVBox.getChildren().addAll(musiciansLabel, musiciansHBox);
-
-        Label bandsLabel = new Label("Bands you may like");
+    private void buildBandsYouMayLike(User user, VBox vBox) {
+        Label bandsLabel = new Label("Bands near you");
         bandsLabel.setStyle(Style.MID_LABEL);
-        bandsLabel.setPadding(new Insets(10,0,10,0));
-        HBox bandsHBox = buildBandsHBox();
-        mainVBox.getChildren().addAll(bandsLabel, bandsHBox);
+        vBox.getChildren().add(bandsLabel);
 
-
-        Label roomsLabel = new Label("Rooms near you");
-        roomsLabel.setStyle(Style.MID_LABEL);
-        roomsLabel.setPadding(new Insets(10,0,10,0));
-        HBox roomsHBox = buildRoomsHBox();
-        mainVBox.getChildren().addAll(roomsLabel, roomsHBox);
-
-
-        return mainVBox;
+        this.bandResultBeanListView.setStyle(STYLE);
+        try {
+            List<BandResultBean> bandResultBeanList = homeController.searchHomeBands(user.getCity());
+            ObservableList<BandResultBean> bandResultBeanObservableList = FXCollections.observableArrayList(bandResultBeanList);
+            this.bandResultBeanListView.setItems(bandResultBeanObservableList);
+            vBox.getChildren().addAll(this.bandResultBeanListView);
+        } catch (RepositoryException repositoryException) {
+            logger.error(REPOSITORY_EXCEPTION, repositoryException.getMessage());
+            vBox.getChildren().add(new Label("Error fetching near bands"));
+        }
     }
 
-    private HBox buildRoomsHBox() {
-        HBox roomsHBox = new HBox();
-        roomsHBox.setAlignment(Pos.CENTER_LEFT);
+    public void buildMusiciansAroundYou(User user, VBox vBox) {
+        Label musiciansLabel = new Label("Musicians around you");
+        musiciansLabel.setStyle(Style.MID_LABEL);
+        vBox.getChildren().add(musiciansLabel);
 
-        Label noRoomsLabel = new Label("Access position to show nearest Rooms");
-        noRoomsLabel.setStyle(Style.LOW_LABEL);
-        roomsHBox.getChildren().add(noRoomsLabel);
-        return roomsHBox;
+        this.soloResultBeanListView.setStyle(STYLE);
+        try {
+            List<SoloResultBean> soloResultBeanList = homeController.searchHomeSolos(user.getCity());
+            ObservableList<SoloResultBean> soloResultBeanObservableList = FXCollections.observableArrayList(soloResultBeanList);
+            this.soloResultBeanListView.setItems(soloResultBeanObservableList);
+            vBox.getChildren().addAll(this.soloResultBeanListView);
+        } catch (RepositoryException repositoryException) {
+            logger.error(REPOSITORY_EXCEPTION, repositoryException.getMessage());
+            vBox.getChildren().add(new Label("Error fetching near musicians"));
+        }
     }
 
-    private HBox buildBandsHBox() {
-        HBox bandsHBox = new HBox();
-        bandsHBox.setAlignment(Pos.CENTER_LEFT);
-
-        Label noBandsLabel = new Label("Not enough data for the user");
-        noBandsLabel.setStyle(Style.LOW_LABEL);
-        bandsHBox.getChildren().add(noBandsLabel);
-        return bandsHBox;
-    }
-
-    private HBox buildMusiciansHBox() {
-        HBox musiciansHBox = new HBox();
-        musiciansHBox.setAlignment(Pos.CENTER_LEFT);
-
-        Label musiciansLabel = new Label("Access position to show Musicians around you");
-        musiciansLabel.setStyle(Style.LOW_LABEL);
-        musiciansHBox.getChildren().add(musiciansLabel);
-        return musiciansHBox;
-    }
-
-    public BorderPane getHomeBorderPane() {
-        return homeBorderPane;
+    @Override
+    public VBox getContentVBox() {
+        return this.contentVBox;
     }
 }

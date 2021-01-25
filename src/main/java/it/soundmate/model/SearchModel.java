@@ -55,7 +55,7 @@ public class SearchModel {
     public List<SoloResultBean> searchSolos(String searchString, String[] advancedFilters)  {
         SearchSolo searchSolo;
         if (searchString.equals("")) {
-             searchSolo = new SearchSolo(null, this.connection, advancedFilters);
+             searchSolo = new SearchSolo("%", this.connection, advancedFilters);
         }
         else searchSolo = new SearchSolo(searchString, this.connection, advancedFilters);
         Thread searchThread = new Thread(searchSolo);

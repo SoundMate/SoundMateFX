@@ -10,7 +10,7 @@ import it.soundmate.bean.searchbeans.RoomRenterResultBean;
 import it.soundmate.constants.Style;
 import it.soundmate.controller.graphic.search.SearchResultsGraphicController;
 import it.soundmate.view.UIUtils;
-import it.soundmate.view.main.SearchView;
+import it.soundmate.view.main.SearchingView;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Orientation;
@@ -28,10 +28,10 @@ import org.slf4j.LoggerFactory;
 public class RenterResults extends ListView<RoomRenterResultBean> {
     private static final Logger logger = LoggerFactory.getLogger(RenterResults.class);
     private final SearchResultsGraphicController searchResultsGraphicController = new SearchResultsGraphicController();
-    private final SearchView searchView;
+    private final SearchingView searchingView;
 
-    public RenterResults(SearchView searchView) {
-        this.searchView = searchView;
+    public RenterResults(SearchingView searchingView) {
+        this.searchingView = searchingView;
         this.setCellFactory(param -> new RenterResult());
         this.setOrientation(Orientation.HORIZONTAL);
         this.setPrefHeight(150);

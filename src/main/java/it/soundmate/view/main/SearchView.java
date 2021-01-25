@@ -4,24 +4,20 @@ import it.soundmate.model.User;
 import it.soundmate.view.UIUtils;
 import it.soundmate.view.search.DefaultSearchView;
 import it.soundmate.view.search.MapSearchView;
-import it.soundmate.view.search.SoloSearchView;
 import javafx.geometry.Pos;
 import javafx.scene.layout.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 
-public class SearchView extends Pane {
+public class SearchView extends SearchingView {
 
     private static final Logger logger = LoggerFactory.getLogger(SearchView.class);
 
     private final BorderPane searchBorderPane;
     private final VBox contentVBox;
 
-    public BorderPane getSearchBorderPane() {
-        return searchBorderPane;
-    }
-
+    @Override
     public VBox getContentVBox() {
         return contentVBox;
     }
@@ -44,7 +40,5 @@ public class SearchView extends Pane {
         logger.info("Default Search Page set");
     }
 
-    public void setDetailViewSolo(SoloSearchView soloSearchView) {
-        this.contentVBox.getChildren().set(0, soloSearchView);
-    }
+
 }

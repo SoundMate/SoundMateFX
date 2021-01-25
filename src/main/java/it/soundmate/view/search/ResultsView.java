@@ -11,7 +11,7 @@ import it.soundmate.bean.searchbeans.RoomRenterResultBean;
 import it.soundmate.bean.searchbeans.SoloResultBean;
 import it.soundmate.bean.searchbeans.UserResultBean;
 import it.soundmate.exceptions.InputException;
-import it.soundmate.view.main.SearchView;
+import it.soundmate.view.main.SearchingView;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
@@ -29,7 +29,7 @@ public class ResultsView {
     private final RenterResults renterResults;
     private final BandResults bandResults;
 
-    public ResultsView(List<UserResultBean> userList, SearchView searchView, int searcherID) {
+    public ResultsView(List<UserResultBean> userList, SearchingView searchingView, int searcherID) {
         List<SoloResultBean> soloList = new ArrayList<>();
         List<RoomRenterResultBean> roomRenterResultBeanList = new ArrayList<>();
         List<BandResultBean> bandResultBeanList = new ArrayList<>();
@@ -52,9 +52,9 @@ public class ResultsView {
         ObservableList<SoloResultBean> soloObservableList = FXCollections.observableArrayList(soloList);
         ObservableList<RoomRenterResultBean> renterResultBeanObservableList = FXCollections.observableArrayList(roomRenterResultBeanList);
         ObservableList<BandResultBean> bandResultBeanObservableList = FXCollections.observableArrayList(bandResultBeanList);
-        this.soloResults = new SoloResults(searchView);
-        this.renterResults = new RenterResults(searchView);
-        this.bandResults = new BandResults(searchView);
+        this.soloResults = new SoloResults(searchingView);
+        this.renterResults = new RenterResults(searchingView);
+        this.bandResults = new BandResults(searchingView);
         this.soloResults.setItems(soloObservableList);
         this.bandResults.setItems(bandResultBeanObservableList);
         this.renterResults.setItems(renterResultBeanObservableList);

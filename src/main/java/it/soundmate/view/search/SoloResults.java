@@ -10,7 +10,7 @@ import it.soundmate.bean.searchbeans.SoloResultBean;
 import it.soundmate.constants.Style;
 import it.soundmate.controller.graphic.search.SearchResultsGraphicController;
 import it.soundmate.view.UIUtils;
-import it.soundmate.view.main.SearchView;
+import it.soundmate.view.main.SearchingView;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Orientation;
@@ -30,10 +30,10 @@ public class SoloResults extends ListView<SoloResultBean> {
 
     private static final Logger logger = LoggerFactory.getLogger(SoloResults.class);
     private final SearchResultsGraphicController searchResultsGraphicController = new SearchResultsGraphicController();
-    private final SearchView searchView;
+    private final SearchingView searchingView;
 
-    public SoloResults(SearchView searchView) {
-        this.searchView = searchView;
+    public SoloResults(SearchingView searchingView) {
+        this.searchingView = searchingView;
         this.setCellFactory(param -> new SoloResult());
         this.setOrientation(Orientation.HORIZONTAL);
         this.setPrefHeight(150);
@@ -88,7 +88,7 @@ public class SoloResults extends ListView<SoloResultBean> {
             @Override
             public void handle(ActionEvent event) {
                 logger.info("Item selected {} {}", solo.getFirstName(), solo.getLastName());
-                searchResultsGraphicController.navigateToSoloResult(solo, searchView);
+                searchResultsGraphicController.navigateToSoloResult(solo, searchingView);
             }
         }
     }
