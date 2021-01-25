@@ -1,6 +1,5 @@
 package it.soundmate.view.uicomponents;
 
-import it.soundmate.model.Genre;
 import javafx.scene.image.Image;
 
 import java.util.Arrays;

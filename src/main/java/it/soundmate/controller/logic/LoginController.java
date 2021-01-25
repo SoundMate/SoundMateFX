@@ -12,6 +12,7 @@ import it.soundmate.database.dao.BandDao;
 import it.soundmate.database.dao.RoomRenterDao;
 import it.soundmate.database.dao.SoloDao;
 import it.soundmate.database.dao.UserDao;
+import it.soundmate.database.dbexceptions.RepositoryException;
 import it.soundmate.database.dbexceptions.UserNotFoundException;
 import it.soundmate.model.Band;
 import it.soundmate.model.RoomRenter;
@@ -33,7 +34,7 @@ public class LoginController {
         this.loginBean = loginBean;
     }
 
-    public User login() throws SQLException {
+    public User login() {
         if (checkFields()) {
             return null;
         } else {
@@ -62,17 +63,23 @@ public class LoginController {
         }
     }
 
-    public Solo getFullSolo(int id) throws SQLException {
+    public Solo getFullSolo(int id) {
         SoloDao soloDao = new SoloDao(userDao);
-        Solo soloUser = soloDao.getSoloByID(id);
-        soloUser.setFavGenres(soloDao.getGenres(id));
-        soloUser.setInstruments(soloDao.getInstruments(id));
-        return soloUser;
+        try {
+            Solo soloUser = soloDao.getSoloByID(id);
+            soloUser.setFavGenres(soloDao.getGenres(id));
+            soloUser.setInstruments(soloDao.getInstruments(id));
+            return soloUser;
+        } catch (RepositoryException repositoryException) {
+            throw new RepositoryException(repositoryException.getMessage());
+        }
     }
 
     public Band getFullBand(int id){
         BandDao bandDao = new BandDao(userDao);
-        return bandDao.getBandByID(id);
+        Band band = bandDao.getBandByID(id);
+        band.setGenres(bandDao.getGenres(id));
+        return band;
     }
 
     public RoomRenter getFullRenter(int id){

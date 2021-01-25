@@ -30,7 +30,7 @@ public class SearchRenter implements SearchEngine<RoomRenterResultBean>, Runnabl
     }
 
     @Override
-    public List<RoomRenterResultBean> searchByNameAndCity(String name, String city) {
+    public List<RoomRenterResultBean> search(String name, String city) {
         String sql = "SELECT users.id, email, encoded_profile_img, name, city FROM users JOIN room_renter rr on users.id = rr.id JOIN registered_users ru on users.id = ru.id WHERE LOWER(name) LIKE LOWER(?) AND LOWER(city) LIKE LOWER(?)";
         List<RoomRenterResultBean> roomRenterResultBeanList = new ArrayList<>();
         try (PreparedStatement preparedStatement = this.connection.prepareStatement(sql)) {
@@ -54,7 +54,7 @@ public class SearchRenter implements SearchEngine<RoomRenterResultBean>, Runnabl
 
     @Override
     public void run() {
-        this.results.addAll(this.searchByNameAndCity(this.searchString,this.city));
+        this.results.addAll(this.search(this.searchString,this.city));
     }
 
     public List<RoomRenterResultBean> getResults() {

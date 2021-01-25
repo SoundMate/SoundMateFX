@@ -20,5 +20,5 @@ public interface SearchEngine<T> {
         else preparedStatement.setString(2, city+'%');
     }
 
-    List<T> searchByNameAndCity(String name, String city);
+    List<T> search(String name, String city);
 }

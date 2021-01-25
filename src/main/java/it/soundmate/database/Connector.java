@@ -4,7 +4,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -79,10 +78,6 @@ public class Connector {
         return password;
     }
 }
-
-
-
-//.forEach(s -> {if (s == null) throw new NoSuchElementException();});
 
 
 

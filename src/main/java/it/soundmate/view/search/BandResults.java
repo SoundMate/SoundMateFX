@@ -88,7 +88,7 @@ public class BandResults extends ListView<BandResultBean> {
             @Override
             public void handle(ActionEvent event) {
                 logger.info("Item selected {}", band.getBandName());
-                //Navigate to renter result
+                //Navigate to band result
             }
         }
     }

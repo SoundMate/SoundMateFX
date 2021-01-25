@@ -1,17 +1,21 @@
 package it.soundmate.database.dao;
 
 import it.soundmate.bean.registerbeans.RegisterBandBean;
+import it.soundmate.bean.registerbeans.RegisterBean;
 import it.soundmate.database.Connector;
 import it.soundmate.database.dbexceptions.DuplicatedEmailException;
 import it.soundmate.database.dbexceptions.RepositoryException;
 import it.soundmate.exceptions.UpdateException;
 import it.soundmate.model.Band;
+import it.soundmate.model.Genre;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.sql.*;
+import java.util.ArrayList;
+import java.util.List;
 
-public class BandDao {
+public class BandDao implements Dao<Band>{
 
 
     private static final String ACC_BANNED_ERR = "\t ***** THIS ACCOUNT HAS BEEN BANNED *****";
@@ -74,6 +78,7 @@ public class BandDao {
         String sql = "insert into played_genres (id) values (?)";
         try (PreparedStatement preparedStatement = this.connector.getConnection().prepareStatement(sql)) {
             preparedStatement.setInt(1, userID);
+            preparedStatement.executeUpdate();
         } catch (SQLException sqlException) {
             sqlException.printStackTrace();
         }
@@ -107,6 +112,15 @@ public class BandDao {
         }return bandUser;
     }
 
+    public List<Genre> getGenres(int id) {
+        String sql = "SELECT genre FROM played_genres WHERE id = ?";
+        List<Genre> genres = new ArrayList<>();
+        try (PreparedStatement preparedStatement = connector.getConnection().prepareStatement(sql)){
+            return userDao.getGenreList(id, genres, preparedStatement);
+        } catch (SQLException ex){
+            throw new RepositoryException("Error fetching genres for band, SQL Exception: "+ex.getMessage(), ex);
+        }
+    }
 
     public void updateName(String name, Band band) {
         String sql = "UPDATE band SET band_name = ? WHERE id = ?";
@@ -119,5 +133,44 @@ public class BandDao {
         } catch (SQLException sqlException) {
             throw new UpdateException("Error updating name, SQLException: "+sqlException.getMessage());
         }
+    }
+
+    public boolean updateGenre(Band band, Genre genre) {
+        String sql = "UPDATE played_genres SET genre = array_append(genre, ?::text) WHERE id = ?";
+        try (PreparedStatement preparedStatement = connector.getConnection().prepareStatement(sql)){
+            preparedStatement.setString(1, genre.name());
+            preparedStatement.setInt(2, band.getId());
+            boolean result = preparedStatement.executeUpdate() == 1;
+            if (result) band.addGenre(genre);
+            return result;
+        } catch (SQLException ex){
+            throw new RepositoryException("Error inserting genre, SQL Exception: "+ex.getMessage(), ex);
+        }
+    }
+
+    @Override
+    public int register(RegisterBean registerBean) {
+        try {
+            int id = this.registerBand((RegisterBandBean) registerBean);
+            this.createGenreEntry(id);
+            return id;
+        } catch (RepositoryException repositoryException) {
+            throw new RepositoryException(repositoryException.getMessage());
+        }
+    }
+
+    @Override
+    public int update(Band band) {
+        return 0;
+    }
+
+    @Override
+    public int delete(Band band) {
+        return 0;
+    }
+
+    @Override
+    public Band get(int id) {
+        return null;
     }
 }

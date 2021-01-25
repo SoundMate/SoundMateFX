@@ -8,7 +8,9 @@ package it.soundmate.view.profiles.band;
 
 import it.soundmate.constants.Style;
 import it.soundmate.controller.graphic.profiles.BandProfileGraphicController;
+import it.soundmate.exceptions.InputException;
 import it.soundmate.model.Band;
+import it.soundmate.model.Genre;
 import it.soundmate.view.UIUtils;
 import it.soundmate.view.main.ProfileView;
 import javafx.event.ActionEvent;
@@ -34,6 +36,7 @@ public class BandProfileView extends VBox {
 
     //UI
     private final Rectangle coverImg = new Rectangle();
+    private HBox genresList = new HBox();
 
     //Buttons
     private final Button addCoverImgBtn = UIUtils.createStyledButton("Add cover image", new AddImageAction());
@@ -88,10 +91,13 @@ public class BandProfileView extends VBox {
 
         HBox[] hBoxes = this.profileView.buildProfileSection("Genres", "Add genres", editProfileBtn);
         HBox mainHBox = hBoxes[0];
-        HBox genresHBox = hBoxes[1];
-        if (band.getGenres() == null) {
-            genresHBox.getChildren().remove(0);
-            genresHBox.getChildren().add(addGenresBtn);
+        this.genresList = hBoxes[1];
+        this.genresList.getChildren().remove(0);
+        this.genresList.getChildren().add(addGenresBtn);
+        for (Genre genre : band.getGenres()) {
+            Label genreLabel = new Label(genre.name());
+            genreLabel.setStyle(Style.FAV_GENRE_LABEL);
+            this.genresList.getChildren().add(genreLabel);
         }
         return mainHBox;
     }
@@ -116,6 +122,18 @@ public class BandProfileView extends VBox {
         @Override
         public void handle(ActionEvent event) {
             logger.info("Add genre click");
+            try {
+                Genre genre = bandProfileGraphicController.addGenre(band);
+                updateGenreUI(genre);
+            } catch (InputException inputException) {
+                logger.error("Input Exception: {}", inputException.getMessage());
+            }
+        }
+
+        private void updateGenreUI(Genre genre) {
+            Label genreLabel = new Label(genre.name());
+            genreLabel.setStyle(Style.FAV_GENRE_LABEL);
+            genresList.getChildren().add(genreLabel);
         }
     }
 

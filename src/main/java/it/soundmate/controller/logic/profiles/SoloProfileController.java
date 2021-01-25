@@ -1,12 +1,11 @@
 /*
  * Copyright (c) 2021.
- * Created by Lorenzo Pantano on 12/01/21, 15:22
- * Last edited: 11/01/21, 20:53
+ * Created by Lorenzo Pantano on 25/01/21, 00:24
+ * Last edited: 24/01/21, 14:06
  */
 
-package it.soundmate.controller.logic;
+package it.soundmate.controller.logic.profiles;
 
-import it.soundmate.controller.logic.profiles.EditController;
 import it.soundmate.database.dao.SoloDao;
 import it.soundmate.database.dao.UserDao;
 import it.soundmate.exceptions.InputException;

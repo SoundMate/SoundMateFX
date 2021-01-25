@@ -7,7 +7,6 @@
 package it.soundmate.database.searchengine;
 
 import it.soundmate.bean.searchbeans.SoloResultBean;
-import it.soundmate.model.Solo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -35,11 +34,6 @@ public class SearchSolo implements SearchEngine<SoloResultBean>, Runnable {
         this.city = advancedFilters[2];
     }
 
-    @Override
-    public List<SoloResultBean> searchByNameAndCity(String name, String city) {
-        return null;
-    }
-
     /**
      * To be implemented better
      * Use a get Method from the soloDao to get all the Solo info
@@ -48,6 +42,7 @@ public class SearchSolo implements SearchEngine<SoloResultBean>, Runnable {
      * @param name: searchString to be searched
      * @return List of SoloResultBean found
      */
+    @Override
     public List<SoloResultBean> search(String name, String city) {
         String sql = "SELECT users.id, email, encoded_profile_img, first_name, last_name, city, genre, instruments FROM users JOIN solo s on users.id = s.id JOIN registered_users ru on users.id = ru.id LEFT JOIN fav_genres fg on s.id = fg.id JOIN played_instruments pi on s.id = pi.id WHERE LOWER(s.first_name) LIKE LOWER(?) AND LOWER(city) LIKE LOWER(?)";
         logger.info("Searching solos with name {} city {}", name, city);

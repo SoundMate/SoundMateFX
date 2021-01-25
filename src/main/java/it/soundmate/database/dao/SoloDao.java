@@ -33,7 +33,6 @@ public class SoloDao implements Dao<Solo>{
     private final Connector connector = Connector.getInstance();
     private static final String ACC_BANNED_ERR = "\t ***** THIS ACCOUNT HAS BEEN BANNED *****";
     private static final String EMAIL_EXISTS_ERR = "\t ***** THIS EMAIL ALREADY EXISTS *****";
-    private static final String ERR_INSERT = "Error inserting user";
     private static final String ERR_MESSAGE = "Error, check stack trace for details";
 
     public SoloDao(UserDao userDao) {
@@ -186,22 +185,9 @@ public class SoloDao implements Dao<Solo>{
 
     public List<Genre> getGenres(int id) {
         String sql = "SELECT genre FROM fav_genres WHERE id = ?";
-        List<String> genreList;
         List<Genre> genres = new ArrayList<>();
         try (PreparedStatement preparedStatement = connector.getConnection().prepareStatement(sql)){
-            preparedStatement.setInt(1, id);
-            ResultSet resultSet = preparedStatement.executeQuery();
-            if(resultSet.next()){
-                if (resultSet.getArray("genre") == null) return new ArrayList<>();
-                else {
-                    String [] temp = (String []) resultSet.getArray("genre").getArray();
-                    genreList = Arrays.asList(temp);
-                    for (String genre : genreList) {
-                        genres.add(Genre.returnGenre(genre));
-                    }
-                }
-            }
-            return genres;
+            return userDao.getGenreList(id, genres, preparedStatement);
         } catch (SQLException ex){
             throw new RepositoryException(ERR_MESSAGE, ex);
         }

@@ -7,8 +7,8 @@
 package it.soundmate.database.searchengine;
 
 import it.soundmate.bean.searchbeans.BandResultBean;
-import it.soundmate.database.Connector;
-import it.soundmate.database.dbexceptions.RepositoryException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -17,9 +17,10 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Objects;
 
 public class SearchBand implements SearchEngine<BandResultBean>, Runnable {
+
+    private static final Logger logger = LoggerFactory.getLogger(SearchBand.class);
 
     private final String searchString;
     private final Connection connection;
@@ -28,14 +29,16 @@ public class SearchBand implements SearchEngine<BandResultBean>, Runnable {
     private final List<BandResultBean> results = new ArrayList<>();
 
     public SearchBand(String searchString, Connection connection, String genre, String city){
-        this.searchString = searchString;
+        if (searchString == null) this.searchString = "";
+        else this.searchString = searchString;
         this.connection = connection;
         this.genre = genre;
         this.city = city;
     }
 
     @Override
-    public List<BandResultBean> searchByNameAndCity(String name, String city) {
+    public List<BandResultBean> search(String name, String city) {
+        logger.info("Searching with name: {}, city: {}, genre: {}",name, city, genre);
         String sql = "SELECT users.id, email, encoded_profile_img, band_name, city FROM users JOIN band ON users.id = band.id JOIN registered_users ru on users.id = ru.id WHERE LOWER(band_name) LIKE LOWER(?) AND LOWER(city) LIKE LOWER(?)";
         ResultSet resultSet;
         List<BandResultBean> bandResultBeanList = new ArrayList<>();
@@ -57,50 +60,20 @@ public class SearchBand implements SearchEngine<BandResultBean>, Runnable {
         return bandResultBeanList;
     }
 
-    /*
-    public List<BandResultBean> searchWithGenre(String name, String genre, String city) {
-        String sql = "SELECT users.id, email, encoded_profile_img, band_name, city FROM users JOIN band ON users.id = band.id JOIN registered_users ru on users.id = ru.id LEFT JOIN played_genres pg on band.id = pg.id WHERE LOWER(band_name) LIKE LOWER(?) AND LOWER(city) LIKE LOWER(?) AND LOWER(genre) LIKE LOWER(?)";
+    private List<BandResultBean> searchWithGenre(String name, String city, String genre) {
+        logger.info("Searching with name: {}, city: {}, genre: {}",name, city, genre);
+        String sql = "SELECT users.id, email, encoded_profile_img, band_name, city, genre FROM users JOIN band ON users.id = band.id JOIN registered_users ru on users.id = ru.id JOIN played_genres pg on band.id = pg.id WHERE LOWER(band_name) LIKE LOWER(?) AND LOWER(city) LIKE LOWER(?) AND (?) LIKE ANY(genre)";
         ResultSet resultSet;
         List<BandResultBean> bandResultBeanList = new ArrayList<>();
         try (PreparedStatement preparedStatement = this.connection.prepareStatement(sql)) {
-            prepareStatementWithGenre(name, city, genre, preparedStatement);
+            preparedStatement.setString(1, name+"%");
+            preparedStatement.setString(2, city+"%");
+            preparedStatement.setString(3, genre);
             resultSet = preparedStatement.executeQuery();
-            buildBandResults(bandResultBeanList, resultSet);
-        } catch (SQLException sqlException) {
-            sqlException.printStackTrace();
-        }
-        return bandResultBeanList;
-    }
-
-     */
-
-
-    public List<BandResultBean> advancedSearchWithName(String name, String genre, String city) {
-        String sql = "SELECT users.id, email, encoded_profile_img, genre, band_name, city FROM users join registered_users ru on ru.id = users.id JOIN band b on users.id = b.id JOIN played_genres pg on b.id = pg.id WHERE (?)= ANY(genre) AND LOWER(b.band_name) LIKE LOWER(?) AND LOWER(city) LIKE (?)";
-        List<BandResultBean> bandResultBeanList = new ArrayList<>();
-        try (PreparedStatement preparedStatement = Connector.getInstance().getConnection().prepareStatement(sql)) {
-            preparedStatement.setString(1, genre);
-            preparedStatement.setString(2, name+"%");
-            preparedStatement.setString(3, Objects.requireNonNullElse(city, "%"));
-            ResultSet resultSet = preparedStatement.executeQuery();
             return buildBandResults(bandResultBeanList, resultSet);
         } catch (SQLException sqlException) {
             sqlException.printStackTrace();
-            throw new RepositoryException("Error advanced searching solo in DB");
-        }
-    }
-
-    public List<BandResultBean> advancedSearchWithNoName(String genre, String city) {
-        String sql = "SELECT users.id, email, encoded_profile_img, genre, band_name, city FROM users join registered_users ru on ru.id = users.id JOIN band b on users.id = b.id JOIN played_genres pg on b.id = pg.id WHERE (?)= ANY(genre) AND LOWER(city) LIKE (?)";
-        List<BandResultBean> bandResultBeanList = new ArrayList<>();
-        try (PreparedStatement preparedStatement = Connector.getInstance().getConnection().prepareStatement(sql)) {
-            preparedStatement.setString(1, genre);
-            preparedStatement.setString(2, city);
-            ResultSet resultSet = preparedStatement.executeQuery();
-            return buildBandResults(bandResultBeanList, resultSet);
-        } catch (SQLException sqlException) {
-            sqlException.printStackTrace();
-            throw new RepositoryException("Error advanced searching solo in DB");
+            return new ArrayList<>();
         }
     }
 
@@ -114,24 +87,19 @@ public class SearchBand implements SearchEngine<BandResultBean>, Runnable {
             List<String> genreList;
             String [] temp = (String []) resultSet.getArray("genre").getArray();
             genreList = Arrays.asList(temp);
-            BandResultBean bandResultBean = new BandResultBean(id, email, encodedImg, bandCity, bandName);
+            BandResultBean bandResultBean = new BandResultBean(id, email, encodedImg, bandName, bandCity);
             bandResultBean.setGenres(genreList);
             bandResultBeanList.add(bandResultBean);
+            logger.info("Building result");
         }
         return bandResultBeanList;
     }
 
-    /*
-    @Override
-    public void run() {
-       if (this.genre == null || "NONE".equals(this.genre)) this.results.addAll(this.searchByNameAndCity(this.searchString, this.city));
-       else this.results.addAll(this.searchWithGenre(this.searchString, this.genre, this.city));
-    }
-     */
 
     @Override
     public void run() {
-
+       if (this.genre == null || "NONE".equals(this.genre)) this.results.addAll(this.search(this.searchString, this.city));
+       else this.results.addAll(this.searchWithGenre(this.searchString, this.city, this.genre));
     }
 
     public List<BandResultBean> getResults() {

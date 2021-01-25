@@ -22,6 +22,9 @@ import java.io.IOException;
 import java.io.UncheckedIOException;
 import java.nio.file.Path;
 import java.sql.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 public class UserDao implements Dao<User> {
 
@@ -61,23 +64,18 @@ public class UserDao implements Dao<User> {
     }
 
     public LoggedBean login(LoginBean loginBean) throws LoginException {
-
         String sql = "SELECT id, email, password, user_type FROM registered_users WHERE email = ? AND password = ?";
         ResultSet resultSet;
-
         try(Connection conn = connector.getConnection();
             PreparedStatement preparedStatement = conn.prepareStatement(sql)) {
             preparedStatement.setString(1, loginBean.getEmail());
             preparedStatement.setString(2, loginBean.getPassword());
             resultSet = preparedStatement.executeQuery();
-
             while (resultSet.next()){
                 int id = resultSet.getInt("id");
                 String mail = resultSet.getString(EMAIL);
                 String psw = resultSet.getString(PASSWORD);
                 String userType = resultSet.getString("user_type");
-
-
                 if (mail.equals(loginBean.getEmail()) && psw.equals(loginBean.getPassword())){
                     LoggedBean loggedBean = new LoggedBean(userType, id);
                     loggedBean.setQueryResult(true);
@@ -202,7 +200,22 @@ public class UserDao implements Dao<User> {
         }
     }
 
-
+    public List<Genre> getGenreList(int id, List<Genre> genres, PreparedStatement preparedStatement) throws SQLException {
+        List<String> genreList;
+        preparedStatement.setInt(1, id);
+        ResultSet resultSet = preparedStatement.executeQuery();
+        if(resultSet.next()){
+            if (resultSet.getArray("genre") == null) return new ArrayList<>();
+            else {
+                String [] temp = (String []) resultSet.getArray("genre").getArray();
+                genreList = Arrays.asList(temp);
+                for (String genre : genreList) {
+                    genres.add(Genre.returnGenre(genre));
+                }
+            }
+        }
+        return genres;
+    }
 
     public void updateEmail(User user, String email) {
         String query = "update registered_users set email = ? where id = ?";

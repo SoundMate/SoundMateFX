@@ -6,7 +6,7 @@
 
 package it.soundmate.controller.graphic.profiles;
 
-import it.soundmate.controller.logic.SoloProfileController;
+import it.soundmate.controller.logic.profiles.SoloProfileController;
 import it.soundmate.exceptions.InputException;
 import it.soundmate.model.Genre;
 import it.soundmate.model.Solo;

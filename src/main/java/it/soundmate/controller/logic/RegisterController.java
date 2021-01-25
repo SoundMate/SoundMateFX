@@ -50,7 +50,7 @@ public class RegisterController {
     public Band registerBand(RegisterBandBean registerBandBean) {
         try {
             BandDao bandDao = new BandDao(userDao);
-            int id = bandDao.registerBand(registerBandBean);
+            int id = bandDao.register(registerBandBean);
             LoginBean loginBean = new LoginBean(registerBandBean.getEmail(), registerBandBean.getPassword());
             LoginController loginController = new LoginController(loginBean);
             return loginController.getFullBand(id);
