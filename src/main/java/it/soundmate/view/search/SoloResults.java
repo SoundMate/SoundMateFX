@@ -10,6 +10,7 @@ import it.soundmate.bean.searchbeans.SoloResultBean;
 import it.soundmate.constants.Style;
 import it.soundmate.controller.graphic.search.SearchResultsGraphicController;
 import it.soundmate.view.UIUtils;
+import it.soundmate.view.main.SearchView;
 import it.soundmate.view.main.SearchingView;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
@@ -88,7 +89,7 @@ public class SoloResults extends ListView<SoloResultBean> {
             @Override
             public void handle(ActionEvent event) {
                 logger.info("Item selected {} {}", solo.getFirstName(), solo.getLastName());
-                searchResultsGraphicController.navigateToSoloResult(solo, searchingView);
+                searchResultsGraphicController.navigateToSoloResult(solo, searchingView, searchingView instanceof SearchView);
             }
         }
     }

@@ -14,7 +14,11 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.VBox;
 
 public class SoloSearchView extends BorderPane {
-    public SoloSearchView(SoloResultBean soloResultBean) {
+
+    private final boolean comingFromSearch;
+
+    public SoloSearchView(SoloResultBean soloResultBean, boolean comingFromSearch) {
+        this.comingFromSearch = comingFromSearch;
         UIUtils.setBackgroundPane("#232323", this);
         this.setCenter(buildResultView(soloResultBean));
     }

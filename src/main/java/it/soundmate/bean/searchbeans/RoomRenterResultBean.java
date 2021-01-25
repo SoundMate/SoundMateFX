@@ -6,11 +6,16 @@
 
 package it.soundmate.bean.searchbeans;
 
+import it.soundmate.model.Room;
 import it.soundmate.model.UserType;
+
+import java.util.List;
 
 public class RoomRenterResultBean extends UserResultBean {
 
     private String name;
+    private String address;
+    private List<Room> rooms;
 
     public RoomRenterResultBean(int id, String email, String encodedImg, String name, String city) {
         super(id, email, encodedImg, city, UserType.ROOM_RENTER);
@@ -23,5 +28,21 @@ public class RoomRenterResultBean extends UserResultBean {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public String getAddress() {
+        return address;
+    }
+
+    public void setAddress(String address) {
+        this.address = address;
+    }
+
+    public List<Room> getRooms() {
+        return rooms;
+    }
+
+    public void setRooms(List<Room> rooms) {
+        this.rooms = rooms;
     }
 }

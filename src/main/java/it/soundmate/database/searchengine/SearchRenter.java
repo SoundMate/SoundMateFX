@@ -31,7 +31,7 @@ public class SearchRenter implements SearchEngine<RoomRenterResultBean>, Runnabl
 
     @Override
     public List<RoomRenterResultBean> search(String name, String city) {
-        String sql = "SELECT users.id, email, encoded_profile_img, name, city FROM users JOIN room_renter rr on users.id = rr.id JOIN registered_users ru on users.id = ru.id WHERE LOWER(name) LIKE LOWER(?) AND LOWER(city) LIKE LOWER(?)";
+        String sql = "SELECT users.id, email, encoded_profile_img, name, city, address FROM users JOIN room_renter rr on users.id = rr.id JOIN registered_users ru on users.id = ru.id WHERE LOWER(name) LIKE LOWER(?) AND LOWER(city) LIKE LOWER(?)";
         List<RoomRenterResultBean> roomRenterResultBeanList = new ArrayList<>();
         try (PreparedStatement preparedStatement = this.connection.prepareStatement(sql)) {
             prepareStatementGeneric(name, city, preparedStatement);
@@ -42,7 +42,9 @@ public class SearchRenter implements SearchEngine<RoomRenterResultBean>, Runnabl
                 String encodedImg = resultSet.getString("encoded_profile_img");
                 String renterName = resultSet.getString("name");
                 String renterCity = resultSet.getString("city");
+                String address = resultSet.getString("address");
                 RoomRenterResultBean resultBean = new RoomRenterResultBean(id, email, encodedImg, renterName, renterCity);
+                resultBean.setAddress(address);
                 roomRenterResultBeanList.add(resultBean);
             }
         } catch (SQLException sqlException) {

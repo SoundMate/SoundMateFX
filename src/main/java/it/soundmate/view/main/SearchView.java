@@ -23,6 +23,7 @@ public class SearchView extends SearchingView {
     }
 
     public SearchView(User searcher){
+        super(searcher);
         this.contentVBox = new VBox();
         this.contentVBox.setAlignment(Pos.TOP_CENTER);
         UIUtils.setBackgroundPane("#232323", this.contentVBox);

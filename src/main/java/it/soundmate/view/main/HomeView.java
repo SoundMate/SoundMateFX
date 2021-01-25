@@ -35,13 +35,16 @@ public class HomeView extends SearchingView {
     private final RenterResults roomRenterResultBeanListView = new RenterResults(this);
 
     public HomeView(User user) {
+        super(user);
         this.homeController = new HomeController(user);
-        this.contentVBox = buildContentVBox(user);
+        this.contentVBox = new VBox();
+        this.contentVBox.setPrefHeight(USE_COMPUTED_SIZE);
+        UIUtils.setBackgroundPane("#232323", this.contentVBox);
+        this.contentVBox.getChildren().add(buildContentVBox(user));
     }
 
     public VBox buildContentVBox(User user) {
         VBox vBox = new VBox();
-        UIUtils.setBackgroundPane("#232323", vBox);
         vBox.setPadding(new Insets(25));
         vBox.setSpacing(10);
         vBox.setPrefHeight(USE_COMPUTED_SIZE);

@@ -9,7 +9,9 @@ package it.soundmate.view.search;
 import it.soundmate.bean.searchbeans.RoomRenterResultBean;
 import it.soundmate.constants.Style;
 import it.soundmate.controller.graphic.search.SearchResultsGraphicController;
+import it.soundmate.database.dbexceptions.RepositoryException;
 import it.soundmate.view.UIUtils;
+import it.soundmate.view.main.SearchView;
 import it.soundmate.view.main.SearchingView;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
@@ -86,7 +88,12 @@ public class RenterResults extends ListView<RoomRenterResultBean> {
             @Override
             public void handle(ActionEvent event) {
                 logger.info("Item selected {}", renter.getName());
-                //Navigate to renter result
+                try {
+                    renter.setRooms(searchResultsGraphicController.fetchRenterData(renter));
+                    searchResultsGraphicController.navigateToRenterResult(renter, searchingView, searchingView instanceof SearchView);
+                } catch (RepositoryException repositoryException) {
+                    logger.error("Repository Exception: {}", repositoryException.getMessage());
+                }
             }
         }
     }
