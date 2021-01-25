@@ -24,7 +24,6 @@ import it.soundmate.model.Solo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.sql.SQLException;
 
 public class RegisterController {
 
@@ -41,8 +40,8 @@ public class RegisterController {
         } catch (InputException inputException) {
             log.error("Input Exception: {}", inputException.getMessage());
             return null;
-        } catch (SQLException sqlException) {
-            log.error("SQL Exception: {}", sqlException.getMessage());
+        } catch (RepositoryException sqlException) {
+            log.error("Repository Exception: {}", sqlException.getMessage());
             return null;
         }
     }

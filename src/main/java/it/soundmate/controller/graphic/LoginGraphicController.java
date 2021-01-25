@@ -17,7 +17,6 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 
-import java.sql.SQLException;
 
 /**
  * Login Graphic Controller
@@ -58,7 +57,7 @@ public class LoginGraphicController {
             return loginController.login();
         } catch (RepositoryException repositoryException) {
             throw new RepositoryException(repositoryException.getMessage());
-        } catch (UserNotFoundException | SQLException userNotFoundException) {
+        } catch (UserNotFoundException userNotFoundException) {
             throw new UserNotFoundException(userNotFoundException.getMessage());
         }
     }

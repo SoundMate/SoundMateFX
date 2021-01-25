@@ -22,7 +22,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.security.auth.login.LoginException;
-import java.sql.SQLException;
 
 public class LoginController {
 
@@ -38,7 +37,7 @@ public class LoginController {
         if (checkFields()) {
             return null;
         } else {
-            LoggedBean loggedBean = null;
+            LoggedBean loggedBean;
             try {
                 loggedBean = this.userDao.login(this.loginBean);
                 switch (loggedBean.getUserType()) {
