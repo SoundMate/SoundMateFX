@@ -10,6 +10,7 @@ import it.soundmate.bean.searchbeans.RoomRenterResultBean;
 import it.soundmate.constants.Style;
 import it.soundmate.model.Room;
 import it.soundmate.view.UIUtils;
+import it.soundmate.view.main.SearchView;
 import it.soundmate.view.main.SearchingView;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -20,6 +21,7 @@ import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.ImagePattern;
 import javafx.scene.shape.Rectangle;
@@ -27,13 +29,15 @@ import javafx.scene.shape.Rectangle;
 import java.util.ArrayList;
 import java.util.List;
 
-public class RenterSearchView extends VBox {
+public class RenterSearchView extends Pane {
 
     private final RoomRenterResultBean roomRenterResultBean;
     private final boolean comingFromSearch;
     private final SearchingView searchingView;
 
     //UI
+    private VBox mainVBox = new VBox();  //Questo vbox è quello da cambiare per cambiare pagina
+    private final VBox contentVBox = new VBox();
     private final VBox infoVBox = new VBox();
     private final HBox infoHBox = new HBox();
     private final RoomResults roomResults;
@@ -53,7 +57,7 @@ public class RenterSearchView extends VBox {
     }
 
     private void buildVBox() {
-        this.setAlignment(Pos.CENTER);
+        this.contentVBox.setAlignment(Pos.CENTER);
         //Profile picture
         Rectangle rectangle = new Rectangle();
         rectangle.setWidth(600);
@@ -61,27 +65,28 @@ public class RenterSearchView extends VBox {
         if (roomRenterResultBean.getProfileImg() != null) {
             rectangle.setFill(new ImagePattern(roomRenterResultBean.getProfileImg()));
         }
-        this.getChildren().add(rectangle);
+        this.contentVBox.getChildren().add(rectangle);
         this.infoVBox.setPadding(new Insets(25));
         //User info
         buildInfobox();
         //Rooms
         buildRoomsHBox();
         UIUtils.addSizedRegion(this, 40, 40);
-        this.getChildren().add(this.backBtn);
+        this.contentVBox.getChildren().add(this.backBtn);
+        this.mainVBox.getChildren().add(this.contentVBox);
     }
 
     private void buildRoomsHBox() {
         Label rooms = new Label("Rooms");
         rooms.setPadding(new Insets(0, 0, 0, 25));
         rooms.setStyle(Style.MID_LABEL);
-        this.getChildren().add(rooms);
+        this.contentVBox.getChildren().add(rooms);
 
         roomResults.setStyle("-fx-background-color: #232323; -fx-border-color: #232323");
         List<Room> roomList = new ArrayList<>(roomRenterResultBean.getRooms());
         ObservableList<Room> roomObservableList = FXCollections.observableArrayList(roomList);
         roomResults.setItems(roomObservableList);
-        this.getChildren().add(roomResults);
+        this.contentVBox.getChildren().add(roomResults);
     }
 
     private void buildInfobox() {
@@ -95,14 +100,21 @@ public class RenterSearchView extends VBox {
         UIUtils.addRegion(null, this.infoHBox);
         this.infoHBox.getChildren().add(viewOnMapBtn);
         this.infoVBox.getChildren().add(this.infoHBox);
-        this.getChildren().add(this.infoVBox);
+        this.contentVBox.getChildren().add(this.infoVBox);
     }
 
+    public void setMapView() {
+        this.mainVBox.getChildren().set(0, new RenterMapView(roomRenterResultBean, searchingView, searchingView instanceof SearchView));
+    }
+
+    public VBox getMainVBox() {
+        return mainVBox;
+    }
 
     private class ViewOnMapAction implements EventHandler<ActionEvent> {
         @Override
         public void handle(ActionEvent event) {
-
+            setMapView();
         }
     }
 

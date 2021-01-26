@@ -40,7 +40,7 @@ public abstract class SearchingView extends Pane {
     }
 
     public void setDetailViewRenter(RenterSearchView renterSearchView) {
-        getContentVBox().getChildren().set(0, renterSearchView);
+        getContentVBox().getChildren().set(0, renterSearchView.getMainVBox());
     }
 
     public void backToSearchView(){
