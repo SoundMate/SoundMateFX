@@ -31,6 +31,9 @@ public class HomeController {
         filters[2] = city;
         List<SoloResultBean> results = searchModel.searchSolos("", filters);
         results.removeIf(soloResultBean -> soloResultBean.getId() == this.user.getId());
+        for (SoloResultBean soloResultBean: results) {
+            soloResultBean.setSearcher(this.user);
+        }
         return results;
     }
 
@@ -38,6 +41,9 @@ public class HomeController {
         List<BandResultBean> bandResultBeanList;
         bandResultBeanList = new ArrayList<>(searchModel.searchBands("", "NONE", city));
         bandResultBeanList.removeIf(soloResultBean -> soloResultBean.getId() == this.user.getId());
+        for (BandResultBean bandResultBean: bandResultBeanList) {
+            bandResultBean.setSearcher(this.user);
+        }
         return bandResultBeanList;
     }
 
@@ -45,6 +51,9 @@ public class HomeController {
         List<RoomRenterResultBean> roomRenterResultBeanList;
         roomRenterResultBeanList = new ArrayList<>(searchModel.searchRooms("", city));
         roomRenterResultBeanList.removeIf(roomRenterResultBean -> roomRenterResultBean.getId() == this.user.getId());
+        for (RoomRenterResultBean roomRenterResultBean: roomRenterResultBeanList) {
+            roomRenterResultBean.setSearcher(this.user);
+        }
         return roomRenterResultBeanList;
     }
 }

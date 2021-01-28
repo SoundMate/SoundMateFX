@@ -57,4 +57,5 @@ public abstract class SearchingView extends Pane {
     public void setDetailRoom(RoomSearchView roomSearchView) {
         getContentVBox().getChildren().set(0, roomSearchView);
     }
+
 }

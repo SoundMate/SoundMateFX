@@ -206,7 +206,7 @@ public class DefaultSearchView extends BorderPane {
                 resultsVBox.getChildren().add(loadingLabel);
                 DefaultSearchGraphicController searchGraphicController = new DefaultSearchGraphicController(filters, selectedGenre, selectedInstrument, cityFilter.getText());
                 try {
-                    List<UserResultBean> results = searchGraphicController.performSearch(searchString);
+                    List<UserResultBean> results = searchGraphicController.performSearch(searchString, searcher);
                     buildResultsScreen(results);
                 } catch (InputException inputException) {
                     logger.error("Input Exception: {}", inputException.getMessage());
@@ -218,7 +218,7 @@ public class DefaultSearchView extends BorderPane {
 
 
         private void buildResultsScreen(List<UserResultBean> results) {
-            ResultsView resultsView = new ResultsView(results, searchView, searcher.getId());
+            ResultsView resultsView = new ResultsView(results, searchView, searcher);
             resultsVBox.getChildren().clear();
 
             Label bandResultsLabel = new Label("Bands");

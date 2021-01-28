@@ -8,6 +8,7 @@ package it.soundmate.controller.logic;
 
 import it.soundmate.bean.searchbeans.UserResultBean;
 import it.soundmate.model.SearchModel;
+import it.soundmate.model.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import java.util.ArrayList;
@@ -22,7 +23,7 @@ public class SearchController {
         this.searchModel = new SearchModel();
     }
 
-    public List<UserResultBean> performSearch(String searchString, boolean[] filters, String[] advancedFilters) {
+    public List<UserResultBean> performSearch(String searchString, boolean[] filters, String[] advancedFilters, User user) {
         List<UserResultBean> results = new ArrayList<>();
         if ((filtersAllTrue(filters) || filtersAllFalse(filters))) {
             results.addAll(this.searchModel.searchByName(searchString, advancedFilters));
@@ -39,6 +40,9 @@ public class SearchController {
                 logger.info("Searching rooms...");
                 results.addAll(this.searchModel.searchRooms(searchString, advancedFilters[2]));
             }
+        }
+        for (UserResultBean resultBean : results) {
+            resultBean.setSearcher(user);
         }
         return results;
     }

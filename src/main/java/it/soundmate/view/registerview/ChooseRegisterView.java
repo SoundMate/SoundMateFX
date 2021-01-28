@@ -73,20 +73,14 @@ public class ChooseRegisterView extends Pane {
 
     private void buildIconsHBox(HBox iconsHBox) {
         Image backIcon = new Image("soundmate/icons/left-arrow-white.png");
-        Image infoIcon = new Image("soundmate/icons/050-info.png");
         ImageView back = new ImageView(backIcon);
-        ImageView info = new ImageView(infoIcon);
         back.setFitWidth(24);
         back.setFitHeight(24);
-        info.setFitHeight(24);
-        info.setFitWidth(24);
 
         back.setOnMouseClicked(new BackAction());
-        info.setOnMouseClicked(new InfoAction());
 
         iconsHBox.getChildren().add(back);
         UIUtils.addRegion(null, iconsHBox);
-        iconsHBox.getChildren().add(info);
     }
 
 
@@ -123,14 +117,6 @@ public class ChooseRegisterView extends Pane {
         public void handle(MouseEvent event) {
             logger.info("Back Pressed");
             chooseRegisterController.backToLoginView((Stage) borderPane.getScene().getWindow());
-        }
-    }
-
-    private class InfoAction implements EventHandler<MouseEvent> {
-        @Override
-        public void handle(MouseEvent event) {
-            logger.info("Info Clicked");
-            chooseRegisterController.navigateToInfoView((Stage) borderPane.getScene().getWindow());
         }
     }
 }

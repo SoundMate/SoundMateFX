@@ -45,15 +45,7 @@ public class SearchBand implements SearchEngine<BandResultBean>, Runnable {
         try (PreparedStatement preparedStatement = this.connection.prepareStatement(sql)) {
             prepareStatementGeneric(name, city, preparedStatement);
             resultSet = preparedStatement.executeQuery();
-            while (resultSet.next()) {
-                int id = resultSet.getInt("id");
-                String email = resultSet.getString("email");
-                String encodedImg = resultSet.getString("encoded_profile_img");
-                String bandName = resultSet.getString("band_name");
-                String bandCity = resultSet.getString("city");
-                BandResultBean resultBean = new BandResultBean(id, email, encodedImg, bandName, bandCity);
-                bandResultBeanList.add(resultBean);
-            }
+            return buildBandResults(bandResultBeanList, resultSet, false);
         } catch (SQLException sqlException) {
             sqlException.printStackTrace();
         }
@@ -70,25 +62,27 @@ public class SearchBand implements SearchEngine<BandResultBean>, Runnable {
             preparedStatement.setString(2, city+"%");
             preparedStatement.setString(3, genre);
             resultSet = preparedStatement.executeQuery();
-            return buildBandResults(bandResultBeanList, resultSet);
+            return buildBandResults(bandResultBeanList, resultSet, true);
         } catch (SQLException sqlException) {
             sqlException.printStackTrace();
             return new ArrayList<>();
         }
     }
 
-    private List<BandResultBean> buildBandResults(List<BandResultBean> bandResultBeanList, ResultSet resultSet) throws SQLException {
+    private List<BandResultBean> buildBandResults(List<BandResultBean> bandResultBeanList, ResultSet resultSet, boolean genre) throws SQLException {
         while (resultSet.next()) {
             int id = resultSet.getInt("id");
             String email = resultSet.getString("email");
             String encodedImg = resultSet.getString("encoded_profile_img");
             String bandName = resultSet.getString("band_name");
             String bandCity = resultSet.getString("city");
-            List<String> genreList;
-            String [] temp = (String []) resultSet.getArray("genre").getArray();
-            genreList = Arrays.asList(temp);
             BandResultBean bandResultBean = new BandResultBean(id, email, encodedImg, bandName, bandCity);
-            bandResultBean.setGenres(genreList);
+            if (genre) {
+                List<String> genreList;
+                String [] temp = (String []) resultSet.getArray("genre").getArray();
+                genreList = Arrays.asList(temp);
+                bandResultBean.setGenres(genreList);
+            }
             bandResultBeanList.add(bandResultBean);
             logger.info("Building result");
         }

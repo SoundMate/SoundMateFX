@@ -6,6 +6,7 @@
 
 package it.soundmate.bean.searchbeans;
 
+import it.soundmate.model.User;
 import it.soundmate.model.UserType;
 import it.soundmate.utils.Cache;
 import javafx.scene.image.Image;
@@ -20,7 +21,7 @@ public class UserResultBean {
     private final Image profileImg;
     private final UserType userType;
     private final String city;
-    private int searcherID;
+    private User searcher;
 
     public UserResultBean(int id, String email, String encodedImg, String city, UserType userType) {
         this.id = id;
@@ -55,11 +56,11 @@ public class UserResultBean {
         return city;
     }
 
-    public int getSearcherID() {
-        return searcherID;
+    public User getSearcher() {
+        return searcher;
     }
 
-    public void setSearcherID(int searcherID) {
-        this.searcherID = searcherID;
+    public void setSearcher(User searcher) {
+        this.searcher = searcher;
     }
 }

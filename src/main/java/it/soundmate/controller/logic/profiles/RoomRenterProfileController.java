@@ -11,8 +11,10 @@ import com.google.gson.*;
 import it.soundmate.bean.AddRoomBean;
 import it.soundmate.database.dao.RoomRenterDao;
 import it.soundmate.database.dao.UserDao;
+import it.soundmate.database.dbexceptions.RepositoryException;
 import it.soundmate.exceptions.InputException;
 import it.soundmate.exceptions.UpdateException;
+import it.soundmate.model.Booking;
 import it.soundmate.model.RoomRenter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -100,5 +102,13 @@ public class RoomRenterProfileController extends EditController {
         }
         stringBuilder.append(FILTER_RESULTS_URL);
         return stringBuilder.toString();
+    }
+
+    public void bookRoom(Booking booking) {
+        try {
+            roomRenterDao.bookRoom(booking);
+        } catch (RepositoryException repositoryException) {
+            throw new RepositoryException(repositoryException.getMessage());
+        }
     }
 }

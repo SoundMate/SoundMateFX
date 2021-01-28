@@ -7,6 +7,7 @@ import it.soundmate.database.dbexceptions.DBException;
 import it.soundmate.database.dbexceptions.DuplicatedEmailException;
 import it.soundmate.database.dbexceptions.RepositoryException;
 import it.soundmate.exceptions.UpdateException;
+import it.soundmate.model.Booking;
 import it.soundmate.model.Room;
 import it.soundmate.model.RoomRenter;
 import org.slf4j.Logger;
@@ -229,4 +230,17 @@ public class RoomRenterDao {
     }
 
 
+    public void bookRoom(Booking booking) {
+        String sql = "INSERT INTO booking (room_id, date, start_time, end_time, booker) VALUES (?, ?, ?, ?, ?)";
+        try (PreparedStatement preparedStatement = connector.getConnection().prepareStatement(sql)) {
+            preparedStatement.setInt(1, booking.getRoomID());
+            preparedStatement.setDate(2, Date.valueOf(booking.getDate()));
+            preparedStatement.setTime(3, Time.valueOf(booking.getStartTime()));
+            preparedStatement.setTime(4, Time.valueOf(booking.getEndTime()));
+            preparedStatement.setInt(5, booking.getBookingUser().getId());
+            preparedStatement.executeUpdate();
+        } catch (SQLException sqlException) {
+            throw new RepositoryException(sqlException.getMessage());
+        }
+    }
 }

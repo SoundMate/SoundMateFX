@@ -8,7 +8,6 @@ package it.soundmate.controller.graphic.search;
 
 import it.soundmate.bean.searchbeans.RoomRenterResultBean;
 import it.soundmate.bean.searchbeans.SoloResultBean;
-import it.soundmate.controller.logic.SearchController;
 import it.soundmate.database.dao.RoomRenterDao;
 import it.soundmate.database.dao.UserDao;
 import it.soundmate.database.dbexceptions.RepositoryException;
@@ -22,7 +21,6 @@ import java.util.List;
 
 public class SearchResultsGraphicController {
 
-    private final SearchController searchController = new SearchController();
 
     public void navigateToSoloResult(SoloResultBean soloResultBean, SearchingView searchingView, boolean comingFromSearch) {
         SoloSearchView soloResultView = new SoloSearchView(soloResultBean, comingFromSearch);
@@ -47,5 +45,7 @@ public class SearchResultsGraphicController {
         RoomSearchView roomSearchView = new RoomSearchView(searchingView, renterResultBean, room, comingFromSearch);
         searchingView.setDetailRoom(roomSearchView);
     }
+
+
 
 }

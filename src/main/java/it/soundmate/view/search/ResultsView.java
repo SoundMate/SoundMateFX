@@ -11,6 +11,7 @@ import it.soundmate.bean.searchbeans.RoomRenterResultBean;
 import it.soundmate.bean.searchbeans.SoloResultBean;
 import it.soundmate.bean.searchbeans.UserResultBean;
 import it.soundmate.exceptions.InputException;
+import it.soundmate.model.User;
 import it.soundmate.view.main.SearchingView;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -29,23 +30,23 @@ public class ResultsView {
     private final RenterResults renterResults;
     private final BandResults bandResults;
 
-    public ResultsView(List<UserResultBean> userList, SearchingView searchingView, int searcherID) {
+    public ResultsView(List<UserResultBean> userList, SearchingView searchingView, User searcher) {
         List<SoloResultBean> soloList = new ArrayList<>();
         List<RoomRenterResultBean> roomRenterResultBeanList = new ArrayList<>();
         List<BandResultBean> bandResultBeanList = new ArrayList<>();
         for (UserResultBean user : userList) {
-            if (user.getId() == searcherID) continue;
+            if (user.getId() == searcher.getId()) continue;
             switch (user.getUserType()) {
                 case SOLO:
-                    user.setSearcherID(searcherID);
+                    user.setSearcher(searcher);
                     soloList.add((SoloResultBean) user);
                     break;
                 case ROOM_RENTER:
-                    user.setSearcherID(searcherID);
+                    user.setSearcher(searcher);
                     roomRenterResultBeanList.add((RoomRenterResultBean) user);
                     break;
                 case BAND:
-                    user.setSearcherID(searcherID);
+                    user.setSearcher(searcher);
                     bandResultBeanList.add((BandResultBean) user);
                     break;
                 default:

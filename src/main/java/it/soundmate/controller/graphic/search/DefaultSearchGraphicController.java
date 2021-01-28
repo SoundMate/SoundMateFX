@@ -8,6 +8,7 @@ package it.soundmate.controller.graphic.search;
 
 import it.soundmate.bean.searchbeans.UserResultBean;
 import it.soundmate.controller.logic.SearchController;
+import it.soundmate.model.User;
 import javafx.scene.control.RadioButton;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -16,12 +17,13 @@ import java.util.List;
 
 public class DefaultSearchGraphicController {
 
-    private final SearchController searchController = new SearchController();
+    private final SearchController searchController;
     private static final Logger logger = LoggerFactory.getLogger(DefaultSearchGraphicController.class);
     private final boolean[] filters;
     private final String[] advancedFilters;
 
     public DefaultSearchGraphicController(List<RadioButton> filters, String genreFilter, String instrumentFilter, String cityFilter) {
+        this.searchController = new SearchController();
         this.filters = getFilterValues(filters);
         this.advancedFilters = getAdvancedFilterValues(genreFilter, instrumentFilter, cityFilter);
     }
@@ -49,7 +51,7 @@ public class DefaultSearchGraphicController {
         return values;
     }
 
-    public List<UserResultBean> performSearch(String searchString) {
-        return searchController.performSearch(searchString, filters, advancedFilters);
+    public List<UserResultBean> performSearch(String searchString, User user) {
+        return searchController.performSearch(searchString, filters, advancedFilters, user);
     }
 }
