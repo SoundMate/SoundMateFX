@@ -49,7 +49,4 @@ public class ChooseRegisterController {
         stage.show();
     }
 
-    public void navigateToInfoView(Stage stage) {
-        //TODO: Create Info View
-    }
 }
