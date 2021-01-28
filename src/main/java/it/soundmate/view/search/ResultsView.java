@@ -37,12 +37,15 @@ public class ResultsView {
             if (user.getId() == searcherID) continue;
             switch (user.getUserType()) {
                 case SOLO:
+                    user.setSearcherID(searcherID);
                     soloList.add((SoloResultBean) user);
                     break;
                 case ROOM_RENTER:
+                    user.setSearcherID(searcherID);
                     roomRenterResultBeanList.add((RoomRenterResultBean) user);
                     break;
                 case BAND:
+                    user.setSearcherID(searcherID);
                     bandResultBeanList.add((BandResultBean) user);
                     break;
                 default:

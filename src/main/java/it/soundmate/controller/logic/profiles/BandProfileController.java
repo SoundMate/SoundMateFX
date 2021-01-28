@@ -8,9 +8,11 @@ package it.soundmate.controller.logic.profiles;
 
 import it.soundmate.database.dao.BandDao;
 import it.soundmate.database.dao.UserDao;
+import it.soundmate.database.dbexceptions.RepositoryException;
 import it.soundmate.exceptions.InputException;
 import it.soundmate.model.Band;
 import it.soundmate.model.Genre;
+import it.soundmate.view.uicomponents.SocialLinks;
 
 public class BandProfileController {
 
@@ -25,4 +27,23 @@ public class BandProfileController {
         }
     }
 
+    public void addSocialLink(SocialLinks socialLinks, Band band) {
+        try {
+            switch (socialLinks) {
+                case SPOTIFY:
+                    bandDao.updateSocialLink(socialLinks.getLink(), 0, band);
+                    break;
+                case YOUTUBE:
+                    bandDao.updateSocialLink(socialLinks.getLink(), 1, band);
+                    break;
+                case FACEBOOK:
+                    bandDao.updateSocialLink(socialLinks.getLink(), 2, band);
+                    break;
+                default:
+                    throw new InputException("Social not recognized");
+            }
+        } catch (RepositoryException repositoryException) {
+            throw new InputException(repositoryException.getMessage());
+        }
+    }
 }

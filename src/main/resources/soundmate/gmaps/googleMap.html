@@ -16,7 +16,7 @@
     </script>
     <script type="text/javascript">
         function initialize() {
-            var latlng = new google.maps.LatLng(37.39822, -121.9643936);
+            var latlng = new google.maps.LatLng(42.4554, 30.4545);
             var myOptions = {
                 zoom: 14,
                 center: latlng,
@@ -53,9 +53,13 @@
                 document.map.setMapTypeId(google.maps.MapTypeId.TERRAIN);
             }
 
+            document.goToCoordinates = function goToCoordinates(lat, lng) {
+                document.map.setCenter({lat: lat, lng: lng});
+            }
+
             document.goToLocation = function goToLocation(searchString) {
                 document.geocoder.geocode( {'address': searchString}, function(results, status) {
-                    if (status == google.maps.GeocoderStatus.OK) {
+                    if (status === google.maps.GeocoderStatus.OK) {
                         document.map.setCenter(results[0].geometry.location);
                     } else {
                         alert("Geocode was not successful for the following reason: " + status);

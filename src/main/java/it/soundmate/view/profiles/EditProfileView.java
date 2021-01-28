@@ -72,6 +72,7 @@ public class EditProfileView extends VBox {
         return hBox;
     }
 
+
     protected void updateEmail(EditGraphicController editGraphicController, User user, TextField textField, Label resultLabel) {
         try {
             editGraphicController.updateEmail(textField.getText(), user);

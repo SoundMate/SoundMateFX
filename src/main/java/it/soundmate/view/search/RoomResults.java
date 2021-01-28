@@ -6,11 +6,14 @@
 
 package it.soundmate.view.search;
 
+import it.soundmate.bean.searchbeans.RoomRenterResultBean;
 import it.soundmate.constants.Style;
 import it.soundmate.controller.graphic.search.SearchResultsGraphicController;
 import it.soundmate.model.Room;
 import it.soundmate.utils.Cache;
 import it.soundmate.view.UIUtils;
+import it.soundmate.view.main.SearchView;
+import it.soundmate.view.main.SearchingView;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Orientation;
@@ -31,9 +34,13 @@ public class RoomResults extends ListView<Room> {
     private static final Logger logger = LoggerFactory.getLogger(RoomResults.class);
     private final SearchResultsGraphicController searchResultsGraphicController = new SearchResultsGraphicController();
     private final int renterID;
+    private final SearchingView searchingView;
+    private final RoomRenterResultBean roomRenterResultBean;
 
-    public RoomResults(int renterID) {
+    public RoomResults(int renterID, SearchingView searchingView, RoomRenterResultBean roomRenterResultBean) {
         this.renterID = renterID;
+        this.searchingView = searchingView;
+        this.roomRenterResultBean = roomRenterResultBean;
         this.setCellFactory(param -> new RoomResult());
         this.setOrientation(Orientation.HORIZONTAL);
         this.setPrefHeight(200);
@@ -91,6 +98,7 @@ public class RoomResults extends ListView<Room> {
             @Override
             public void handle(ActionEvent event) {
                 logger.info("Item selected {}", room.getName());
+                searchResultsGraphicController.navigateToRoomResult(roomRenterResultBean, searchingView, searchingView instanceof SearchView, room);
             }
         }
     }

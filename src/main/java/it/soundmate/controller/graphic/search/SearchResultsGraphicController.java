@@ -15,6 +15,7 @@ import it.soundmate.database.dbexceptions.RepositoryException;
 import it.soundmate.model.Room;
 import it.soundmate.view.main.SearchingView;
 import it.soundmate.view.search.RenterSearchView;
+import it.soundmate.view.search.RoomSearchView;
 import it.soundmate.view.search.SoloSearchView;
 
 import java.util.List;
@@ -40,6 +41,11 @@ public class SearchResultsGraphicController {
         } catch (RepositoryException repositoryException) {
             throw new RepositoryException(repositoryException.getMessage());
         }
+    }
+
+    public void navigateToRoomResult(RoomRenterResultBean renterResultBean, SearchingView searchingView, boolean comingFromSearch, Room room) {
+        RoomSearchView roomSearchView = new RoomSearchView(searchingView, renterResultBean, room, comingFromSearch);
+        searchingView.setDetailRoom(roomSearchView);
     }
 
 }

@@ -6,6 +6,8 @@
 
 package it.soundmate.model;
 
+import it.soundmate.view.uicomponents.SocialLinks;
+
 import java.util.List;
 
 import static it.soundmate.model.UserType.BAND;
@@ -15,7 +17,7 @@ public class Band extends User{
     private List<Solo> members;
     private String bandName;
     private List<Genre> genres;
-    private List<String> socialLinks;
+    private SocialLinks[] socialLinks = new SocialLinks[3];
     private static final UserType userType = BAND;
 
     public Band() {
@@ -55,11 +57,11 @@ public class Band extends User{
         this.genres = genres;
     }
 
-    public List<String> getSocialLinks() {
+    public SocialLinks[] getSocialLinks() {
         return socialLinks;
     }
 
-    public void setSocialLinks(List<String> socialLinks) {
+    public void setSocialLinks(SocialLinks[] socialLinks) {
         this.socialLinks = socialLinks;
     }
 

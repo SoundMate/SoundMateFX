@@ -13,6 +13,8 @@ import it.soundmate.model.Genre;
 import it.soundmate.view.main.ProfileView;
 import it.soundmate.view.profiles.band.BandProfileView;
 import it.soundmate.view.profiles.band.EditBandView;
+import it.soundmate.view.profiles.band.UpdateSocialView;
+import it.soundmate.view.uicomponents.SocialLinks;
 import javafx.scene.control.ChoiceDialog;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -32,6 +34,10 @@ public class BandProfileGraphicController extends EditGraphicController {
 
     public void navigateToProfileView(ProfileView profileView, Band band) {
         profileView.setProfilePage(new BandProfileView(profileView, band));
+    }
+
+    public void navigateToSocialView(ProfileView profileView, Band band) {
+        profileView.setProfilePage(new UpdateSocialView(band, profileView));
     }
 
     public Genre addGenre(Band band) {
@@ -60,5 +66,14 @@ public class BandProfileGraphicController extends EditGraphicController {
             return Genre.returnGenre(result.get());
         }
         return null;
+    }
+
+    public SocialLinks addSocialLink(SocialLinks socialLinks, Band band) {
+        try {
+            bandProfileController.addSocialLink(socialLinks, band);
+            return socialLinks;
+        } catch (InputException inputException) {
+            throw new InputException(inputException.getMessage());
+        }
     }
 }

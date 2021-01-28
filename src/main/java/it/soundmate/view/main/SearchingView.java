@@ -8,6 +8,7 @@ package it.soundmate.view.main;
 
 import it.soundmate.model.User;
 import it.soundmate.view.search.RenterSearchView;
+import it.soundmate.view.search.RoomSearchView;
 import it.soundmate.view.search.SoloSearchView;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
@@ -53,4 +54,7 @@ public abstract class SearchingView extends Pane {
 
     public abstract VBox getContentVBox();
 
+    public void setDetailRoom(RoomSearchView roomSearchView) {
+        getContentVBox().getChildren().set(0, roomSearchView);
+    }
 }

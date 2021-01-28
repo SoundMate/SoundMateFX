@@ -52,7 +52,7 @@ public class RenterSearchView extends Pane {
         this.roomRenterResultBean = renterResultBean;
         this.setPrefHeight(USE_COMPUTED_SIZE);
         UIUtils.setBackgroundPane("#232323", this);
-        this.roomResults = new RoomResults(renterResultBean.getId());
+        this.roomResults = new RoomResults(renterResultBean.getId(), searchingView, roomRenterResultBean);
         this.buildVBox();
     }
 

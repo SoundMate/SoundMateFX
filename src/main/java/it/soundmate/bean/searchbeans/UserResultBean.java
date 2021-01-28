@@ -20,6 +20,7 @@ public class UserResultBean {
     private final Image profileImg;
     private final UserType userType;
     private final String city;
+    private int searcherID;
 
     public UserResultBean(int id, String email, String encodedImg, String city, UserType userType) {
         this.id = id;
@@ -52,5 +53,13 @@ public class UserResultBean {
 
     public String getCity() {
         return city;
+    }
+
+    public int getSearcherID() {
+        return searcherID;
+    }
+
+    public void setSearcherID(int searcherID) {
+        this.searcherID = searcherID;
     }
 }

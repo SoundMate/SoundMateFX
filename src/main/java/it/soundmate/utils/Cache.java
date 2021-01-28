@@ -58,9 +58,9 @@ public class Cache {
         return saveImageToCache(image, cacheName);
     }
 
-    public boolean saveRoomPhotoToCache(int renterID, int roomCode, File image) {
+    public void saveRoomPhotoToCache(int renterID, int roomCode, File image) {
         String cacheName = buildRoomCacheName(renterID, roomCode);
-        return saveImageToCache(image, cacheName);
+        saveImageToCache(image, cacheName);
     }
 
     private boolean saveImageToCache(File image, String cacheName) {

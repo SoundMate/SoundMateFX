@@ -13,18 +13,25 @@ import it.soundmate.model.Band;
 import it.soundmate.model.Genre;
 import it.soundmate.view.UIUtils;
 import it.soundmate.view.main.ProfileView;
+import it.soundmate.view.uicomponents.SocialLinks;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
+import javafx.scene.paint.ImagePattern;
 import javafx.scene.shape.Rectangle;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
 
 
 public class BandProfileView extends VBox {
@@ -66,13 +73,35 @@ public class BandProfileView extends VBox {
     }
 
     private HBox buildSocialLinksHBox(Band band) {
-        HBox[] hBoxes = this.profileView.buildProfileSection("Social Links", "Add social links", adSocialBtn);
+        HBox[] hBoxes = this.profileView.buildProfileSection("Social Links", "", adSocialBtn);
         HBox mainHBox = hBoxes[0];
         HBox socialHBox = hBoxes[1];
-        if (band.getSocialLinks() != null) {
-            //Add social links to socialHBox
+        for (int i = 0; i < SocialLinks.values().length; i++) {
+            socialHBox.getChildren().add(buildSocialVBox(band.getSocialLinks()[i]));
         }
         return mainHBox;
+    }
+
+    private VBox buildSocialVBox(SocialLinks socialLink) {
+        VBox socialVBox = new VBox();
+        socialVBox.setSpacing(10);
+        socialVBox.setAlignment(Pos.CENTER);
+        socialVBox.setPrefWidth(USE_COMPUTED_SIZE);
+        socialVBox.setPrefHeight(USE_COMPUTED_SIZE);
+
+        Rectangle rectangle = new Rectangle();
+        rectangle.setHeight(24);
+        rectangle.setWidth(24);
+        rectangle.setFill(new ImagePattern(socialLink.getSource()));
+
+        Label nameLabel = new Label(socialLink.getName());
+        nameLabel.setStyle(Style.MID_LABEL);
+        if (socialLink.getLink() != null){
+            nameLabel.setUnderline(true);
+            nameLabel.setOnMouseClicked(new LinkAction(socialLink.getLink()));
+        }
+        socialVBox.getChildren().addAll(rectangle, nameLabel);
+        return socialVBox;
     }
 
     private HBox buildMembersHBox(Band band) {
@@ -156,6 +185,29 @@ public class BandProfileView extends VBox {
         @Override
         public void handle(ActionEvent event) {
             logger.info("Social action clicked");
+            bandProfileGraphicController.navigateToSocialView(profileView, band);
+        }
+    }
+
+    private static class LinkAction implements EventHandler<MouseEvent> {
+
+        private final String url;
+
+        public LinkAction(String link) {
+            this.url = link;
+        }
+
+        @Override
+        public void handle(MouseEvent event) {
+            URI uri = null;
+            try {
+                uri = new URI(this.url);
+                java.awt.Desktop.getDesktop().browse(uri);
+            } catch (URISyntaxException | IOException e) {
+                logger.error("Url exception browser");
+                e.printStackTrace();
+            }
+
         }
     }
 }

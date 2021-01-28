@@ -6,12 +6,16 @@
 
 package it.soundmate.view.search;
 
+import com.lynden.gmapsfx.GoogleMapView;
+import com.lynden.gmapsfx.MapComponentInitializedListener;
+import com.lynden.gmapsfx.javascript.object.*;
+import it.soundmate.bean.MapBean;
 import it.soundmate.bean.searchbeans.RoomRenterResultBean;
 import it.soundmate.constants.Style;
+import it.soundmate.controller.graphic.profiles.RoomRenterProfileGraphicController;
+import it.soundmate.exceptions.InputException;
 import it.soundmate.view.UIUtils;
 import it.soundmate.view.main.SearchingView;
-import javafx.beans.value.ObservableValue;
-import javafx.concurrent.Worker.State;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
@@ -21,14 +25,26 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.web.WebEngine;
 import javafx.scene.web.WebView;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-public class RenterMapView extends VBox {
+//GMaps FX Prova
+/*
+* Il controller restituisce lat e long della posizione
+* (da usare thread), si devono mostrare su una mappa
+* */
 
+public class RenterMapView extends VBox implements MapComponentInitializedListener {
+
+    private static final Logger logger = LoggerFactory.getLogger(RenterMapView.class);
+    private final RoomRenterProfileGraphicController renterProfileGraphicController = new RoomRenterProfileGraphicController();
     private final RoomRenterResultBean roomRenterResultBean;
     private final SearchingView searchingView;
     private final boolean comingFromSearch;
 
     //UI
+    private GoogleMap map;
+    private GoogleMapView googleMapView = new GoogleMapView();
     private final WebView webView = new WebView();
     private final WebEngine webEngine = webView.getEngine();
     private final Button backBtn = UIUtils.createStyledButton("Back", new BackAction());
@@ -37,6 +53,7 @@ public class RenterMapView extends VBox {
         this.roomRenterResultBean = roomRenterResultBean;
         this.searchingView = searchingView;
         this.comingFromSearch = comingFromSearch;
+        this.googleMapView.addMapInializedListener(this);
         this.buildMapVBox(roomRenterResultBean);
     }
 
@@ -45,12 +62,48 @@ public class RenterMapView extends VBox {
         nameLabel.setStyle(Style.HEADER_TEXT);
         nameLabel.setPadding(new Insets(25, 0, 25, 25));
         this.getChildren().add(nameLabel);
-        HBox padding = new HBox(this.backBtn);
-        padding.setPadding(new Insets(0, 0, 0, 25));
-        this.getChildren().add(padding);
 
-        webEngine.load("http://www.google.com");
-        this.getChildren().add(webView);
+
+        VBox webVBox = new VBox();
+        webVBox.setPrefHeight(500);
+        webVBox.setPrefWidth(600);
+        webVBox.getChildren().add(googleMapView);
+        try {
+            MapBean mapBean = renterProfileGraphicController.displayMap(roomRenterResultBean.getCity(), roomRenterResultBean.getAddress());
+        } catch (InputException inputException) {
+            logger.error("Input Exception: {}", inputException.getMessage());
+            webEngine.loadContent("Map not available", "text/html");
+        }
+        this.getChildren().add(webVBox);
+
+        HBox padding = new HBox(this.backBtn);
+        padding.setPadding(new Insets(25));
+        this.getChildren().add(padding);
+    }
+
+    @Override
+    public void mapInitialized() {
+        LatLong latLong = new LatLong(41.9102415, 12.3959136);
+        MapOptions mapOptions = new MapOptions();
+        mapOptions.center(latLong)
+                .overviewMapControl(false)
+                .panControl(false)
+                .rotateControl(false)
+                .scaleControl(false)
+                .streetViewControl(false)
+                .zoomControl(false)
+                .zoom(12);
+
+        map = googleMapView.createMap(mapOptions);
+        MarkerOptions markerOptions = new MarkerOptions();
+        markerOptions.position(latLong);
+        Marker marker = new Marker(markerOptions);
+        map.addMarker(marker);
+
+        InfoWindowOptions infoWindowOptions = new InfoWindowOptions();
+        infoWindowOptions.content("<h2>ROMA</h2>Location di Roma<br>");
+        InfoWindow infoWindow = new InfoWindow(infoWindowOptions);
+        infoWindow.open(map, marker);
     }
 
 
