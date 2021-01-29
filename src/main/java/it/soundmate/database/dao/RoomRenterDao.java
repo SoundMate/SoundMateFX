@@ -6,6 +6,7 @@ import it.soundmate.database.Connector;
 import it.soundmate.database.dbexceptions.DBException;
 import it.soundmate.database.dbexceptions.DuplicatedEmailException;
 import it.soundmate.database.dbexceptions.RepositoryException;
+import it.soundmate.exceptions.InputException;
 import it.soundmate.exceptions.UpdateException;
 import it.soundmate.model.Booking;
 import it.soundmate.model.Room;
@@ -14,6 +15,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.sql.*;
+import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -218,10 +221,8 @@ public class RoomRenterDao {
 
     private void resetCode() {
         String sql = "ALTER SEQUENCE room_room_code_seq RESTART WITH 1";
-
         try (Connection conn = connector.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
-
             stmt.executeUpdate();
             log.info("\t ***** RoomCode Values resetted successfully! *****");
         } catch (SQLException ex) {
@@ -242,5 +243,29 @@ public class RoomRenterDao {
         } catch (SQLException sqlException) {
             throw new RepositoryException(sqlException.getMessage());
         }
+    }
+
+    public void checkRoomAvailability(LocalDate date, LocalTime start, LocalTime end, Room room) {
+        String sql = "SELECT * FROM booking WHERE room_id = (?)";
+        try (PreparedStatement preparedStatement = connector.getConnection().prepareStatement(sql)) {
+            preparedStatement.setInt(1, room.getCode());
+            ResultSet resultSet = preparedStatement.executeQuery();
+            while (resultSet.next()) {
+                LocalDate resultDate = resultSet.getDate("date").toLocalDate();
+                LocalTime resultStartTime = resultSet.getTime("start_time").toLocalTime();
+                LocalTime resultEndTime = resultSet.getTime("end_time").toLocalTime();
+                if (this.checkRoomDateAndTime(date, start, end, resultDate, resultStartTime, resultEndTime)) {
+                    throw new InputException("Room is already booked for that time");
+                }
+            }
+        } catch (SQLException sqlException) {
+            throw new RepositoryException(sqlException.getMessage());
+        }
+    }
+
+    private boolean checkRoomDateAndTime(LocalDate date, LocalTime start, LocalTime end, LocalDate resultDate, LocalTime resultStartTime, LocalTime resultEndTime) {
+        if (date.isEqual(resultDate)) {
+            return start.isBefore(resultEndTime) && resultStartTime.isBefore(end);
+        } else return false;
     }
 }

@@ -42,9 +42,7 @@ public class RenterMapView extends VBox implements MapComponentInitializedListen
     private final SearchingView searchingView;
     private final boolean comingFromSearch;
 
-    //UI
-    private GoogleMap map;
-    private GoogleMapView googleMapView = new GoogleMapView();
+    private final GoogleMapView googleMapView = new GoogleMapView();
     private final WebView webView = new WebView();
     private final WebEngine webEngine = webView.getEngine();
     private final Button backBtn = UIUtils.createStyledButton("Back", new BackAction());
@@ -94,7 +92,8 @@ public class RenterMapView extends VBox implements MapComponentInitializedListen
                 .zoomControl(false)
                 .zoom(12);
 
-        map = googleMapView.createMap(mapOptions);
+        //UI
+        GoogleMap map = googleMapView.createMap(mapOptions);
         MarkerOptions markerOptions = new MarkerOptions();
         markerOptions.position(latLong);
         Marker marker = new Marker(markerOptions);

@@ -10,11 +10,13 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 
 public class Booking {
+
     private LocalTime endTime;
     private int roomID;
     private User bookingUser;
     private LocalDate date;
     private LocalTime startTime;
+
     public Booking(int roomID, User bookingUser, LocalDate date, LocalTime startTime, LocalTime endTime) {
         this.roomID = roomID;
         this.bookingUser = bookingUser;

@@ -32,7 +32,6 @@ public class UpdateSocialView extends EditProfileView {
     private final Band band;
     private final ProfileView profileView;
     private final BandProfileGraphicController bandProfileGraphicController = new BandProfileGraphicController();
-    private final SocialLinks[] socialLinksList;
 
     //UI
     private final TextField spotifyTextField = new TextField();
@@ -48,7 +47,6 @@ public class UpdateSocialView extends EditProfileView {
     public UpdateSocialView(Band band, ProfileView profileView) {
         this.band = band;
         this.profileView = profileView;
-        this.socialLinksList = band.getSocialLinks();
         this.buildVBox();
     }
 

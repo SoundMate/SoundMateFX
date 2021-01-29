@@ -13,6 +13,7 @@ import it.soundmate.database.dbexceptions.RepositoryException;
 import it.soundmate.exceptions.InputException;
 import it.soundmate.exceptions.UpdateException;
 import it.soundmate.model.Booking;
+import it.soundmate.model.Room;
 import it.soundmate.model.RoomRenter;
 import it.soundmate.view.main.ProfileView;
 import it.soundmate.view.profiles.renter.EditRenterView;
@@ -52,7 +53,7 @@ public class RoomRenterProfileGraphicController extends EditGraphicController {
         }
     }
 
-    public void checkRoomAvailability(LocalDate date, String startTime, String endTime) {
+    public void checkRoomAvailability(LocalDate date, String startTime, String endTime, Room room) {
         if (date == null || startTime.equals("") || endTime.equals("")) {
             throw new InputException("Please select time and date");
         }
@@ -69,6 +70,11 @@ public class RoomRenterProfileGraphicController extends EditGraphicController {
         }
         if (start.until(end, MINUTES) < 60) {
             throw new InputException("You have to book at least for an hour");
+        }
+        try {
+            roomRenterProfileController.checkAvailability(date, start, end, room);
+        } catch (InputException inputException) {
+            throw new InputException(inputException.getMessage());
         }
     }
 

@@ -19,10 +19,7 @@ import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
-import javafx.scene.control.Button;
-import javafx.scene.control.DatePicker;
-import javafx.scene.control.Label;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
@@ -32,6 +29,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.time.LocalTime;
+import java.time.format.DateTimeParseException;
+import java.util.Optional;
 
 
 public class RoomSearchView extends VBox {
@@ -136,12 +135,29 @@ public class RoomSearchView extends VBox {
         @Override
         public void handle(ActionEvent event) {
             try {
-                roomRenterProfileGraphicController.checkRoomAvailability(datePicker.getValue(), startTimeTextField.getText(), endTimeTextField.getText());
+                roomRenterProfileGraphicController.checkRoomAvailability(datePicker.getValue(), startTimeTextField.getText(), endTimeTextField.getText(), room);
                 Booking booking = new Booking(room.getCode(), roomRenterResultBean.getSearcher(), datePicker.getValue(), LocalTime.parse(startTimeTextField.getText()), LocalTime.parse(endTimeTextField.getText()));
-                roomRenterProfileGraphicController.bookRoom(booking);
+                Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+                alert.setTitle("Confirmation Dialog");
+                alert.setHeaderText("Are you sure?");
+                alert.setContentText("Booking "+room.getName()+" "+datePicker.getValue()+" from "+startTimeTextField.getText()+" to "+endTimeTextField.getText());
+                Optional<ButtonType> result = alert.showAndWait();
+                if (result.isPresent() && result.get() == ButtonType.OK) {
+                    roomRenterProfileGraphicController.bookRoom(booking);
+                }
+                Alert confirmedDialog = new Alert(Alert.AlertType.INFORMATION);
+                confirmedDialog.setTitle("Booking confirmation");
+                confirmedDialog.setHeaderText(null);
+                confirmedDialog.setContentText("Booking confirmed!\nCheck the messages section to cancel your booking.");
+
+                confirmedDialog.showAndWait();
             } catch (InputException inputException) {
                 logger.error("Input Exception: {}", inputException.getMessage());
                 errorLabel.setText(inputException.getMessage());
+                errorLabel.setVisible(true);
+            } catch (DateTimeParseException dateTimeParseException) {
+                logger.error("DateTimeParseException: {}", dateTimeParseException.getMessage());
+                errorLabel.setText(dateTimeParseException.getMessage());
                 errorLabel.setVisible(true);
             }
         }

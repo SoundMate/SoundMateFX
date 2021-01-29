@@ -15,6 +15,7 @@ import it.soundmate.database.dbexceptions.RepositoryException;
 import it.soundmate.exceptions.InputException;
 import it.soundmate.exceptions.UpdateException;
 import it.soundmate.model.Booking;
+import it.soundmate.model.Room;
 import it.soundmate.model.RoomRenter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -26,6 +27,8 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.ProtocolException;
 import java.net.URL;
+import java.time.LocalDate;
+import java.time.LocalTime;
 
 
 public class RoomRenterProfileController extends EditController {
@@ -109,6 +112,14 @@ public class RoomRenterProfileController extends EditController {
             roomRenterDao.bookRoom(booking);
         } catch (RepositoryException repositoryException) {
             throw new RepositoryException(repositoryException.getMessage());
+        }
+    }
+
+    public void checkAvailability(LocalDate date, LocalTime start, LocalTime end, Room room) {
+        try {
+            roomRenterDao.checkRoomAvailability(date, start, end, room);
+        } catch (InputException | RepositoryException inputException) {
+            throw new InputException(inputException.getMessage());
         }
     }
 }
