@@ -9,6 +9,7 @@ package it.soundmate.model;
 
 public class Room {
 
+    private int renterID;
     private int code;
     private Double price;
     private String description;
@@ -78,5 +79,13 @@ public class Room {
 
     public void setRoomIsFree(boolean roomIsFree) {
         this.roomIsFree = roomIsFree;
+    }
+
+    public int getRenterID() {
+        return renterID;
+    }
+
+    public void setRenterID(int renterID) {
+        this.renterID = renterID;
     }
 }

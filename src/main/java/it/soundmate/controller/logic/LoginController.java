@@ -68,6 +68,7 @@ public class LoginController {
             Solo soloUser = soloDao.getSoloByID(id);
             soloUser.setFavGenres(soloDao.getGenres(id));
             soloUser.setInstruments(soloDao.getInstruments(id));
+            soloUser.setMessages(userDao.getMessagesForUser(id));
             return soloUser;
         } catch (RepositoryException repositoryException) {
             throw new RepositoryException(repositoryException.getMessage());
@@ -79,12 +80,15 @@ public class LoginController {
         Band band = bandDao.getBandByID(id);
         band.setGenres(bandDao.getGenres(id));
         band.setSocialLinks(bandDao.getSocialLinks(id));
+        band.setMessages(userDao.getMessagesForUser(id));
         return band;
     }
 
     public RoomRenter getFullRenter(int id){
         RoomRenterDao renterDao = new RoomRenterDao(userDao);
-        return renterDao.getRenterByID(id);
+        RoomRenter roomRenter = renterDao.getRenterByID(id);
+        roomRenter.setMessages(userDao.getMessagesForUser(id));
+        return roomRenter;
     }
 
     private boolean checkFields() {

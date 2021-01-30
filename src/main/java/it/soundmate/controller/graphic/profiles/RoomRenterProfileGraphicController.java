@@ -8,6 +8,7 @@ package it.soundmate.controller.graphic.profiles;
 
 import it.soundmate.bean.AddRoomBean;
 import it.soundmate.bean.MapBean;
+import it.soundmate.controller.logic.BookRoomController;
 import it.soundmate.controller.logic.profiles.RoomRenterProfileController;
 import it.soundmate.database.dbexceptions.RepositoryException;
 import it.soundmate.exceptions.InputException;
@@ -30,6 +31,7 @@ public class RoomRenterProfileGraphicController extends EditGraphicController {
 
     private static final Logger logger = LoggerFactory.getLogger(RoomRenterProfileGraphicController.class);
     private final RoomRenterProfileController roomRenterProfileController = new RoomRenterProfileController();
+    private final BookRoomController bookRoomController = new BookRoomController();
 
     public void navigateToEditView(ProfileView profileView, RoomRenter roomRenter) {
         profileView.setProfilePage(new EditRenterView(roomRenter, profileView));
@@ -72,15 +74,16 @@ public class RoomRenterProfileGraphicController extends EditGraphicController {
             throw new InputException("You have to book at least for an hour");
         }
         try {
-            roomRenterProfileController.checkAvailability(date, start, end, room);
+            bookRoomController.checkAvailability(date, start, end, room);
         } catch (InputException inputException) {
             throw new InputException(inputException.getMessage());
         }
     }
 
-    public void bookRoom(Booking booking) {
+    public void bookRoom(Booking booking, int renterID) {
         try {
-            roomRenterProfileController.bookRoom(booking);
+            bookRoomController.bookRoom(booking);
+            bookRoomController.sendBookingInfo(booking, renterID);
         } catch (RepositoryException repositoryException) {
             throw new RepositoryException(repositoryException.getMessage());
         }

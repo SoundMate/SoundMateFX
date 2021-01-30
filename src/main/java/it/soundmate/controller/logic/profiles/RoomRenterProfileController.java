@@ -11,15 +11,11 @@ import com.google.gson.*;
 import it.soundmate.bean.AddRoomBean;
 import it.soundmate.database.dao.RoomRenterDao;
 import it.soundmate.database.dao.UserDao;
-import it.soundmate.database.dbexceptions.RepositoryException;
 import it.soundmate.exceptions.InputException;
 import it.soundmate.exceptions.UpdateException;
-import it.soundmate.model.Booking;
-import it.soundmate.model.Room;
 import it.soundmate.model.RoomRenter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -27,8 +23,6 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.ProtocolException;
 import java.net.URL;
-import java.time.LocalDate;
-import java.time.LocalTime;
 
 
 public class RoomRenterProfileController extends EditController {
@@ -105,21 +99,5 @@ public class RoomRenterProfileController extends EditController {
         }
         stringBuilder.append(FILTER_RESULTS_URL);
         return stringBuilder.toString();
-    }
-
-    public void bookRoom(Booking booking) {
-        try {
-            roomRenterDao.bookRoom(booking);
-        } catch (RepositoryException repositoryException) {
-            throw new RepositoryException(repositoryException.getMessage());
-        }
-    }
-
-    public void checkAvailability(LocalDate date, LocalTime start, LocalTime end, Room room) {
-        try {
-            roomRenterDao.checkRoomAvailability(date, start, end, room);
-        } catch (InputException | RepositoryException inputException) {
-            throw new InputException(inputException.getMessage());
-        }
     }
 }

@@ -1,8 +1,13 @@
 package it.soundmate.view.main;
 
 import it.soundmate.constants.Style;
+import it.soundmate.controller.logic.MessagesController;
+import it.soundmate.model.Message;
 import it.soundmate.model.User;
 import it.soundmate.view.UIUtils;
+import it.soundmate.view.search.MessagesResults;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
@@ -10,50 +15,42 @@ import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
-import javafx.scene.control.Tab;
-import javafx.scene.control.TabPane;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.List;
+
 public class MessagesView extends Pane {
 
     private static final Logger logger = LoggerFactory.getLogger(MessagesView.class);
 
     private final BorderPane messagesBorderPane = new BorderPane();
-    private final TabPane messagesTabPane;
+    private final MessagesResults messagesResults = new MessagesResults();
+    private final MessagesController messagesController = new MessagesController();
 
     public MessagesView(User user){
         Node top = buildTopNode();
         Node bottom = buildBottomNode();
-        this.messagesTabPane = buildTabPane(user);
+        buildCenterNode(user);
 
         //Style
         UIUtils.setBackgroundPane("#232323", this.messagesBorderPane);
-        this.messagesTabPane.setStyle("-fx-background: #232323;");
 
         this.messagesBorderPane.setTop(top);
-        this.messagesBorderPane.setCenter(this.messagesTabPane);
         this.messagesBorderPane.setBottom(bottom);
     }
 
-    private TabPane buildTabPane(User user) {
-        logger.info("Messages for {}", user.getEmail());
-        TabPane tabPane = new TabPane();
-        tabPane.setPrefWidth(USE_COMPUTED_SIZE);
-        tabPane.setPrefHeight(USE_COMPUTED_SIZE);
-
-        Tab requestsTab = new Tab("Requests");
-        Tab chatTab = new Tab("Chat");
-        requestsTab.setClosable(false);
-        chatTab.setClosable(false);
-
-        tabPane.getTabs().addAll(requestsTab, chatTab);
-
-        return tabPane;
+    private void buildCenterNode(User user) {
+        List<Message> messageList = messagesController.getMessagesForUser(user);
+        ObservableList<Message> observableList = FXCollections.observableArrayList(messageList);
+        this.messagesResults.setItems(observableList);
+        this.messagesResults.setStyle("-fx-background-color: #232323; -fx-border-color: #232323");
+        this.messagesBorderPane.setCenter(this.messagesResults);
     }
+
 
     private Node buildBottomNode() {
         HBox bottomHBox = new HBox();

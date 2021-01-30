@@ -8,9 +8,7 @@ import it.soundmate.database.dbexceptions.DuplicatedEmailException;
 import it.soundmate.database.dbexceptions.RepositoryException;
 import it.soundmate.exceptions.InputException;
 import it.soundmate.exceptions.UpdateException;
-import it.soundmate.model.Booking;
-import it.soundmate.model.Room;
-import it.soundmate.model.RoomRenter;
+import it.soundmate.model.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -182,22 +180,18 @@ public class RoomRenterDao {
         String sql = "INSERT INTO room (id, room_price, room_is_free, photo, description, name) VALUES (?, ?, ?, ?, ?, ?)";
 
         try(PreparedStatement preparedStatement = connector.getConnection().prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
-
             preparedStatement.setInt(1, id);
             preparedStatement.setDouble(2, room.getPrice());
             preparedStatement.setBoolean(3, room.isRoomIsFree());
             preparedStatement.setString(4, room.getEncodedImg());
             preparedStatement.setString(5, room.getDescription());
             preparedStatement.setString(6, room.getName());
-
             int rowAffected = preparedStatement.executeUpdate();
             if (rowAffected == 1) {
-
                 resultSet = preparedStatement.getGeneratedKeys();
                 if (resultSet.next())
                     roomCode = resultSet.getInt("room_code");
             }
-
         } catch (SQLException ex){
             throw new RepositoryException("Error inserting", ex);
         } return roomCode;
@@ -224,7 +218,7 @@ public class RoomRenterDao {
         try (Connection conn = connector.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
             stmt.executeUpdate();
-            log.info("\t ***** RoomCode Values resetted successfully! *****");
+            log.info("\t ***** RoomCode Values reset successfully! *****");
         } catch (SQLException ex) {
             throw new RepositoryException("Error ResetID", ex);
         }
@@ -232,14 +226,19 @@ public class RoomRenterDao {
 
 
     public void bookRoom(Booking booking) {
-        String sql = "INSERT INTO booking (room_id, date, start_time, end_time, booker) VALUES (?, ?, ?, ?, ?)";
+        String sql = "INSERT INTO booking (room_id, date, start_time, end_time, booker) VALUES (?, ?, ?, ?, ?) RETURNING booking_id";
         try (PreparedStatement preparedStatement = connector.getConnection().prepareStatement(sql)) {
-            preparedStatement.setInt(1, booking.getRoomID());
+            preparedStatement.setInt(1, booking.getRoom().getCode());
             preparedStatement.setDate(2, Date.valueOf(booking.getDate()));
             preparedStatement.setTime(3, Time.valueOf(booking.getStartTime()));
             preparedStatement.setTime(4, Time.valueOf(booking.getEndTime()));
-            preparedStatement.setInt(5, booking.getBookingUser().getId());
-            preparedStatement.executeUpdate();
+            preparedStatement.setInt(5, booking.getBookingUser());
+            preparedStatement.execute();
+            ResultSet resultSet = preparedStatement.getResultSet();
+            if (resultSet.next()) {
+                log.info("Returning generated key: {}",  resultSet.getInt(1));
+                booking.setBookingID(resultSet.getInt(1));
+            }
         } catch (SQLException sqlException) {
             throw new RepositoryException(sqlException.getMessage());
         }
@@ -267,5 +266,39 @@ public class RoomRenterDao {
         if (date.isEqual(resultDate)) {
             return start.isBefore(resultEndTime) && resultStartTime.isBefore(end);
         } else return false;
+    }
+
+    public void sendBookingMessageToRenter(BookingMessage message) {
+        String sql = "INSERT INTO messages (sender, receiver, type, seen, booking_id) VALUES (?, ?, ?, ?, ?) RETURNING message_id";
+        try (PreparedStatement preparedStatement = connector.getConnection().prepareStatement(sql)) {
+            preparedStatement.setInt(1, message.getSender());
+            preparedStatement.setInt(2, message.getReceiver());
+            preparedStatement.setString(3, MessageType.BOOK_ROOM_CONFIRMATION.name());
+            preparedStatement.setBoolean(4, false);
+            preparedStatement.setInt(5, message.getBooking().getBookingID());
+            preparedStatement.execute();
+            ResultSet resultSet = preparedStatement.getResultSet();
+            if (resultSet.next()) {
+                message.setMessageId(resultSet.getInt("message_id"));
+            }
+        } catch (SQLException sqlException) {
+            throw new RepositoryException(sqlException.getMessage());
+        }
+    }
+
+    public void cancelBooking(BookingMessage bookingMessage) {
+        String sql = "INSERT INTO messages (sender, receiver, type, seen, booking_id) VALUES (?,?,?,?,?)";
+        try (PreparedStatement preparedStatement = connector.getConnection().prepareStatement(sql)) {
+            preparedStatement.setInt(1, bookingMessage.getSender());
+            preparedStatement.setInt(2, bookingMessage.getReceiver());
+            preparedStatement.setString(3, MessageType.BOOK_ROOM_CANCELED.name());
+            preparedStatement.setBoolean(4, false);
+            preparedStatement.setInt(5, bookingMessage.getBooking().getBookingID());
+            if (preparedStatement.executeUpdate() == 1) {
+                log.info("Sent messages for deleted booking");
+            }
+        } catch (SQLException sqlException) {
+            throw new RepositoryException(sqlException.getMessage());
+        }
     }
 }

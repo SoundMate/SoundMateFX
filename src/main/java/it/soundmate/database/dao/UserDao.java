@@ -11,6 +11,7 @@ import it.soundmate.bean.LoginBean;
 import it.soundmate.bean.registerbeans.RegisterBean;
 import it.soundmate.database.Connector;
 import it.soundmate.database.dbexceptions.RepositoryException;
+import it.soundmate.exceptions.InputException;
 import it.soundmate.exceptions.UpdateException;
 import it.soundmate.model.*;
 import it.soundmate.utils.ImgBase64Repo;
@@ -22,6 +23,8 @@ import java.io.IOException;
 import java.io.UncheckedIOException;
 import java.nio.file.Path;
 import java.sql.*;
+import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -29,6 +32,7 @@ import java.util.List;
 public class UserDao implements Dao<User> {
 
 
+    public static final String BOOKING_ID = "booking_id";
     private final Connector connector = Connector.getInstance();
     private static final Logger log = LoggerFactory.getLogger(UserDao.class);
     private static final String ERR_INSERT = "Error inserting user";
@@ -49,12 +53,12 @@ public class UserDao implements Dao<User> {
                 "SELECT sample_id FROM ins1;";
 
         try (Connection conn = connector.getConnection();
-             PreparedStatement pstmt = conn.prepareStatement(sql)) {
-            pstmt.setString(1, registerBean.getEmail());
-            pstmt.setString(2, registerBean.getPassword());
-            pstmt.setString(3, registerBean.getUserType().toString());
-            pstmt.setString(4, registerBean.getCity());
-            resultSet = pstmt.executeQuery();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setString(1, registerBean.getEmail());
+            stmt.setString(2, registerBean.getPassword());
+            stmt.setString(3, registerBean.getUserType().toString());
+            stmt.setString(4, registerBean.getCity());
+            resultSet = stmt.executeQuery();
             if (resultSet.next()) return resultSet.getInt(1);
             else throw new RepositoryException("Error registering user");
         }
@@ -110,7 +114,7 @@ public class UserDao implements Dao<User> {
              PreparedStatement stmt = conn.prepareStatement(sql)) {
 
             stmt.executeUpdate();
-            log.info("\t ***** ID Values resetted successfully! *****");
+            log.info("\t ***** ID Values reset successfully! *****");
         } catch (SQLException ex) {
             throw new RepositoryException("Error ResetID", ex);
         }
@@ -167,16 +171,12 @@ public class UserDao implements Dao<User> {
 
     public String getUserType(String email){
         String sql = "SELECT user_type FROM registered_users WHERE email = ?";
-        ResultSet resultSet = null;
+        ResultSet resultSet;
         String userType = "";
-
         try (Connection connection = connector.getConnection();
              PreparedStatement preparedStmt = connection.prepareStatement(sql)){
-
             preparedStmt.setString(1, email);
-
             resultSet = preparedStmt.executeQuery();
-
             while(resultSet.next()){
                 userType = resultSet.getString("user_type");
             }
@@ -215,6 +215,81 @@ public class UserDao implements Dao<User> {
             }
         }
         return genres;
+    }
+
+    public List<Message> getMessagesForUser(int id) {
+        log.info("Getting messages for user");
+        List<Message> messageList = new ArrayList<>();
+        String query = "select * from messages join booking on messages.booking_id = booking.booking_id where receiver = (?)";
+        try (PreparedStatement preparedStatement = connector.getConnection().prepareStatement(query, Statement.RETURN_GENERATED_KEYS)) {
+            preparedStatement.setInt(1, id);
+            ResultSet resultSet = preparedStatement.executeQuery();
+            while (resultSet.next()) {
+                int sender = resultSet.getInt("sender");
+                int receiver = resultSet.getInt("receiver");
+                boolean seen = resultSet.getBoolean("seen");
+                int messageID = resultSet.getInt("message_id");
+                if (resultSet.getString("type").equals(MessageType.BOOK_ROOM_CONFIRMATION.name())) {
+                    int bookingID = resultSet.getInt(BOOKING_ID);
+                    Booking booking = this.getBookingByID(bookingID);
+                    BookingMessage bookingMessage = new BookingMessage(sender,receiver, MessageType.BOOK_ROOM_CONFIRMATION, seen, booking);
+                    bookingMessage.setMessageId(messageID);
+                    messageList.add(bookingMessage);
+                } else if (resultSet.getString("type").equals(MessageType.BOOK_ROOM_CANCELED.name())) {
+                    int bookingID = resultSet.getInt(BOOKING_ID);
+                    Booking booking = this.getBookingByID(bookingID);
+                    BookingMessage bookingMessage = new BookingMessage(sender,receiver, MessageType.BOOK_ROOM_CANCELED, seen, booking);
+                    bookingMessage.setMessageId(messageID);
+                    messageList.add(bookingMessage);
+                }
+            }
+            return messageList;
+        } catch (SQLException e) {
+            throw new InputException("Unable to read messages: "+e.getMessage());
+        }
+    }
+
+    private Room getRoomByID(int roomID) {
+        String query = "SELECT * FROM room WHERE room_code = (?)";
+        try (PreparedStatement preparedStatement = connector.getConnection().prepareStatement(query)) {
+            preparedStatement.setInt(1, roomID);
+            ResultSet resultSet = preparedStatement.executeQuery();
+            if (resultSet.next()) {
+                int renterID = resultSet.getInt("id");
+                int roomCode = resultSet.getInt("room_code");
+                double price = resultSet.getInt("room_price");
+                String encodedImg = resultSet.getString("photo");
+                String description = resultSet.getString("description");
+                String name = resultSet.getString("name");
+                Room room = new Room(roomCode, name, price, description, encodedImg);
+                room.setRenterID(renterID);
+                return room;
+            } else throw new InputException("Room not found");
+        } catch (SQLException e) {
+            throw new UpdateException("Room not found, SQLException: "+e.getMessage());
+        }
+    }
+
+    private Booking getBookingByID(int bookingID) {
+        String query = "SELECT * FROM booking WHERE booking_id = (?)";
+        try (PreparedStatement preparedStatement = connector.getConnection().prepareStatement(query)) {
+            preparedStatement.setInt(1, bookingID);
+            ResultSet resultSet = preparedStatement.executeQuery();
+            if (resultSet.next()) {
+                int roomID = resultSet.getInt("room_id");
+
+                LocalDate date = resultSet.getDate("date").toLocalDate();
+                LocalTime startTime = resultSet.getTime("start_time").toLocalTime();
+                LocalTime endTime = resultSet.getTime("end_time").toLocalTime();
+                int booker = resultSet.getInt("booker");
+                int id = resultSet.getInt(BOOKING_ID);
+                Booking booking = new Booking(this.getRoomByID(roomID), booker, date, startTime, endTime);
+                booking.setBookingID(id);
+                return booking;
+            } else throw new InputException("Booking not found");
+        } catch (SQLException e) {
+            throw new UpdateException("Booking not found, SQLException: "+e.getMessage());
+        }
     }
 
     public void updateEmail(User user, String email) {
@@ -275,6 +350,24 @@ public class UserDao implements Dao<User> {
         }
     }
 
+    public void sendBookingMessageToUser(BookingMessage bookingMessage) {
+        String sql = "INSERT INTO messages (sender, receiver, type, seen, booking_id) VALUES (?, ?, ?, ?, ?) RETURNING message_id";
+        try (PreparedStatement preparedStatement = connector.getConnection().prepareStatement(sql)) {
+            preparedStatement.setInt(1, bookingMessage.getSender());
+            preparedStatement.setInt(2, bookingMessage.getSender());
+            preparedStatement.setString(3, MessageType.BOOK_ROOM_CONFIRMATION.name());
+            preparedStatement.setBoolean(4, false);
+            preparedStatement.setInt(5, bookingMessage.getBooking().getBookingID());
+            preparedStatement.execute();
+            ResultSet resultSet = preparedStatement.getResultSet();
+            if (resultSet.next()) {
+                bookingMessage.setMessageId(resultSet.getInt("message_id"));
+            }
+        } catch (SQLException sqlException) {
+            throw new RepositoryException(sqlException.getMessage());
+        }
+    }
+
 
     @Override
     public int update(User user) {
@@ -291,4 +384,18 @@ public class UserDao implements Dao<User> {
         return null;
     }
 
+    public void markMessageAsRead(Message message) {
+        String sql = "UPDATE messages SET seen = true WHERE message_id = (?)";
+        try (PreparedStatement preparedStatement = connector.getConnection().prepareStatement(sql)) {
+            log.info("Message ID: {}", message.getMessageId());
+            preparedStatement.setInt(1, message.getMessageId());
+            if (preparedStatement.executeUpdate() == 1) {
+                message.setSeen(true);
+                log.info("Marked as read");
+            }
+            else throw new RepositoryException("Unable to mark as read");
+        } catch (SQLException sqlException) {
+            throw new RepositoryException(sqlException.getMessage());
+        }
+    }
 }
