@@ -20,7 +20,7 @@ public class NotificationsController {
 
     public List<Notification> getMessagesForUser(User user) {
         try {
-            return userDao.getMessagesForUser(user.getId());
+            return userDao.getNotificationsForUser(user.getId());
         } catch (InputException inputException) {
             throw new InputException(inputException.getMessage());
         }

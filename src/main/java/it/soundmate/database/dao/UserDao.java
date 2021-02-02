@@ -217,10 +217,10 @@ public class UserDao implements Dao<User> {
         return genres;
     }
 
-    public List<Notification> getMessagesForUser(int id) {
+    public List<Notification> getNotificationsForUser(int id) {
         log.info("Getting messages for user");
         List<Notification> notificationList = new ArrayList<>();
-        String query = "select * from messages join booking on messages.booking_id = booking.booking_id where receiver = (?)";
+        String query = "select * from notifications join booking on notifications.booking_id = booking.booking_id where receiver = (?)";
         try (PreparedStatement preparedStatement = connector.getConnection().prepareStatement(query, Statement.RETURN_GENERATED_KEYS)) {
             preparedStatement.setInt(1, id);
             ResultSet resultSet = preparedStatement.executeQuery();
@@ -351,7 +351,7 @@ public class UserDao implements Dao<User> {
     }
 
     public void sendBookingMessageToUser(BookingNotification bookingMessage) {
-        String sql = "INSERT INTO messages (sender, receiver, type, seen, booking_id) VALUES (?, ?, ?, ?, ?) RETURNING message_id";
+        String sql = "INSERT INTO notifications (sender, receiver, type, seen, booking_id) VALUES (?, ?, ?, ?, ?) RETURNING message_id";
         try (PreparedStatement preparedStatement = connector.getConnection().prepareStatement(sql)) {
             preparedStatement.setInt(1, bookingMessage.getSender());
             preparedStatement.setInt(2, bookingMessage.getSender());
@@ -385,7 +385,7 @@ public class UserDao implements Dao<User> {
     }
 
     public void markMessageAsRead(Notification notification) {
-        String sql = "UPDATE messages SET seen = true WHERE message_id = (?)";
+        String sql = "UPDATE notifications SET seen = true WHERE message_id = (?)";
         try (PreparedStatement preparedStatement = connector.getConnection().prepareStatement(sql)) {
             log.info("Message ID: {}", notification.getMessageId());
             preparedStatement.setInt(1, notification.getMessageId());
