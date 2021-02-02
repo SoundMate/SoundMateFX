@@ -1,14 +1,3 @@
-create table banned_users
-(
-    email text not null
-);
-
-alter table banned_users
-    owner to postgres;
-
-create unique index banned_users_email_uindex
-    on banned_users (email);
-
 create table registered_users
 (
     id        serial not null
@@ -43,6 +32,28 @@ create table users
 alter table users
     owner to postgres;
 
+create unique index users_id_uindex
+    on users (id);
+
+create table solo
+(
+    id         integer not null
+        constraint solo_pk
+            primary key
+        constraint solo_users_id_fk
+            references users
+            on update cascade on delete cascade,
+    age        integer,
+    first_name text,
+    last_name  text
+);
+
+alter table solo
+    owner to postgres;
+
+create unique index solo_id_uindex
+    on solo (id);
+
 create table band
 (
     id        integer not null
@@ -51,7 +62,11 @@ create table band
         constraint band_users_id_fk
             references users
             on update cascade on delete cascade,
-    band_name text    not null
+    band_name text    not null,
+    spotify   varchar,
+    youtube   varchar,
+    facebook  varchar,
+    members   integer[]
 );
 
 alter table band
@@ -75,46 +90,8 @@ create table band_manager
 alter table band_manager
     owner to postgres;
 
-create table band_band_managed
-(
-    id_manager integer not null
-        constraint band_band_managed_band_manager_id_fk
-            references band_manager
-            on update cascade on delete cascade,
-    id_band    integer not null
-        constraint band_band_managed_band_id_fk
-            references band
-            on update cascade on delete cascade
-);
-
-alter table band_band_managed
-    owner to postgres;
-
-create unique index band_band_managed_id_band_uindex
-    on band_band_managed (id_band);
-
-create unique index band_band_managed_id_manager_uindex
-    on band_band_managed (id_manager);
-
 create unique index band_manager_id_uindex
     on band_manager (id);
-
-create table played_genres
-(
-    id    integer not null
-        constraint played_genres_pk
-            primary key
-        constraint played_genres_band_id_fk
-            references band
-            on update cascade on delete cascade,
-    genre text    not null
-);
-
-alter table played_genres
-    owner to postgres;
-
-create unique index played_genres_id_uindex
-    on played_genres (id);
 
 create table room_renter
 (
@@ -130,6 +107,9 @@ create table room_renter
 
 alter table room_renter
     owner to postgres;
+
+create unique index room_manager_id_uindex
+    on room_renter (id);
 
 create table room
 (
@@ -153,24 +133,16 @@ alter table room
 create unique index room_room_code_uindex
     on room (room_code);
 
-create unique index room_manager_id_uindex
-    on room_renter (id);
-
-create table solo
+create table banned_users
 (
-    id         integer not null
-        constraint solo_pk
-            primary key
-        constraint solo_users_id_fk
-            references users
-            on update cascade on delete cascade,
-    age        integer,
-    first_name text,
-    last_name  text
+    email text not null
 );
 
-alter table solo
+alter table banned_users
     owner to postgres;
+
+create unique index banned_users_email_uindex
+    on banned_users (email);
 
 create table band_solo_members
 (
@@ -193,22 +165,26 @@ create unique index band_solo_members_id_band_uindex
 create unique index band_solo_members_id_solo_uindex
     on band_solo_members (id_solo);
 
-create table fav_genres
+create table band_band_managed
 (
-    id    integer not null
-        constraint fav_genres_pk
-            primary key
-        constraint fav_genres_solo_id_fk
-            references solo
+    id_manager integer not null
+        constraint band_band_managed_band_manager_id_fk
+            references band_manager
             on update cascade on delete cascade,
-    genre text[]  not null
+    id_band    integer not null
+        constraint band_band_managed_band_id_fk
+            references band
+            on update cascade on delete cascade
 );
 
-alter table fav_genres
+alter table band_band_managed
     owner to postgres;
 
-create unique index fav_genres_id_uindex
-    on fav_genres (id);
+create unique index band_band_managed_id_band_uindex
+    on band_band_managed (id_band);
+
+create unique index band_band_managed_id_manager_uindex
+    on band_band_managed (id_manager);
 
 create table played_instruments
 (
@@ -218,7 +194,7 @@ create table played_instruments
         constraint instruments_solo_id_fk
             references solo
             on update cascade on delete cascade,
-    instruments text[]  not null
+    instruments text[]
 );
 
 alter table played_instruments
@@ -227,9 +203,97 @@ alter table played_instruments
 create unique index instruments_id_uindex
     on played_instruments (id);
 
-create unique index solo_id_uindex
-    on solo (id);
+create table fav_genres
+(
+    id    integer not null
+        constraint fav_genres_pk
+            primary key
+        constraint fav_genres_solo_id_fk
+            references solo
+            on update cascade on delete cascade,
+    genre text[]
+);
 
-create unique index users_id_uindex
-    on users (id);
+alter table fav_genres
+    owner to postgres;
+
+create unique index fav_genres_id_uindex
+    on fav_genres (id);
+
+create table played_genres
+(
+    id    integer not null
+        constraint played_genres_pk
+            primary key
+        constraint played_genres_band_id_fk
+            references band
+            on update cascade on delete cascade,
+    genre text[]
+);
+
+alter table played_genres
+    owner to postgres;
+
+create unique index played_genres_id_uindex
+    on played_genres (id);
+
+create table booking
+(
+    room_id    integer not null
+        constraint booking_room_room_code_fk
+            references room
+            on update cascade on delete cascade,
+    booking_id serial  not null
+        constraint booking_pk
+            primary key,
+    date       date    not null,
+    start_time time    not null,
+    end_time   time    not null,
+    booker     integer not null
+);
+
+alter table booking
+    owner to postgres;
+
+create table notifications
+(
+    message_id serial  not null
+        constraint messages_pk
+            primary key,
+    sender     integer,
+    receiver   integer,
+    type       varchar not null,
+    seen       boolean,
+    booking_id integer
+        constraint messages_booking_booking_id_fk
+            references booking
+            on update cascade on delete cascade
+);
+
+alter table notifications
+    owner to postgres;
+
+create table messages
+(
+    code        serial                                not null
+        constraint table_name_pk
+            primary key,
+    id_sender   integer                               not null
+        constraint table_name_users_id_fk_2
+            references users
+            on update cascade on delete cascade,
+    id_receiver integer                               not null
+        constraint table_name_users_id_fk
+            references users
+            on update cascade on delete cascade,
+    subject     text    default 'empty subject'::text not null,
+    body        text    default 'empty body'::text    not null,
+    is_read     boolean default false                 not null
+);
+
+alter table messages
+    owner to postgres;
+
+create unique index table_name_code_uindex
+    on messages (code);
 
