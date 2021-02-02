@@ -6,11 +6,11 @@
 
 package it.soundmate.model;
 
-public class BookingMessage extends Message {
+public class BookingNotification extends Notification {
 
     private Booking booking;
 
-    public BookingMessage(int sender, int receiver, MessageType messageType, boolean seen, Booking booking) {
+    public BookingNotification(int sender, int receiver, MessageType messageType, boolean seen, Booking booking) {
         super(sender, receiver, messageType, seen);
         this.booking = booking;
     }

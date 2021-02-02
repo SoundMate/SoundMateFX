@@ -6,7 +6,7 @@
 
 package it.soundmate.model;
 
-public class JoinRequest extends Message {
+public class JoinRequest extends Notification {
 
     public JoinRequest(int sender, int receiver, MessageType messageType, boolean seen) {
         super(sender, receiver, messageType, seen);

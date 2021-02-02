@@ -18,7 +18,7 @@ public abstract class User {
     private List<File> photos;
     private String encodedImg;
     private AnagraphicData anagraphicData = new AnagraphicData();
-    private List<Message> messages;
+    private List<Notification> notifications;
 
     protected User(){}
 
@@ -99,11 +99,11 @@ public abstract class User {
         return this.anagraphicData.getAge();
     }
 
-    public List<Message> getMessages() {
-        return messages;
+    public List<Notification> getMessages() {
+        return notifications;
     }
 
-    public void setMessages(List<Message> messages) {
-        this.messages = messages;
+    public void setMessages(List<Notification> notifications) {
+        this.notifications = notifications;
     }
 }

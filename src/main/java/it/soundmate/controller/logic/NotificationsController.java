@@ -9,26 +9,26 @@ package it.soundmate.controller.logic;
 import it.soundmate.database.dao.UserDao;
 import it.soundmate.database.dbexceptions.RepositoryException;
 import it.soundmate.exceptions.InputException;
-import it.soundmate.model.Message;
+import it.soundmate.model.Notification;
 import it.soundmate.model.User;
 
 import java.util.List;
 
-public class MessagesController {
+public class NotificationsController {
 
     private final UserDao userDao = new UserDao();
 
-    public List<Message> getMessagesForUser(User user) {
+    public List<Notification> getMessagesForUser(User user) {
         try {
-            return userDao.getMessagesForUser(user.getId());
+            return userDao.getNotificationsForUser(user.getId());
         } catch (InputException inputException) {
             throw new InputException(inputException.getMessage());
         }
     }
 
-    public void markAsRead(Message message) {
+    public void markAsRead(Notification notification) {
         try {
-            userDao.markMessageAsRead(message);
+            userDao.markMessageAsRead(notification);
         } catch (RepositoryException repositoryException) {
             throw new RepositoryException(repositoryException.getMessage());
         }

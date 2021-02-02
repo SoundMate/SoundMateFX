@@ -217,10 +217,10 @@ public class UserDao implements Dao<User> {
         return genres;
     }
 
-    public List<Message> getMessagesForUser(int id) {
+    public List<Notification> getNotificationsForUser(int id) {
         log.info("Getting messages for user");
-        List<Message> messageList = new ArrayList<>();
-        String query = "select * from messages join booking on messages.booking_id = booking.booking_id where receiver = (?)";
+        List<Notification> notificationList = new ArrayList<>();
+        String query = "select * from notifications join booking on notifications.booking_id = booking.booking_id where receiver = (?)";
         try (PreparedStatement preparedStatement = connector.getConnection().prepareStatement(query, Statement.RETURN_GENERATED_KEYS)) {
             preparedStatement.setInt(1, id);
             ResultSet resultSet = preparedStatement.executeQuery();
@@ -232,18 +232,18 @@ public class UserDao implements Dao<User> {
                 if (resultSet.getString("type").equals(MessageType.BOOK_ROOM_CONFIRMATION.name())) {
                     int bookingID = resultSet.getInt(BOOKING_ID);
                     Booking booking = this.getBookingByID(bookingID);
-                    BookingMessage bookingMessage = new BookingMessage(sender,receiver, MessageType.BOOK_ROOM_CONFIRMATION, seen, booking);
+                    BookingNotification bookingMessage = new BookingNotification(sender,receiver, MessageType.BOOK_ROOM_CONFIRMATION, seen, booking);
                     bookingMessage.setMessageId(messageID);
-                    messageList.add(bookingMessage);
+                    notificationList.add(bookingMessage);
                 } else if (resultSet.getString("type").equals(MessageType.BOOK_ROOM_CANCELED.name())) {
                     int bookingID = resultSet.getInt(BOOKING_ID);
                     Booking booking = this.getBookingByID(bookingID);
-                    BookingMessage bookingMessage = new BookingMessage(sender,receiver, MessageType.BOOK_ROOM_CANCELED, seen, booking);
+                    BookingNotification bookingMessage = new BookingNotification(sender,receiver, MessageType.BOOK_ROOM_CANCELED, seen, booking);
                     bookingMessage.setMessageId(messageID);
-                    messageList.add(bookingMessage);
+                    notificationList.add(bookingMessage);
                 }
             }
-            return messageList;
+            return notificationList;
         } catch (SQLException e) {
             throw new InputException("Unable to read messages: "+e.getMessage());
         }
@@ -350,8 +350,8 @@ public class UserDao implements Dao<User> {
         }
     }
 
-    public void sendBookingMessageToUser(BookingMessage bookingMessage) {
-        String sql = "INSERT INTO messages (sender, receiver, type, seen, booking_id) VALUES (?, ?, ?, ?, ?) RETURNING message_id";
+    public void sendBookingMessageToUser(BookingNotification bookingMessage) {
+        String sql = "INSERT INTO notifications (sender, receiver, type, seen, booking_id) VALUES (?, ?, ?, ?, ?) RETURNING message_id";
         try (PreparedStatement preparedStatement = connector.getConnection().prepareStatement(sql)) {
             preparedStatement.setInt(1, bookingMessage.getSender());
             preparedStatement.setInt(2, bookingMessage.getSender());
@@ -384,13 +384,13 @@ public class UserDao implements Dao<User> {
         return null;
     }
 
-    public void markMessageAsRead(Message message) {
-        String sql = "UPDATE messages SET seen = true WHERE message_id = (?)";
+    public void markMessageAsRead(Notification notification) {
+        String sql = "UPDATE notifications SET seen = true WHERE message_id = (?)";
         try (PreparedStatement preparedStatement = connector.getConnection().prepareStatement(sql)) {
-            log.info("Message ID: {}", message.getMessageId());
-            preparedStatement.setInt(1, message.getMessageId());
+            log.info("Message ID: {}", notification.getMessageId());
+            preparedStatement.setInt(1, notification.getMessageId());
             if (preparedStatement.executeUpdate() == 1) {
-                message.setSeen(true);
+                notification.setSeen(true);
                 log.info("Marked as read");
             }
             else throw new RepositoryException("Unable to mark as read");
