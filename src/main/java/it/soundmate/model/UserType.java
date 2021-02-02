@@ -10,7 +10,7 @@ import java.util.Arrays;
 
 
 public enum UserType {
-    BAND, SOLO, BAND_MANAGER, ROOM_RENTER;
+    BAND, SOLO, ROOM_RENTER;
 
     public static UserType returnUserType(String userType){
         UserType[] userTypes = UserType.values();
