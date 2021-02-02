@@ -1,4 +1,5 @@
 <%@ page import="it.soundmate.controller.logic.LoginController" %>
+<%@ page import="it.soundmate.model.User" %>
 <%--
   ~ Copyright (c) 2020.
   ~ This file was created by Soundmate organization Lorenzo Pantano & Matteo D'Alessandro
@@ -28,7 +29,10 @@
             </div>
 <%
         } else {
-
+            LoginController loginController = new LoginController(loginBean);
+            User user = loginController.login();
+            session.setAttribute("user", user);
+            response.sendRedirect("home.jsp");
         }
     }
 %>
@@ -127,8 +131,6 @@
                                 </div>
                             </li>
                         </ul>
-
-
                     </div>
                 </form>
 
