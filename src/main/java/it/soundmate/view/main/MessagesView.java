@@ -1,11 +1,11 @@
 package it.soundmate.view.main;
 
 import it.soundmate.constants.Style;
-import it.soundmate.controller.logic.MessagesController;
-import it.soundmate.model.Message;
+import it.soundmate.controller.logic.NotificationsController;
+import it.soundmate.model.Notification;
 import it.soundmate.model.User;
 import it.soundmate.view.UIUtils;
-import it.soundmate.view.search.MessagesResults;
+import it.soundmate.view.search.NotificationsResults;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -28,8 +28,8 @@ public class MessagesView extends Pane {
     private static final Logger logger = LoggerFactory.getLogger(MessagesView.class);
 
     private final BorderPane messagesBorderPane = new BorderPane();
-    private final MessagesResults messagesResults = new MessagesResults();
-    private final MessagesController messagesController = new MessagesController();
+    private final NotificationsResults notificationsResults = new NotificationsResults();
+    private final NotificationsController notificationsController = new NotificationsController();
 
     public MessagesView(User user){
         Node top = buildTopNode();
@@ -44,11 +44,11 @@ public class MessagesView extends Pane {
     }
 
     private void buildCenterNode(User user) {
-        List<Message> messageList = messagesController.getMessagesForUser(user);
-        ObservableList<Message> observableList = FXCollections.observableArrayList(messageList);
-        this.messagesResults.setItems(observableList);
-        this.messagesResults.setStyle("-fx-background-color: #232323; -fx-border-color: #232323");
-        this.messagesBorderPane.setCenter(this.messagesResults);
+        List<Notification> notificationList = notificationsController.getMessagesForUser(user);
+        ObservableList<Notification> observableList = FXCollections.observableArrayList(notificationList);
+        this.notificationsResults.setItems(observableList);
+        this.notificationsResults.setStyle("-fx-background-color: #232323; -fx-border-color: #232323");
+        this.messagesBorderPane.setCenter(this.notificationsResults);
     }
 
 

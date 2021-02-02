@@ -9,11 +9,11 @@ package it.soundmate.view.search;
 
 import it.soundmate.constants.Style;
 import it.soundmate.controller.logic.BookRoomController;
-import it.soundmate.controller.logic.MessagesController;
+import it.soundmate.controller.logic.NotificationsController;
 import it.soundmate.database.dbexceptions.RepositoryException;
 import it.soundmate.model.Booking;
-import it.soundmate.model.BookingMessage;
-import it.soundmate.model.Message;
+import it.soundmate.model.BookingNotification;
+import it.soundmate.model.Notification;
 import it.soundmate.model.MessageType;
 import it.soundmate.view.UIUtils;
 import javafx.event.ActionEvent;
@@ -30,13 +30,13 @@ import org.slf4j.LoggerFactory;
 
 import java.util.Optional;
 
-public class MessagesResults extends ListView<Message> {
+public class NotificationsResults extends ListView<Notification> {
 
-    private static final Logger logger = LoggerFactory.getLogger(MessagesResults.class);
-    private final MessagesController messagesController = new MessagesController();
+    private static final Logger logger = LoggerFactory.getLogger(NotificationsResults.class);
+    private final NotificationsController notificationsController = new NotificationsController();
     private final BookRoomController bookRoomController = new BookRoomController();
 
-    public MessagesResults() {
+    public NotificationsResults() {
         this.setCellFactory(param -> new MessageResult());
         this.setPrefHeight(500);
         this.setPrefWidth(600);
@@ -50,13 +50,13 @@ public class MessagesResults extends ListView<Message> {
         return this.getItems().size();
     }
 
-    public class MessageResult extends ListCell<Message> {
+    public class MessageResult extends ListCell<Notification> {
         @Override
-        protected void updateItem(Message message, boolean empty) {
-            super.updateItem(message, empty);
-            if (message != null) {
+        protected void updateItem(Notification notification, boolean empty) {
+            super.updateItem(notification, empty);
+            if (notification != null) {
                 logger.info("Building message result");
-                HBox hBox = buildResultHBox(message);
+                HBox hBox = buildResultHBox(notification);
                 this.setStyle("-fx-background-color: #232323;");
                 setGraphic(hBox);
             } else {
@@ -65,7 +65,7 @@ public class MessagesResults extends ListView<Message> {
         }
 
         @NotNull
-        private HBox buildResultHBox(Message message) {
+        private HBox buildResultHBox(Notification notification) {
             HBox messageHBox = new HBox();
             VBox messageVBox = new VBox();
             messageVBox.setPrefHeight(USE_COMPUTED_SIZE);
@@ -74,22 +74,22 @@ public class MessagesResults extends ListView<Message> {
             messageHBox.setSpacing(10);
             Label messageTypeLabel = new Label();
             messageVBox.getChildren().add(messageTypeLabel);
-            Button markAsRead = UIUtils.createStyledButton("Mark As Read", new MarkAsReadAction(message));
-            if (message.getMessageType() == MessageType.BOOK_ROOM_CONFIRMATION) {
-                buildBookConfirmationMessage(message, messageHBox, messageVBox, messageTypeLabel, markAsRead);
-            } else if (message.getMessageType() == MessageType.BOOK_ROOM_CANCELED){
+            Button markAsRead = UIUtils.createStyledButton("Mark As Read", new MarkAsReadAction(notification));
+            if (notification.getMessageType() == MessageType.BOOK_ROOM_CONFIRMATION) {
+                buildBookConfirmationMessage(notification, messageHBox, messageVBox, messageTypeLabel, markAsRead);
+            } else if (notification.getMessageType() == MessageType.BOOK_ROOM_CANCELED){
                 messageTypeLabel.setText("Booking Canceled");
-                buildBookCanceledMessage(message, messageHBox, messageVBox, messageTypeLabel, markAsRead);
+                buildBookCanceledMessage(notification, messageHBox, messageVBox, messageTypeLabel, markAsRead);
             }
             return messageHBox;
         }
 
-        private void buildBookCanceledMessage(Message message, HBox messageHBox, VBox messageVBox, Label messageTypeLabel, Button markAsRead) {
+        private void buildBookCanceledMessage(Notification notification, HBox messageHBox, VBox messageVBox, Label messageTypeLabel, Button markAsRead) {
             logger.info("Building book canceled message");
-            seenMessageStyle(message, messageHBox, messageTypeLabel, markAsRead);
-            BookingMessage bookingMessage = (BookingMessage) message;
+            seenMessageStyle(notification, messageHBox, messageTypeLabel, markAsRead);
+            BookingNotification bookingMessage = (BookingNotification) notification;
             messageTypeLabel.setText("Room Booking Canceled #" + bookingMessage.getBooking().getBookingID());
-            Label messageLabel = new Label(MessageType.BOOK_ROOM_CANCELED.getMessageDesc()+" for "+((BookingMessage) message).getBooking().getDate()+" from "+((BookingMessage) message).getBooking().getStartTime() + " to "+((BookingMessage) message).getBooking().getEndTime());
+            Label messageLabel = new Label(MessageType.BOOK_ROOM_CANCELED.getMessageDesc()+" for "+((BookingNotification) notification).getBooking().getDate()+" from "+((BookingNotification) notification).getBooking().getStartTime() + " to "+((BookingNotification) notification).getBooking().getEndTime());
             messageLabel.setStyle(Style.LOW_LABEL);
             messageVBox.getChildren().add(messageLabel);
             messageHBox.getChildren().add(messageVBox);
@@ -97,11 +97,11 @@ public class MessagesResults extends ListView<Message> {
             messageHBox.getChildren().addAll(markAsRead);
         }
 
-        private void buildBookConfirmationMessage(Message message, HBox messageHBox, VBox messageVBox, Label messageTypeLabel, Button markAsRead) {
-            seenMessageStyle(message, messageHBox, messageTypeLabel, markAsRead);
-            BookingMessage bookingMessage = (BookingMessage) message;
+        private void buildBookConfirmationMessage(Notification notification, HBox messageHBox, VBox messageVBox, Label messageTypeLabel, Button markAsRead) {
+            seenMessageStyle(notification, messageHBox, messageTypeLabel, markAsRead);
+            BookingNotification bookingMessage = (BookingNotification) notification;
             messageTypeLabel.setText("Room Booking #" + bookingMessage.getBooking().getBookingID());
-            Label messageLabel = new Label(MessageType.BOOK_ROOM_CONFIRMATION.getMessageDesc()+" for "+((BookingMessage) message).getBooking().getDate()+" from "+((BookingMessage) message).getBooking().getStartTime() + " to "+((BookingMessage) message).getBooking().getEndTime());
+            Label messageLabel = new Label(MessageType.BOOK_ROOM_CONFIRMATION.getMessageDesc()+" for "+((BookingNotification) notification).getBooking().getDate()+" from "+((BookingNotification) notification).getBooking().getStartTime() + " to "+((BookingNotification) notification).getBooking().getEndTime());
             messageLabel.setStyle(Style.LOW_LABEL);
             messageVBox.getChildren().add(messageLabel);
             messageHBox.getChildren().add(messageVBox);
@@ -111,8 +111,8 @@ public class MessagesResults extends ListView<Message> {
             messageHBox.getChildren().addAll(markAsRead, cancelBtn);
         }
 
-        private void seenMessageStyle(Message message, HBox messageHBox, Label messageTypeLabel, Button markAsRead) {
-            if (!message.isSeen()) {
+        private void seenMessageStyle(Notification notification, HBox messageHBox, Label messageTypeLabel, Button markAsRead) {
+            if (!notification.isSeen()) {
                 Circle circle = new Circle();
                 circle.setRadius(5);
                 circle.setFill(Color.RED);
@@ -141,8 +141,8 @@ public class MessagesResults extends ListView<Message> {
             alert.setContentText("Canceling booking "+booking.getBookingID()+" of "+booking.getDate());
             Optional<ButtonType> result = alert.showAndWait();
             if (result.isPresent() && result.get() == ButtonType.OK) {
-                BookingMessage bookingMessageForUser = new BookingMessage(booking.getBookingUser(), booking.getBookingUser(), MessageType.BOOK_ROOM_CANCELED, false, booking);
-                BookingMessage bookingMessageForRenter = new BookingMessage(booking.getBookingUser(), booking.getRoom().getRenterID(), MessageType.BOOK_ROOM_CANCELED, false, booking);
+                BookingNotification bookingMessageForUser = new BookingNotification(booking.getBookingUser(), booking.getBookingUser(), MessageType.BOOK_ROOM_CANCELED, false, booking);
+                BookingNotification bookingMessageForRenter = new BookingNotification(booking.getBookingUser(), booking.getRoom().getRenterID(), MessageType.BOOK_ROOM_CANCELED, false, booking);
                 bookRoomController.cancelBooking(bookingMessageForUser);
                 bookRoomController.cancelBooking(bookingMessageForRenter);
             }
@@ -151,16 +151,16 @@ public class MessagesResults extends ListView<Message> {
 
     private class MarkAsReadAction implements EventHandler<ActionEvent> {
 
-        private final Message message;
+        private final Notification notification;
 
-        public MarkAsReadAction(Message message) {
-            this.message = message;
+        public MarkAsReadAction(Notification notification) {
+            this.notification = notification;
         }
 
         @Override
         public void handle(ActionEvent event) {
             try {
-                messagesController.markAsRead(message);
+                notificationsController.markAsRead(notification);
             } catch (RepositoryException repositoryException) {
                 logger.error("Repository Exception: {}", repositoryException.getMessage());
             }

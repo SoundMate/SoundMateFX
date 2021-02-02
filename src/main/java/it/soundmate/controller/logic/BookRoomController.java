@@ -38,7 +38,7 @@ public class BookRoomController {
 
     public void sendBookingInfo(Booking booking, int renterID) {
         try {
-            BookingMessage message = new BookingMessage(booking.getBookingUser(), renterID, MessageType.BOOK_ROOM_CONFIRMATION, false, booking);
+            BookingNotification message = new BookingNotification(booking.getBookingUser(), renterID, MessageType.BOOK_ROOM_CONFIRMATION, false, booking);
             roomRenterDao.sendBookingMessageToRenter(message);
             userDao.sendBookingMessageToUser(message);
         } catch (InputException inputException) {
@@ -46,7 +46,7 @@ public class BookRoomController {
         }
     }
 
-    public void cancelBooking(BookingMessage bookingMessage) {
+    public void cancelBooking(BookingNotification bookingMessage) {
         try {
             roomRenterDao.cancelBooking(bookingMessage);
         } catch (InputException inputException) {

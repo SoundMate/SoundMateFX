@@ -268,7 +268,7 @@ public class RoomRenterDao {
         } else return false;
     }
 
-    public void sendBookingMessageToRenter(BookingMessage message) {
+    public void sendBookingMessageToRenter(BookingNotification message) {
         String sql = "INSERT INTO messages (sender, receiver, type, seen, booking_id) VALUES (?, ?, ?, ?, ?) RETURNING message_id";
         try (PreparedStatement preparedStatement = connector.getConnection().prepareStatement(sql)) {
             preparedStatement.setInt(1, message.getSender());
@@ -286,7 +286,7 @@ public class RoomRenterDao {
         }
     }
 
-    public void cancelBooking(BookingMessage bookingMessage) {
+    public void cancelBooking(BookingNotification bookingMessage) {
         String sql = "INSERT INTO messages (sender, receiver, type, seen, booking_id) VALUES (?,?,?,?,?)";
         try (PreparedStatement preparedStatement = connector.getConnection().prepareStatement(sql)) {
             preparedStatement.setInt(1, bookingMessage.getSender());
