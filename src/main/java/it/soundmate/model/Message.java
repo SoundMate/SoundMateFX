@@ -1,63 +1,70 @@
-/*
- * Copyright (c) 2021.
- * Created by Lorenzo Pantano on 29/01/21, 21:37
- * Last edited: 29/01/21, 21:37
- */
-
 package it.soundmate.model;
 
 public class Message {
 
-    private int sender;
-    private int receiver;
-    private MessageType messageType;
-    private boolean seen;
-    private int messageId;
+    private int messageCode;
+    private int idSender;
+    private int idReceiver;
+    private String subject;
+    private String body;
 
-    public Message(int sender, int receiver, MessageType messageType, boolean seen) {
-        this.sender = sender;
-        this.receiver = receiver;
-        this.messageType = messageType;
-        this.seen = seen;
+    public Message() {
     }
 
-    public int getSender() {
-        return sender;
+    public Message(int idSender, int idReceiver, String subject, String body) {
+        this.idSender = idSender;
+        this.idReceiver = idReceiver;
+        this.subject = subject;
+        this.body = body;
     }
 
-    public void setSender(int sender) {
-        this.sender = sender;
+    public Message withID(int code){
+        Message newMessage = new Message();
+        newMessage.setIdSender(this.idSender);
+        newMessage.setIdReceiver(this.idReceiver);
+        newMessage.setSubject(this.subject);
+        newMessage.setBody(this.body);
+        newMessage.setMessageCode(code);
+        return newMessage;
     }
 
-    public int getReceiver() {
-        return receiver;
+    public int getMessageCode() {
+        return messageCode;
     }
 
-    public void setReceiver(int receiver) {
-        this.receiver = receiver;
+    public void setMessageCode(int messageCode) {
+        this.messageCode = messageCode;
     }
 
-    public MessageType getMessageType() {
-        return messageType;
+    public int getIdSender() {
+        return idSender;
     }
 
-    public void setMessageType(MessageType messageType) {
-        this.messageType = messageType;
+    public void setIdSender(int idSender) {
+        this.idSender = idSender;
     }
 
-    public boolean isSeen() {
-        return seen;
+    public int getIdReceiver() {
+        return idReceiver;
     }
 
-    public void setSeen(boolean seen) {
-        this.seen = seen;
+    public void setIdReceiver(int idReceiver) {
+        this.idReceiver = idReceiver;
     }
 
-    public void setMessageId(int messageId) {
-        this.messageId = messageId;
+    public String getSubject() {
+        return subject;
     }
 
-    public int getMessageId() {
-        return messageId;
+    public void setSubject(String subject) {
+        this.subject = subject;
+    }
+
+    public String getBody() {
+        return body;
+    }
+
+    public void setBody(String body) {
+        this.body = body;
     }
 }
