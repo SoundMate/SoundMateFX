@@ -3,23 +3,17 @@ package it.soundmate.database.dao;
 import it.soundmate.database.Connector;
 import it.soundmate.database.dbexceptions.RepositoryException;
 import it.soundmate.model.Application;
-import it.soundmate.model.Band;
-import org.postgresql.jdbc.PgArray;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.stream.Stream;
 
 public class ApplicationDao {
 
     private final Connector connector = Connector.getInstance();
     private static final Logger log = LoggerFactory.getLogger(ApplicationDao.class);
-    private static final String SUCCESS = "Entry successfully modified!";
-    private static final String FAILED = "ERR: Operation Failed!";
     private static final String ERROR = "Error updating entry. The error was: \n";
 
     //crud
