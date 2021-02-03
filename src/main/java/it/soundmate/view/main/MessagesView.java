@@ -2,11 +2,14 @@ package it.soundmate.view.main;
 
 import it.soundmate.constants.Style;
 import it.soundmate.controller.graphic.MessagesGraphicController;
+import it.soundmate.controller.logic.MessagesController;
 import it.soundmate.controller.logic.NotificationsController;
+import it.soundmate.model.Message;
 import it.soundmate.model.Notification;
 import it.soundmate.model.User;
 import it.soundmate.view.NewMessageView;
 import it.soundmate.view.UIUtils;
+import it.soundmate.view.search.MessagesResults;
 import it.soundmate.view.search.NotificationsResults;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -33,14 +36,17 @@ public class MessagesView extends Pane {
     private static final Logger logger = LoggerFactory.getLogger(MessagesView.class);
     private final User user;
 
+
     public VBox getContentVBox() {
         return contentVBox;
     }
 
     private final VBox contentVBox = new VBox();
     private final BorderPane messagesBorderPane = new BorderPane();
+    private final MessagesResults messageResults;
     private final NotificationsResults notificationsResults = new NotificationsResults();
     private final NotificationsController notificationsController = new NotificationsController();
+    private final MessagesController messagesController = new MessagesController();
 
     //UI
     private final Tab notificationsTab = new Tab("Notifications");
@@ -49,13 +55,12 @@ public class MessagesView extends Pane {
 
     public MessagesView(User user){
         this.user = user;
+        this.messageResults = new MessagesResults(this, user);
         Node top = buildTopNode();
-        Node bottom = buildBottomNode();
         //Style
         UIUtils.setBackgroundPane("#232323", this.messagesBorderPane);
 
         this.messagesBorderPane.setTop(top);
-        this.messagesBorderPane.setBottom(bottom);
         buildCenterNode(user);
         this.contentVBox.getChildren().add(this.messagesBorderPane);
     }
@@ -69,6 +74,11 @@ public class MessagesView extends Pane {
 
     private void buildMessagesTab(User user) {
         this.messagesTab.setClosable(false);
+        List<Message> messageList = messagesController.getMessagesForUser(user);
+        ObservableList<Message> messageObservableList = FXCollections.observableArrayList(messageList);
+        this.messageResults.setItems(messageObservableList);
+        this.messageResults.setStyle("-fx-background-color: #232323; -fx-border-color: #232323");
+        this.messagesTab.setContent(this.messageResults);
     }
 
     private void buildNotificationsTab(User user) {
@@ -82,17 +92,6 @@ public class MessagesView extends Pane {
     }
 
 
-    private Node buildBottomNode() {
-        HBox bottomHBox = new HBox();
-        bottomHBox.setAlignment(Pos.CENTER_RIGHT);
-        bottomHBox.setPadding(new Insets(25));
-
-        Button newMessageBtn = UIUtils.createStyledButton("New Message", new NewMessageAction());
-        bottomHBox.getChildren().add(newMessageBtn);
-        return bottomHBox;
-    }
-
-
     private Node buildTopNode() {
         Label title = new Label("Messages");
         title.setStyle(Style.HEADER_TEXT);
@@ -100,13 +99,10 @@ public class MessagesView extends Pane {
         return title;
     }
 
-
-    private class NewMessageAction implements EventHandler<ActionEvent> {
-        @Override
-        public void handle(ActionEvent event) {
-            logger.info("New Message Btn Clicked");
-            MessagesGraphicController messagesGraphicController = new MessagesGraphicController(contentVBox);
-            messagesGraphicController.setNewMessageView(new NewMessageView(user));
-        }
+    public void setMessagePage(Pane messagePage) {
+        this.contentVBox.getChildren().set(0, messagePage);
+        logger.info("Message Page Set");
     }
+
+
 }

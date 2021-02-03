@@ -49,6 +49,11 @@ public class Band extends User{
         this.bandName = bandName;
     }
 
+    @Override
+    public String getName() {
+        return this.getBandName();
+    }
+
     public List<Genre> getGenres() {
         return genres;
     }

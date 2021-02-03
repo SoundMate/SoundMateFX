@@ -106,4 +106,6 @@ public abstract class User {
     public void setMessages(List<Notification> notifications) {
         this.notifications = notifications;
     }
+
+    public abstract String getName();
 }

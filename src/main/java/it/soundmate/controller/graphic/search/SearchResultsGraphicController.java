@@ -6,6 +6,7 @@
 
 package it.soundmate.controller.graphic.search;
 
+import it.soundmate.bean.searchbeans.BandResultBean;
 import it.soundmate.bean.searchbeans.RoomRenterResultBean;
 import it.soundmate.bean.searchbeans.SoloResultBean;
 import it.soundmate.database.dao.RoomRenterDao;
@@ -13,6 +14,7 @@ import it.soundmate.database.dao.UserDao;
 import it.soundmate.database.dbexceptions.RepositoryException;
 import it.soundmate.model.Room;
 import it.soundmate.view.main.SearchingView;
+import it.soundmate.view.search.BandSearchView;
 import it.soundmate.view.search.RenterSearchView;
 import it.soundmate.view.search.RoomSearchView;
 import it.soundmate.view.search.SoloSearchView;
@@ -23,7 +25,7 @@ public class SearchResultsGraphicController {
 
 
     public void navigateToSoloResult(SoloResultBean soloResultBean, SearchingView searchingView, boolean comingFromSearch) {
-        SoloSearchView soloResultView = new SoloSearchView(soloResultBean, comingFromSearch);
+        SoloSearchView soloResultView = new SoloSearchView(soloResultBean, searchingView, comingFromSearch);
         searchingView.setDetailViewSolo(soloResultView);
     }
 
@@ -47,5 +49,8 @@ public class SearchResultsGraphicController {
     }
 
 
-
+    public void naviagateToBandResult(BandResultBean band, SearchingView searchingView, boolean b) {
+        BandSearchView bandSearchView = new BandSearchView(b, band, searchingView);
+        searchingView.setDetailBand(bandSearchView);
+    }
 }

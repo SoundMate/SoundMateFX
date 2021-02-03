@@ -6,18 +6,21 @@
 
 package it.soundmate.controller.graphic;
 
-import it.soundmate.view.NewMessageView;
-import javafx.scene.layout.VBox;
+import it.soundmate.model.Message;
+import it.soundmate.view.MessageDetailView;
+import it.soundmate.view.main.MessagesView;
 
 public class MessagesGraphicController {
 
-    private final VBox contentVBox;
 
-    public MessagesGraphicController(VBox contentVBox) {
-        this.contentVBox = contentVBox;
+    public MessagesGraphicController() {
     }
 
-    public void setNewMessageView(NewMessageView newMessageView) {
-        this.contentVBox.getChildren().set(0, newMessageView.getContentVBox());
+    public void setDetailMessage(MessagesView messagesView, MessageDetailView messageDetailView) {
+        messagesView.getContentVBox().getChildren().set(0, messageDetailView);
+    }
+
+    public void setMessageView() {
+
     }
 }

@@ -78,7 +78,7 @@ public class SoloProfileGraphicController extends EditGraphicController {
         Optional<String> result = dialog.showAndWait();
         if (result.isPresent()){
             logger.info("Your choice: {}", result.get());
-            return InstrumentGraphics.returnInsrument(result.get());
+            return InstrumentGraphics.returnInstrument(result.get());
         }
         return null;
     }
