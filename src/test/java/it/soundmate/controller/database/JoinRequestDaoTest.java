@@ -2,7 +2,6 @@ package it.soundmate.controller.database;
 
 import it.soundmate.bean.registerbeans.RegisterBandBean;
 import it.soundmate.bean.registerbeans.RegisterSoloBean;
-import it.soundmate.database.Connector;
 import it.soundmate.database.dao.*;
 import it.soundmate.model.Application;
 import it.soundmate.model.JoinRequest;
@@ -11,7 +10,6 @@ import org.junit.jupiter.api.*;
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 class JoinRequestDaoTest {
 
-    private final Connector connector = Connector.getInstance();
     private static final UserDao userDao = new UserDao();
     private final BandDao bandDao = new BandDao(userDao);
     private final SoloDao soloDao = new SoloDao(userDao);
