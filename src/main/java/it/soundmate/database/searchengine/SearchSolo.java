@@ -87,22 +87,18 @@ public class SearchSolo implements SearchEngine<SoloResultBean>, Runnable {
         String firstName = resultSet.getString("first_name");
         String lastName = resultSet.getString("last_name");
         String soloCity = resultSet.getString("city");
-        List<String> genreList = new ArrayList<>();
-        if (!this.advancedFilters[0].equals("NONE")) {
-            if (resultSet.getArray("genre") == null) genreList = new ArrayList<>();
-            else {
-                String [] temp = (String []) resultSet.getArray("genre").getArray();
-                genreList = Arrays.asList(temp);
-            }
+        List<String> genreList;
+        if (resultSet.getArray("genre") == null) genreList = new ArrayList<>();
+        else {
+            String [] temp = (String []) resultSet.getArray("genre").getArray();
+            genreList = Arrays.asList(temp);
         }
 
-        List<String> instrumentList = new ArrayList<>();
-        if (!this.advancedFilters[1].equals("NONE")) {
-            if (resultSet.getArray("instrument") != null) {
-                String [] temp = (String []) resultSet.getArray("instrument").getArray();
-                instrumentList = Arrays.asList(temp);
-            } else instrumentList = new ArrayList<>();
-        }
+        List<String> instrumentList;
+        if (resultSet.getArray("instruments") != null) {
+            String [] temp = (String []) resultSet.getArray("instruments").getArray();
+            instrumentList = Arrays.asList(temp);
+        } else instrumentList = new ArrayList<>();
 
         SoloResultBean soloResultBean = new SoloResultBean(id, email, encodedImg, firstName, lastName, soloCity);
         soloResultBean.setGenres(genreList);

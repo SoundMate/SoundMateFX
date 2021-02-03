@@ -32,6 +32,7 @@ public class RoomRenter extends User {
         this.name = name;
     }
 
+    @Override
     public String getName() {
         return name;
     }
@@ -55,6 +56,8 @@ public class RoomRenter extends User {
     public void setRooms(List<Room> rooms) {
         this.rooms = new ArrayList<>(rooms);
     }
+
+
 
     @Override
     public UserType getUserType() {

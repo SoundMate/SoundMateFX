@@ -61,6 +61,11 @@ public class Solo extends User {
     }
 
     @Override
+    public String getName() {
+        return this.getFirstName()+" "+this.getLastName();
+    }
+
+    @Override
     public UserType getUserType() {
         return userType;
     }

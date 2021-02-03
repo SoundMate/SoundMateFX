@@ -19,12 +19,12 @@ public enum InstrumentGraphics {
         this.source = source;
     }
 
-    public static InstrumentGraphics returnInsrument(String instrument) {
+    public static InstrumentGraphics returnInstrument(String instrument) {
         InstrumentGraphics[] instrumentGraphics = InstrumentGraphics.values();
         return Arrays.stream(instrumentGraphics)
-                .filter(currentGenre -> currentGenre.toString().equals(instrument))
+                .filter(currentInstrument -> currentInstrument.toString().equalsIgnoreCase(instrument))
                 .findFirst()
-                .orElseThrow(() -> new IllegalArgumentException("Genre not found:"));
+                .orElseThrow(() -> new IllegalArgumentException("Instument not found: "+instrument));
 
     }
 

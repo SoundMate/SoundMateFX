@@ -23,7 +23,7 @@ public class SearchResultsGraphicController {
 
 
     public void navigateToSoloResult(SoloResultBean soloResultBean, SearchingView searchingView, boolean comingFromSearch) {
-        SoloSearchView soloResultView = new SoloSearchView(soloResultBean, comingFromSearch);
+        SoloSearchView soloResultView = new SoloSearchView(soloResultBean, searchingView, comingFromSearch);
         searchingView.setDetailViewSolo(soloResultView);
     }
 

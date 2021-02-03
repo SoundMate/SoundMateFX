@@ -13,7 +13,7 @@ import javafx.scene.image.Image;
 
 import java.io.InputStream;
 
-public class UserResultBean {
+public abstract class UserResultBean {
 
     private final int id;
     private final String email;
@@ -23,7 +23,7 @@ public class UserResultBean {
     private final String city;
     private User searcher;
 
-    public UserResultBean(int id, String email, String encodedImg, String city, UserType userType) {
+    protected UserResultBean(int id, String email, String encodedImg, String city, UserType userType) {
         this.id = id;
         this.email = email;
         this.profileImgIs = Cache.getInstance().buildProfileImg(id, encodedImg);
@@ -63,4 +63,6 @@ public class UserResultBean {
     public void setSearcher(User searcher) {
         this.searcher = searcher;
     }
+
+    public abstract String getName();
 }

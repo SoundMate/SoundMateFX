@@ -64,7 +64,9 @@ public class MessagesResults extends ListView<Message> {
             body.setStyle(Style.LOW_LABEL);
             messageVBox.getChildren().addAll(subject, body);
             Button readBtn = UIUtils.createStyledButton("Read", new ReadAction(message));
-            messageHBox.getChildren().addAll(messageVBox, readBtn);
+            messageHBox.getChildren().add(messageVBox);
+            UIUtils.addRegion(null, messageHBox);
+            messageHBox.getChildren().add(readBtn);
             return messageHBox;
         }
 
@@ -78,7 +80,7 @@ public class MessagesResults extends ListView<Message> {
 
             @Override
             public void handle(ActionEvent event) {
-                //Navigate to read message
+
             }
         }
     }

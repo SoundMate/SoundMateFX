@@ -6,7 +6,9 @@
 
 package it.soundmate.view.main;
 
+import it.soundmate.bean.searchbeans.SoloResultBean;
 import it.soundmate.model.User;
+import it.soundmate.view.NewMessageView;
 import it.soundmate.view.search.RenterSearchView;
 import it.soundmate.view.search.RoomSearchView;
 import it.soundmate.view.search.SoloSearchView;
@@ -37,7 +39,7 @@ public abstract class SearchingView extends Pane {
     }
 
     public void setDetailViewSolo(SoloSearchView soloSearchView) {
-        getContentVBox().getChildren().set(0, soloSearchView);
+        getContentVBox().getChildren().set(0, soloSearchView.getContentVBox());
     }
 
     public void setDetailViewRenter(RenterSearchView renterSearchView) {
@@ -58,4 +60,7 @@ public abstract class SearchingView extends Pane {
         getContentVBox().getChildren().set(0, roomSearchView);
     }
 
+    public void setNewMessageView(SoloResultBean soloResultBean) {
+        getContentVBox().getChildren().set(0, new NewMessageView(user, soloResultBean).getContentVBox());
+    }
 }

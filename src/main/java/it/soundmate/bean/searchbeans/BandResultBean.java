@@ -31,4 +31,9 @@ public class BandResultBean extends UserResultBean {
     public List<String> getGenres() {
         return genres;
     }
+
+    @Override
+    public String getName() {
+        return this.getBandName();
+    }
 }
