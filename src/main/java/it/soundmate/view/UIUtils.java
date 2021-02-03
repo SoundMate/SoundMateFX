@@ -3,6 +3,7 @@ package it.soundmate.view;
 import it.soundmate.constants.Style;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
+import javafx.geometry.Insets;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.RadioButton;
@@ -94,5 +95,12 @@ public class UIUtils {
         RadioButton radioButton = new RadioButton(text);
         radioButton.setStyle(Style.RADIO_BTN);
         return radioButton;
+    }
+
+    public static void styleHBoxAndVBoxMessageResults(HBox hBox, VBox vBox) {
+        vBox.setPrefHeight(Region.USE_COMPUTED_SIZE);
+        hBox.setPadding(new Insets(10, 25, 0, 25));
+        vBox.setPadding(new Insets(10));
+        hBox.setSpacing(10);
     }
 }
