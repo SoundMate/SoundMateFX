@@ -10,6 +10,7 @@ import it.soundmate.bean.searchbeans.BandResultBean;
 import it.soundmate.constants.Style;
 import it.soundmate.controller.graphic.search.SearchResultsGraphicController;
 import it.soundmate.view.UIUtils;
+import it.soundmate.view.main.SearchView;
 import it.soundmate.view.main.SearchingView;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
@@ -88,7 +89,8 @@ public class BandResults extends ListView<BandResultBean> {
             @Override
             public void handle(ActionEvent event) {
                 logger.info("Item selected {}", band.getBandName());
-                //Navigate to band result
+                searchResultsGraphicController.naviagateToBandResult(band, searchingView, searchingView instanceof SearchView);
+
             }
         }
     }

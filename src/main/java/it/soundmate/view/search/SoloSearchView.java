@@ -6,6 +6,7 @@
 
 package it.soundmate.view.search;
 
+import it.soundmate.bean.searchbeans.BandResultBean;
 import it.soundmate.bean.searchbeans.SoloResultBean;
 import it.soundmate.constants.Style;
 import it.soundmate.view.NewMessageView;
@@ -99,14 +100,7 @@ public class SoloSearchView extends Pane {
     }
 
     private List<Label> buildGenres(SoloResultBean soloResultBean) {
-        List<Label> genreLabels = new ArrayList<>();
-        for (String genre: soloResultBean.getGenreList()) {
-            Label genreLabel = new Label(genre);
-            genreLabel.setStyle(Style.FAV_GENRE_LABEL);
-            genreLabel.setPadding(new Insets(5));
-            genreLabels.add(genreLabel);
-        }
-        return genreLabels;
+        return BandSearchView.getGenresHBox(soloResultBean.getGenreList());
     }
 
     private HBox buildUserInfoHBox(SoloResultBean soloResultBean) {

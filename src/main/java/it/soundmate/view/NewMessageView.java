@@ -7,6 +7,7 @@
 package it.soundmate.view;
 
 import it.soundmate.bean.searchbeans.SoloResultBean;
+import it.soundmate.bean.searchbeans.UserResultBean;
 import it.soundmate.constants.Style;
 import it.soundmate.controller.logic.MessagesController;
 import it.soundmate.controller.logic.SearchController;
@@ -29,7 +30,7 @@ public class NewMessageView extends Pane {
     private final User sender;
     private final SearchController searchController = new SearchController();
     private static final Logger logger = LoggerFactory.getLogger(NewMessageView.class);
-    private final SoloResultBean receiver;
+    private final UserResultBean receiver;
 
     //UI
     private VBox contentVBox;
@@ -37,7 +38,7 @@ public class NewMessageView extends Pane {
     private final TextArea messageTextArea = new TextArea();
     private final Button sendBtn = UIUtils.createStyledButton("Send", new SendAction());
 
-    public NewMessageView(User sender, SoloResultBean receiver) {
+    public NewMessageView(User sender, UserResultBean receiver) {
         this.sender = sender;
         this.receiver = receiver;
         buildContentVBox();

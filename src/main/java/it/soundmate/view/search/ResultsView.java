@@ -74,6 +74,7 @@ public class ResultsView {
         return resultVBox;
     }
 
+
     public SoloResults getSoloResults() {
         return soloResults;
     }
