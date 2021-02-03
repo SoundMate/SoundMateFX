@@ -75,24 +75,6 @@ alter table band
 create unique index band_id_uindex
     on band (id);
 
-create table band_manager
-(
-    id         integer not null
-        constraint band_manager_pk
-            primary key
-        constraint band_manager_users_id_fk
-            references users
-            on update cascade on delete cascade,
-    first_name text    not null,
-    last_name  text    not null
-);
-
-alter table band_manager
-    owner to postgres;
-
-create unique index band_manager_id_uindex
-    on band_manager (id);
-
 create table room_renter
 (
     id      integer not null
@@ -164,27 +146,6 @@ create unique index band_solo_members_id_band_uindex
 
 create unique index band_solo_members_id_solo_uindex
     on band_solo_members (id_solo);
-
-create table band_band_managed
-(
-    id_manager integer not null
-        constraint band_band_managed_band_manager_id_fk
-            references band_manager
-            on update cascade on delete cascade,
-    id_band    integer not null
-        constraint band_band_managed_band_id_fk
-            references band
-            on update cascade on delete cascade
-);
-
-alter table band_band_managed
-    owner to postgres;
-
-create unique index band_band_managed_id_band_uindex
-    on band_band_managed (id_band);
-
-create unique index band_band_managed_id_manager_uindex
-    on band_band_managed (id_manager);
 
 create table played_instruments
 (
@@ -296,4 +257,50 @@ alter table messages
 
 create unique index table_name_code_uindex
     on messages (code);
+
+create table applications
+(
+    code        serial  not null
+        constraint applications_pk
+            primary key,
+    id_band     integer not null
+        constraint applications_band_id_fk
+            references band
+            on update cascade on delete cascade,
+    message     text,
+    instruments text[]
+);
+
+alter table applications
+    owner to postgres;
+
+create unique index applications_code_uindex
+    on applications (code);
+
+create table join_request
+(
+    code             serial                not null
+        constraint join_request_pk
+            primary key,
+    code_application integer
+        constraint join_request_applications_code_fk
+            references applications
+            on update cascade on delete cascade,
+    id_band          integer               not null
+        constraint join_request_band_id_fk
+            references band
+            on update cascade on delete cascade,
+    id_solo          integer               not null
+        constraint join_request_solo_id_fk
+            references solo
+            on update cascade on delete cascade,
+    message          text,
+    is_accepted      boolean default false not null
+);
+
+alter table join_request
+    owner to postgres;
+
+create unique index join_request_code_uindex
+    on join_request (code);
 
