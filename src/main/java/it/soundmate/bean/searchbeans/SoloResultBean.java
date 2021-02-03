@@ -62,8 +62,4 @@ public class SoloResultBean extends UserResultBean {
         this.instrumentList.addAll(instrumentList);
     }
 
-    @Override
-    public String getName() {
-        return this.getFirstName()+" "+this.getLastName();
-    }
 }
