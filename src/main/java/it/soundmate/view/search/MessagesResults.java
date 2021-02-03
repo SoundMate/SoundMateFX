@@ -9,7 +9,9 @@ package it.soundmate.view.search;
 import it.soundmate.constants.Style;
 import it.soundmate.controller.logic.MessagesController;
 import it.soundmate.model.*;
+import it.soundmate.view.MessageDetailView;
 import it.soundmate.view.UIUtils;
+import it.soundmate.view.main.MessagesView;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.scene.control.*;
@@ -24,11 +26,15 @@ public class MessagesResults extends ListView<Message> {
 
     private static final Logger logger = LoggerFactory.getLogger(MessagesResults.class);
     private final MessagesController messagesController = new MessagesController();
+    private final MessagesView messagesView;
+    private final User user;
 
-    public MessagesResults() {
+    public MessagesResults(MessagesView messagesView, User user) {
         this.setCellFactory(param -> new MessageResult());
         this.setPrefHeight(500);
         this.setPrefWidth(600);
+        this.messagesView = messagesView;
+        this.user = user;
     }
 
     public boolean isEmpty() {
@@ -80,7 +86,7 @@ public class MessagesResults extends ListView<Message> {
 
             @Override
             public void handle(ActionEvent event) {
-
+                messagesView.setMessagePage(new MessageDetailView(message, messagesView, user).getContentVBox());
             }
         }
     }

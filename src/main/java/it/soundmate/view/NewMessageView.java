@@ -7,7 +7,6 @@
 package it.soundmate.view;
 
 import it.soundmate.bean.searchbeans.SoloResultBean;
-import it.soundmate.bean.searchbeans.UserResultBean;
 import it.soundmate.constants.Style;
 import it.soundmate.controller.logic.MessagesController;
 import it.soundmate.controller.logic.SearchController;
@@ -19,13 +18,11 @@ import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.scene.control.*;
-import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.List;
 
 public class NewMessageView extends Pane {
 

@@ -43,7 +43,7 @@ public class MessagesView extends Pane {
 
     private final VBox contentVBox = new VBox();
     private final BorderPane messagesBorderPane = new BorderPane();
-    private final MessagesResults messageResults = new MessagesResults();
+    private final MessagesResults messageResults;
     private final NotificationsResults notificationsResults = new NotificationsResults();
     private final NotificationsController notificationsController = new NotificationsController();
     private final MessagesController messagesController = new MessagesController();
@@ -55,6 +55,7 @@ public class MessagesView extends Pane {
 
     public MessagesView(User user){
         this.user = user;
+        this.messageResults = new MessagesResults(this, user);
         Node top = buildTopNode();
         //Style
         UIUtils.setBackgroundPane("#232323", this.messagesBorderPane);
@@ -96,6 +97,11 @@ public class MessagesView extends Pane {
         title.setStyle(Style.HEADER_TEXT);
         title.setPadding(new Insets(25, 0, 25, 15));
         return title;
+    }
+
+    public void setMessagePage(Pane messagePage) {
+        this.contentVBox.getChildren().set(0, messagePage);
+        logger.info("Message Page Set");
     }
 
 
