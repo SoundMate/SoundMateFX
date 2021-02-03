@@ -18,7 +18,7 @@ public class Message {
         this.body = body;
     }
 
-    public Message withID(int code){
+    public Message withCode(int code){
         Message newMessage = new Message();
         newMessage.setIdSender(this.idSender);
         newMessage.setIdReceiver(this.idReceiver);

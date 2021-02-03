@@ -36,13 +36,13 @@ public class MessageDao {
             if (rowAffected == 1) {
                 ResultSet resultSet = preparedStatement.getGeneratedKeys();
                 if (resultSet.next()) {
-                    return message.withID(resultSet.getInt("code"));
+                    return message.withCode(resultSet.getInt("code"));
                 }
             }
-        } catch (SQLException throwables) {
-            throwables.printStackTrace();
+        } catch (SQLException ex) {
+            throw new RepositoryException("Error inserting entry: the error was: \n" + ex.getMessage(), ex);
         }
-        return message.withID(-1); //-1 non è un codice valido, abort
+        return message.withCode(-1); //invalid code, abort (must be > 0)
     }
 
 
@@ -111,7 +111,7 @@ public class MessageDao {
         }
     }
 
-
+    //testing purpose
     public void deleteAllMessages() {
         String sql = "DELETE FROM messages";
         int delRecs;

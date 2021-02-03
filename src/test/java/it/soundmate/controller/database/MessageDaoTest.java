@@ -49,6 +49,7 @@ class MessageDaoTest {
      static void tearDown(){
         userDao.deleteAll();
         sut.deleteAllMessages();
+        userDao.deleteAll();
     }
 
 
