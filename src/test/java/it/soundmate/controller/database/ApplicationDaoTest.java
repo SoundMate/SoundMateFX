@@ -3,10 +3,7 @@ package it.soundmate.controller.database;
 import it.soundmate.bean.registerbeans.RegisterBandBean;
 import it.soundmate.bean.registerbeans.RegisterSoloBean;
 import it.soundmate.database.Connector;
-import it.soundmate.database.dao.ApplicationDao;
-import it.soundmate.database.dao.BandDao;
-import it.soundmate.database.dao.SoloDao;
-import it.soundmate.database.dao.UserDao;
+import it.soundmate.database.dao.*;
 import it.soundmate.model.Application;
 import org.junit.jupiter.api.*;
 
@@ -20,6 +17,7 @@ class ApplicationDaoTest {
     private static final UserDao userDao = new UserDao();
     private final BandDao bandDao = new BandDao(userDao);
     private final SoloDao soloDao = new SoloDao(userDao);
+    private static final JoinRequestDao joinRequestDao = new JoinRequestDao();
 
     @Test
     @Order(1)
@@ -28,7 +26,7 @@ class ApplicationDaoTest {
         int bandId = bandDao.registerBand(regBandBean);
         RegisterSoloBean regSoloBean = new RegisterSoloBean("pippo@", "asd", "pippo", "pluto", "Rome");
         int soloId = soloDao.registerSolo(regSoloBean);
-        Application application = new Application(bandId, soloId , "drums", "ciao, sono pippo");
+        Application application = new Application(bandId,  "drums", "ciao, sono pippo");
 
         Assertions.assertEquals(1, sut.createApplication(application).getApplicationCode());
     }
@@ -41,31 +39,16 @@ class ApplicationDaoTest {
         int bandId = bandDao.registerBand(regBandBean);
         RegisterSoloBean regSoloBean = new RegisterSoloBean("beppe@", "asd", "beppe", "rossi", "Rome");
         int soloId = soloDao.registerSolo(regSoloBean);
-        Application application = new Application(bandId, soloId , "drums", "ciao, vieni a suonare!");
+        Application application = new Application(bandId, "drums", "ciao, vieni a suonare!");
         int code = sut.createApplication(application).getApplicationCode();
 
         Assertions.assertTrue(sut.updateApplicationMessage(msg, code));
     }
 
+
+
     @Test
     @Order(3)
-    void updateSoloAppliedTest(){
-        RegisterBandBean regBandBean = new RegisterBandBean("PJ@", "asd", "PearlJam", "Seattle");
-        int bandId = bandDao.registerBand(regBandBean);
-        RegisterSoloBean regSoloBean = new RegisterSoloBean("luciano@", "dsa", "luciano", "verdi", "Milan");
-        int soloId = soloDao.registerSolo(regSoloBean);
-        RegisterSoloBean regSoloBean2 = new RegisterSoloBean("pancrazio@", "dsa", "pancrazio", "neri", "Rome");
-        int soloId2 = soloDao.registerSolo(regSoloBean2);
-
-        Application application = new Application(bandId, soloId , "drums, guitar", "hello world!");
-        int code = sut.createApplication(application).getApplicationCode();
-
-        Assertions.assertTrue(sut.addSoloToApplication(soloId2, code));
-
-    }
-
-    @Test
-    @Order(4)
     void updateInstrumentTest(){
 
         RegisterBandBean regBandBean = new RegisterBandBean("MM@", "asd", "MuteMath", "New Orleans");
@@ -73,7 +56,7 @@ class ApplicationDaoTest {
         RegisterSoloBean regSoloBean = new RegisterSoloBean("quasimodo@", "dsa", "quasimodo", "pinco", "Milan");
         int soloId = soloDao.registerSolo(regSoloBean);
 
-        Application application = new Application(bandId, soloId , "drums, guitar", "hello world!");
+        Application application = new Application(bandId, "drums, guitar", "hello world!");
         int code = sut.createApplication(application).getApplicationCode();
 
         Assertions.assertTrue(sut.updateApplicationInstrument("piano", code));
@@ -81,34 +64,35 @@ class ApplicationDaoTest {
 
     }
 
-
     @Test
-    @Order(5)
+    @Order(4)
     void deleteApplicationTest() {
         RegisterBandBean regBandBean = new RegisterBandBean("pupo@", "asd", "pupi", "Roccacannuccia");
         int bandId = bandDao.registerBand(regBandBean);
         RegisterSoloBean regSoloBean = new RegisterSoloBean("qualcuno@", "dsa", "qualcuno", "pinco", "Milan");
         int soloId = soloDao.registerSolo(regSoloBean);
 
-        Application application = new Application(bandId, soloId, "drums, guitar", "hello world!");
+        Application application = new Application(bandId,  "drums, guitar", "hello world!");
         int code = sut.createApplication(application).getApplicationCode();
 
         Assertions.assertTrue(sut.deleteApplicationByCode(code));
     }
 
     @Test
-    @Order(6)
+    @Order(5)
     void getApplicationsByBandIdTest(){
         RegisterBandBean regBandBean = new RegisterBandBean("gino@", "asd", "vannelli", "Toronto");
         int bandId = bandDao.registerBand(regBandBean);
         RegisterSoloBean regSoloBean = new RegisterSoloBean("tizio@", "dsa", "caio", "pinco", "Milan");
         int soloId = soloDao.registerSolo(regSoloBean);
+        RegisterSoloBean regSoloBean2 = new RegisterSoloBean("semprionio@", "dsa", "caio", "pinco", "Milan");
+        int soloId2 = soloDao.registerSolo(regSoloBean2);
 
-        Application application1 = new Application(bandId, soloId, "guitar", "hello!");
+        Application application1 = new Application(bandId,  "guitar", "hello!");
         int code1 = sut.createApplication(application1).getApplicationCode();
-        Application application2 = new Application(bandId, soloId, "drums", "world!");
+        Application application2 = new Application(bandId,  "drums", "world!");
         int code2 = sut.createApplication(application2).getApplicationCode();
-        Application application3 = new Application(bandId, soloId, "drums, guitar", "hi!");
+        Application application3 = new Application(bandId, "drums, guitar", "hi!");
         int code3 = sut.createApplication(application3).getApplicationCode();
 
         //la stessa band ha inserito 3 applications, mi aspetto 3 se faccio la size della lista ritornata.
@@ -118,11 +102,37 @@ class ApplicationDaoTest {
 
     }
 
+    @Test
+    @Order(6)
+    void getSolosAppliedTest(){
+
+        RegisterBandBean regBandBean = new RegisterBandBean("plutonio@", "asd", "abbrath", "Paglieta");
+        int bandId = bandDao.registerBand(regBandBean);
+        RegisterSoloBean regSoloBean = new RegisterSoloBean("solo1@", "dsa", "tizio", "verdi", "Milan");
+        int soloId = soloDao.registerSolo(regSoloBean);
+        RegisterSoloBean regSoloBean2 = new RegisterSoloBean("solo2@", "asd", "semprionio", "neri", "Rome");
+        int soloId2 = soloDao.registerSolo(regSoloBean2);
+        RegisterSoloBean regSoloBean3 = new RegisterSoloBean("solo3@", "qwer", "caio", "pinco", "Florence");
+        int soloId3 = soloDao.registerSolo(regSoloBean3);
+
+
+
+        Application application = new Application(bandId, "guitar", "hello!");
+        Application applicationWithCode = sut.createApplication(application);
+        joinRequestDao.sendRequestToApplication(applicationWithCode, soloId, "ciao sono tizio");
+        joinRequestDao.sendRequestToApplication(applicationWithCode, soloId2, "ciao sono semprionio");
+        joinRequestDao.sendRequestToApplication(applicationWithCode, soloId3, "ciao sono caio");
+
+        Assertions.assertEquals(3, sut.getSolosApplied(applicationWithCode).size());
+
+    }
+
 
     @AfterAll
     static void tearDown(){
         userDao.deleteAll();
         sut.deleteApplications();
+        joinRequestDao.deleteJoinRequests();
     }
 
 

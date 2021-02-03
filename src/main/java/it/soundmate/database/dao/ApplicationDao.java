@@ -3,6 +3,7 @@ package it.soundmate.database.dao;
 import it.soundmate.database.Connector;
 import it.soundmate.database.dbexceptions.RepositoryException;
 import it.soundmate.model.Application;
+import it.soundmate.model.Solo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import java.sql.*;
@@ -42,7 +43,7 @@ public class ApplicationDao {
 
     //ritorna tutte le application "aperte" da una band (se una, ritorna una lista di un elemento)
     public List<Application> getApplicationByBandId(int bandId) {
-        String sql = "SELECT code, solos_id, message, instruments FROM applications where id_band = ?";
+        String sql = "SELECT code, message, instruments FROM applications where id_band = ?";
         List<Application> applicationsList = new ArrayList<>();
 
         try (Connection conn = connector.getConnection();
@@ -52,12 +53,8 @@ public class ApplicationDao {
             ResultSet resultSet = preparedStatement.executeQuery();
             while (resultSet.next()) {
                 Application application = new Application();
+
                 application.setApplicationCode(resultSet.getInt("code"));
-
-                Integer[] temp = (Integer[]) resultSet.getArray("solos_id").getArray();
-                List<Integer> solosID = Arrays.asList(temp);
-                application.setAppliedSoloList(solosID);
-
                 application.setMessage(resultSet.getString("message"));
 
                 String[] instruments = (String[]) resultSet.getArray("instruments").getArray();
@@ -73,23 +70,6 @@ public class ApplicationDao {
         }
     }
 
-        //when a solo applies, the entries (array) of solos_id is increased. This is the method:
-        public boolean addSoloToApplication(int soloId, int applicationCode){
-            String sql = "UPDATE applications SET solos_id = array_append(solos_id, ?::int) WHERE  code = ?";
-
-            try(Connection conn = connector.getConnection();
-                PreparedStatement preparedStatement = conn.prepareStatement(sql)){
-
-                preparedStatement.setInt(1, soloId);
-                preparedStatement.setInt(2, applicationCode);
-
-                return preparedStatement.executeUpdate() == 1;
-
-
-            } catch (SQLException ex) {
-                throw new RepositoryException(ERROR + ex.getMessage(), ex);
-            }
-    }
 
     //the band wants to add an instrument requested in the application. This is the method:
     public boolean updateApplicationInstrument(String instrument, int applicationCode){
@@ -124,6 +104,41 @@ public class ApplicationDao {
             throw new RepositoryException(ERROR + ex.getMessage(), ex);
         }
     }
+
+    public List<Solo> getSolosApplied(Application application) {
+        String sql = "SELECT s.id, ru.email, ru.password, s.last_name, s.first_name\n" +
+                "FROM applications " +
+                "JOIN join_request jr on applications.code = jr.code_application\n" +
+                "JOIN solo s on jr.id_solo = s.id\n" +
+                "JOIN registered_users ru on ru.id = s.id\n" +
+                "WHERE applications.code = ?";
+
+        List<Solo> solosList = new ArrayList<>();
+        try (Connection conn = connector.getConnection();
+             PreparedStatement preparedStatement = conn.prepareStatement(sql)) {
+
+            preparedStatement.setInt(1, application.getApplicationCode());
+
+            ResultSet resultSet = preparedStatement.executeQuery();
+            while(resultSet.next()){
+
+                Solo solo = new Solo();
+                solo.setId(resultSet.getInt("id"));
+                solo.setEmail(resultSet.getString("email"));
+                solo.setPassword(resultSet.getString("password"));
+                solo.setLastName(resultSet.getString("last_name"));
+                solo.setFirstName(resultSet.getString("first_name"));
+
+
+                solosList.add(solo);
+
+            } return solosList;
+
+        } catch (SQLException ex){
+            throw new RepositoryException("Error fetching solos. The error was: \n" + ex.getMessage(), ex);
+        }
+    }
+
 
     //the band wants to delete the application.
     public boolean deleteApplicationByCode(int applicationCode) {

@@ -14,9 +14,8 @@ public class Application {
     public Application() {
     }
 
-    public Application(int bandId, Integer appliedSolo, String instrument, String message) {
+    public Application(int bandId, String instrument, String message) {
         this.bandId = bandId;
-        this.appliedSoloList.add(appliedSolo);
         this.instrumentsList.add(instrument);
         this.message = message;
     }
@@ -25,7 +24,6 @@ public class Application {
 
         Application application = new Application();
         application.setBand(this.bandId);
-        application.setAppliedSoloList(this.appliedSoloList);
         application.setMessage(this.message);
         application.setApplicationCode(code);
         return application;
@@ -51,9 +49,7 @@ public class Application {
         return appliedSoloList;
     }
 
-    public void setAppliedSoloList(List<Integer> appliedSoloList) {
-        this.appliedSoloList = appliedSoloList;
-    }
+    public void setAppliedSoloList(List<Integer> solosId){ this.appliedSoloList = solosId;}
 
     public void addSolo(Integer soloID){
         this.appliedSoloList.add(soloID);
