@@ -12,11 +12,18 @@ import java.util.List;
 
 public class BandResultBean extends UserResultBean {
 
-    private final String bandName;
+    private String bandName;
     private List<String> genres;
+
+    public BandResultBean() {
+    }
 
     public BandResultBean(int id, String email, String encodedImg, String bandName, String city) {
         super(id, email, encodedImg, city, UserType.BAND);
+        this.bandName = bandName;
+    }
+
+    public void setBandName(String bandName) {
         this.bandName = bandName;
     }
 

@@ -14,10 +14,13 @@ import java.util.List;
 
 public class SoloResultBean extends UserResultBean {
 
-    private final String firstName;
-    private final String lastName;
+    private String firstName;
+    private String lastName;
     private final List<String> genreList = new ArrayList<>();
     private final List<String> instrumentList = new ArrayList<>();
+
+    public SoloResultBean() {
+    }
 
     public SoloResultBean(int id, String email, String encodedProfileImg, String firstName, String lastName, String city) {
         super(id, email, encodedProfileImg, city, UserType.SOLO);
@@ -25,6 +28,13 @@ public class SoloResultBean extends UserResultBean {
         this.lastName = lastName;
     }
 
+    public void setFirstName(String firstName) {
+        this.firstName = firstName;
+    }
+
+    public void setLastName(String lastName) {
+        this.lastName = lastName;
+    }
 
     public String getFirstName() {
         return firstName;

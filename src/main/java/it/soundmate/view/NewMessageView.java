@@ -74,7 +74,7 @@ public class NewMessageView extends Pane {
                 MessagesController messagesController = new MessagesController();
                 List<UserResultBean> userResultBeans = searchController.performSearch(searchTextField.getText(), new boolean[]{false, false, false}, new String[]{"NONE", "NONE", ""}, user);
                 UserResultBean userResultBean = userResultBeans.get(0);
-                Message message = new Message(user.getId(), userResultBean.getId(), subjectTextField.getText(), messageTextArea.getText());
+                Message message = new Message(user.getId(), userResultBean.getId(), subjectTextField.getText(), messageTextArea.getText(), userResultBean.getUserType());
                 messagesController.sendMessage(message);
             } catch (RepositoryException repositoryException) {
                 logger.error("Repository Exception: {}", repositoryException.getMessage());

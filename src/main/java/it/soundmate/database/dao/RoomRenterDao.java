@@ -2,6 +2,8 @@ package it.soundmate.database.dao;
 
 import it.soundmate.bean.AddRoomBean;
 import it.soundmate.bean.registerbeans.RegisterRenterBean;
+import it.soundmate.bean.searchbeans.BandResultBean;
+import it.soundmate.bean.searchbeans.RoomRenterResultBean;
 import it.soundmate.database.Connector;
 import it.soundmate.database.dbexceptions.DBException;
 import it.soundmate.database.dbexceptions.DuplicatedEmailException;
@@ -75,6 +77,26 @@ public class RoomRenterDao {
             }
         }
     }
+
+    public RoomRenterResultBean getBandName(int id){
+        String sql = "SELECT name FROM room_renter WHERE id = ?";
+        RoomRenterResultBean roomRenterResultBean = new RoomRenterResultBean();
+
+        try(Connection conn = connector.getConnection();
+            PreparedStatement preparedStatement = conn.prepareStatement(sql)){
+
+            preparedStatement.setInt(1, id);
+
+            ResultSet resultSet = preparedStatement.executeQuery();
+            while(resultSet.next()){
+                roomRenterResultBean.setName(resultSet.getString("name"));
+            } return roomRenterResultBean;
+        }
+        catch (SQLException ex) {
+            throw new RepositoryException("Error fetching data. The error was: \n" + ex.getMessage(), ex);
+        }
+    }
+
 
     public RoomRenter getRenterByID(int id) {
         RoomRenter roomRenter = new RoomRenter();

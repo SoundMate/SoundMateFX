@@ -17,6 +17,9 @@ public class RoomRenterResultBean extends UserResultBean {
     private String address;
     private List<Room> rooms;
 
+    public RoomRenterResultBean() {
+    }
+
     public RoomRenterResultBean(int id, String email, String encodedImg, String name, String city) {
         super(id, email, encodedImg, city, UserType.ROOM_RENTER);
         this.name = name;

@@ -8,6 +8,7 @@ package it.soundmate.database.dao;
 
 import it.soundmate.bean.registerbeans.RegisterBean;
 import it.soundmate.bean.registerbeans.RegisterSoloBean;
+import it.soundmate.bean.searchbeans.SoloResultBean;
 import it.soundmate.database.Connector;
 import it.soundmate.database.dbexceptions.DuplicatedEmailException;
 import it.soundmate.database.dbexceptions.RepositoryException;
@@ -17,10 +18,7 @@ import it.soundmate.model.Solo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -109,6 +107,26 @@ public class SoloDao implements Dao<Solo>{
             if (preparedStatement.executeUpdate() == 1) solo.setLastName(lastName);
         } catch (SQLException e) {
             throw new UpdateException("Unable to update last name, SQLException: "+e.getMessage());
+        }
+    }
+
+    public SoloResultBean getFullName(int id){
+        String sql = "SELECT first_name, last_name FROM solo WHERE id = ?";
+        SoloResultBean soloResultBean = new SoloResultBean();
+
+        try(Connection conn = connector.getConnection();
+        PreparedStatement preparedStatement = conn.prepareStatement(sql)){
+
+            preparedStatement.setInt(1, id);
+
+            ResultSet resultSet = preparedStatement.executeQuery();
+            while(resultSet.next()){
+                soloResultBean.setFirstName(resultSet.getString("first_name"));
+                soloResultBean.setLastName(resultSet.getString("last_name"));
+            } return soloResultBean;
+    }
+         catch (SQLException ex) {
+            throw new RepositoryException("Error fetching data. The error was: \n" + ex.getMessage(), ex);
         }
     }
 

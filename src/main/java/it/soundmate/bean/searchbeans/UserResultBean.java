@@ -15,13 +15,16 @@ import java.io.InputStream;
 
 public class UserResultBean {
 
-    private final int id;
-    private final String email;
-    private final InputStream profileImgIs;
-    private final Image profileImg;
-    private final UserType userType;
-    private final String city;
+    private  int id;
+    private  String email;
+    private  InputStream profileImgIs;
+    private  Image profileImg;
+    private  UserType userType;
+    private  String city;
     private User searcher;
+
+    public UserResultBean() {
+    }
 
     public UserResultBean(int id, String email, String encodedImg, String city, UserType userType) {
         this.id = id;

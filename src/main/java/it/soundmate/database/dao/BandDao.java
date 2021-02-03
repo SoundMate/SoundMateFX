@@ -2,6 +2,8 @@ package it.soundmate.database.dao;
 
 import it.soundmate.bean.registerbeans.RegisterBandBean;
 import it.soundmate.bean.registerbeans.RegisterBean;
+import it.soundmate.bean.searchbeans.BandResultBean;
+import it.soundmate.bean.searchbeans.SoloResultBean;
 import it.soundmate.database.Connector;
 import it.soundmate.database.dbexceptions.DuplicatedEmailException;
 import it.soundmate.database.dbexceptions.RepositoryException;
@@ -73,6 +75,25 @@ public class BandDao implements Dao<Band>{
             } catch (SQLException ex) {
                 throw new RepositoryException(ERR_INSERT, ex);
             }
+        }
+    }
+
+    public BandResultBean getBandName(int id){
+        String sql = "SELECT band_name FROM band WHERE id = ?";
+        BandResultBean bandResultBean = new BandResultBean();
+
+        try(Connection conn = connector.getConnection();
+            PreparedStatement preparedStatement = conn.prepareStatement(sql)){
+
+            preparedStatement.setInt(1, id);
+
+            ResultSet resultSet = preparedStatement.executeQuery();
+            while(resultSet.next()){
+                bandResultBean.setBandName(resultSet.getString("band_name"));
+            } return bandResultBean;
+        }
+        catch (SQLException ex) {
+            throw new RepositoryException("Error fetching data. The error was: \n" + ex.getMessage(), ex);
         }
     }
 

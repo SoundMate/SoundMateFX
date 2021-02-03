@@ -4,9 +4,9 @@ import it.soundmate.database.Connector;
 import it.soundmate.database.dbexceptions.RepositoryException;
 import it.soundmate.model.Message;
 import it.soundmate.model.User;
+import it.soundmate.model.UserType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -23,7 +23,7 @@ public class MessageDao {
 
     //sending...
     public Message insertMessage(Message message) {
-        String sql = "INSERT INTO messages (id_receiver, id_sender, subject, body) VALUES (?, ?, ?, ?)";
+        String sql = "INSERT INTO messages (id_receiver, id_sender, subject, body, user_type) VALUES (?, ?, ?, ?, ?)";
 
         try (PreparedStatement preparedStatement = connector.getConnection().prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
 
@@ -31,6 +31,7 @@ public class MessageDao {
             preparedStatement.setInt(2, message.getIdSender());
             preparedStatement.setString(3, message.getSubject());
             preparedStatement.setString(4, message.getBody());
+            preparedStatement.setString(5, message.getSenderUserType().toString());
 
             int rowAffected = preparedStatement.executeUpdate();
             if (rowAffected == 1) {
@@ -61,6 +62,7 @@ public class MessageDao {
                 message.setMessageCode(resultSet.getInt("code"));
                 message.setSubject(resultSet.getString("subject"));
                 message.setBody(resultSet.getString("body"));
+                message.setSenderUserType(UserType.returnUserType(resultSet.getString("user_type")));
                 messages.add(message);
             }
             return messages;
@@ -68,6 +70,7 @@ public class MessageDao {
             throw new RepositoryException("Error fetching messages. \n" + ex.getMessage(), ex);
         }
     }
+
 
     public boolean markAsRead(Message message) {
         String sql = "update messages set is_read = ? where code = ?";

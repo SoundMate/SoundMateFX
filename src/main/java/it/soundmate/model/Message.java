@@ -4,18 +4,21 @@ public class Message {
 
     private int messageCode;
     private int idSender;
+    private UserType senderUserType;
     private int idReceiver;
     private String subject;
     private String body;
 
+
     public Message() {
     }
 
-    public Message(int idSender, int idReceiver, String subject, String body) {
+    public Message(int idSender, int idReceiver, String subject, String body, UserType senderUserType) {
         this.idSender = idSender;
         this.idReceiver = idReceiver;
         this.subject = subject;
         this.body = body;
+        this.senderUserType = senderUserType;
     }
 
     public Message withCode(int code){
@@ -26,6 +29,14 @@ public class Message {
         newMessage.setBody(this.body);
         newMessage.setMessageCode(code);
         return newMessage;
+    }
+
+    public UserType getSenderUserType() {
+        return senderUserType;
+    }
+
+    public void setSenderUserType(UserType senderUserType) {
+        this.senderUserType = senderUserType;
     }
 
     public int getMessageCode() {

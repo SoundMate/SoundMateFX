@@ -5,7 +5,7 @@ import it.soundmate.database.Connector;
 import it.soundmate.database.dao.MessageDao;
 import it.soundmate.database.dao.UserDao;
 import it.soundmate.model.Message;
-import it.soundmate.model.Solo;
+import it.soundmate.model.UserType;
 import org.junit.jupiter.api.*;
 
 
@@ -33,14 +33,14 @@ class MessageDaoTest {
     @Test
     @Order(1)
     void insertMessageTest(){
-        Message message = new Message(1, 2, "ciao", "questo è un messaggio per te");
+        Message message = new Message(1, 2, "ciao", "questo è un messaggio per te", UserType.SOLO);
         Assertions.assertEquals(1, sut.insertMessage(message).getMessageCode());
     }
 
     @Test
     @Order(2)
     void insertAndDeleteUseCase(){
-        Message message = new Message(1, 2, "ciao", "questo è un messaggio per te");
+        Message message = new Message(1, 2, "ciao", "questo è un messaggio per te", UserType.BAND);
         Message toDeleteMsg = sut.insertMessage(message);
         Assertions.assertTrue(sut.deleteMessageByCode(toDeleteMsg));
     }
