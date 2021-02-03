@@ -5,6 +5,7 @@ import it.soundmate.bean.registerbeans.RegisterSoloBean;
 import it.soundmate.database.Connector;
 import it.soundmate.database.dao.*;
 import it.soundmate.model.Application;
+import it.soundmate.model.JoinRequest;
 import org.junit.jupiter.api.*;
 
 import java.util.List;
@@ -110,7 +111,7 @@ class ApplicationDaoTest {
         int bandId = bandDao.registerBand(regBandBean);
         RegisterSoloBean regSoloBean = new RegisterSoloBean("solo1@", "dsa", "tizio", "verdi", "Milan");
         int soloId = soloDao.registerSolo(regSoloBean);
-        RegisterSoloBean regSoloBean2 = new RegisterSoloBean("solo2@", "asd", "semprionio", "neri", "Rome");
+        RegisterSoloBean regSoloBean2 = new RegisterSoloBean("solo2@", "asd", "sempronio", "neri", "Rome");
         int soloId2 = soloDao.registerSolo(regSoloBean2);
         RegisterSoloBean regSoloBean3 = new RegisterSoloBean("solo3@", "qwer", "caio", "pinco", "Florence");
         int soloId3 = soloDao.registerSolo(regSoloBean3);
@@ -119,9 +120,13 @@ class ApplicationDaoTest {
 
         Application application = new Application(bandId, "guitar", "hello!");
         Application applicationWithCode = sut.createApplication(application);
-        joinRequestDao.sendRequestToApplication(applicationWithCode, soloId, "ciao sono tizio");
-        joinRequestDao.sendRequestToApplication(applicationWithCode, soloId2, "ciao sono semprionio");
-        joinRequestDao.sendRequestToApplication(applicationWithCode, soloId3, "ciao sono caio");
+        JoinRequest jr1 = new JoinRequest(bandId, applicationWithCode.getApplicationCode(), soloId, "ciao sono tizio");
+        JoinRequest jr2 = new JoinRequest(bandId, applicationWithCode.getApplicationCode(), soloId2, "ciao sono sempronio");
+        JoinRequest jr3 = new JoinRequest(bandId, applicationWithCode.getApplicationCode(), soloId3, "ciao sono caio");
+
+        joinRequestDao.sendRequestToApplication(applicationWithCode, jr1 );
+        joinRequestDao.sendRequestToApplication(applicationWithCode, jr2);
+        joinRequestDao.sendRequestToApplication(applicationWithCode, jr3);
 
         Assertions.assertEquals(3, sut.getSolosApplied(applicationWithCode).size());
 
