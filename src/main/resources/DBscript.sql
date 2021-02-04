@@ -95,18 +95,17 @@ create unique index room_manager_id_uindex
 
 create table room
 (
-    id           integer              not null
+    id          integer not null
         constraint room_room_manager_id_fk
             references room_renter
             on update cascade on delete cascade,
-    room_code    serial               not null
+    room_code   serial  not null
         constraint room_pk
             primary key,
-    room_price   numeric              not null,
-    room_is_free boolean default true not null,
-    photo        text,
-    description  text,
-    name         varchar              not null
+    room_price  numeric not null,
+    photo       text,
+    description text,
+    name        text    not null
 );
 
 alter table room
@@ -198,24 +197,6 @@ alter table played_genres
 create unique index played_genres_id_uindex
     on played_genres (id);
 
-create table booking
-(
-    room_id    integer not null
-        constraint booking_room_room_code_fk
-            references room
-            on update cascade on delete cascade,
-    booking_id serial  not null
-        constraint booking_pk
-            primary key,
-    date       date    not null,
-    start_time time    not null,
-    end_time   time    not null,
-    booker     integer not null
-);
-
-alter table booking
-    owner to postgres;
-
 create table notifications
 (
     message_id serial  not null
@@ -226,9 +207,6 @@ create table notifications
     type       varchar not null,
     seen       boolean,
     booking_id integer
-        constraint messages_booking_booking_id_fk
-            references booking
-            on update cascade on delete cascade
 );
 
 alter table notifications
@@ -304,4 +282,32 @@ alter table join_request
 
 create unique index join_request_code_uindex
     on join_request (code);
+
+create table booking
+(
+    code        serial                not null
+        constraint booking_pk
+            primary key,
+    room_code   integer               not null
+        constraint booking_room_room_code_fk
+            references room
+            on update cascade on delete cascade
+        constraint booking_room_room_code_fk_2
+            references room
+            on update cascade on delete cascade,
+    date        date                  not null,
+    start_time  time                  not null,
+    end_time    time,
+    booker_id   integer               not null
+        constraint booking_users_id_fk
+            references users
+            on update cascade on delete cascade,
+    is_accepted boolean default false not null
+);
+
+alter table booking
+    owner to postgres;
+
+create unique index booking_booking_code_uindex
+    on booking (code);
 
