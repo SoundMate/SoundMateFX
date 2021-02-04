@@ -302,7 +302,11 @@ create table booking
         constraint booking_users_id_fk
             references users
             on update cascade on delete cascade,
-    is_accepted boolean default false not null
+    is_accepted boolean default false not null,
+    id_renter   integer               not null
+        constraint booking_room_renter_id_fk
+            references room_renter
+            on update cascade on delete cascade
 );
 
 alter table booking
