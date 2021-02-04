@@ -31,13 +31,6 @@ public class Booking {
         this.startTime = startTime;this.endTime = endTime;
     }
 
-    public Booking(Room room, int bookerUserId, LocalDate date, LocalTime startTime, LocalTime endTime, int idRenter) {
-        this.room = room;
-        this.bookerUserId = bookerUserId;
-        this.date = date;
-        this.startTime = startTime;this.endTime = endTime;
-        this.idRenter = idRenter;
-    }
 
     public Booking withCode(int code){
         Booking booking = new Booking();
