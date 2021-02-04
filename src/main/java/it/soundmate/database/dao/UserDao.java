@@ -415,8 +415,11 @@ public class UserDao implements Dao<User> {
     }
 
     public UserMessageBean getSenderInfo(int senderId) {
-        String sql = "select u.id, email, encoded_profile_img, user_type, band_name, first_name, last_name, rr.name from registered_users join users u on registered_users.id = u.id left join band b on u.id = b.id left join solo s on u.id = s.id left join room_renter rr on u.id = rr.id where registered_users.id = (?);";
-        try (PreparedStatement preparedStatement = connector.getConnection().prepareStatement(sql)) {
+        String sql = "select u.id, email, encoded_profile_img, user_type, band_name, first_name, last_name, rr.name " +
+                "from registered_users join users u on registered_users.id = u.id left join band b on u.id = b.id " +
+                "left join solo s on u.id = s.id left join room_renter rr on u.id = rr.id where registered_users.id = (?);";
+        try (Connection conn = connector.getConnection();
+             PreparedStatement preparedStatement = conn.prepareStatement(sql)) {
             preparedStatement.setInt(1, senderId);
             ResultSet resultSet = preparedStatement.executeQuery();
             if (resultSet.next()) {
@@ -438,9 +441,8 @@ public class UserDao implements Dao<User> {
                         throw new InputException("User type not found");
                 }
             } else throw new InputException("User not found");
-        } catch (SQLException sqlException) {
-            sqlException.printStackTrace();
-            throw new RepositoryException("SQL exception: "+sqlException.getMessage());
+        } catch (SQLException ex) {
+            throw new RepositoryException("SQL exception: " + ex.getMessage(), ex);
         }
     }
 }
