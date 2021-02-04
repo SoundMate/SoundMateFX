@@ -16,7 +16,6 @@ import it.soundmate.controller.logic.SearchController;
 import it.soundmate.database.dbexceptions.RepositoryException;
 import it.soundmate.model.Message;
 import it.soundmate.model.User;
-import it.soundmate.view.uicomponents.AutocompletionTextField;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.scene.control.Button;
@@ -26,6 +25,7 @@ import javafx.scene.control.TextField;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
+import org.apache.http.client.UserTokenHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -36,28 +36,25 @@ public class NewMessageView extends Pane {
     private final User user;
     private final SearchController searchController = new SearchController();
     private static final Logger logger = LoggerFactory.getLogger(NewMessageView.class);
+    private final UserResultBean userResultBean;
 
     //UI
     private VBox contentVBox;
-    private final AutocompletionTextField searchTextField = new AutocompletionTextField();
     private final TextField subjectTextField = new TextField("Subject");
     private final TextArea messageTextArea = new TextArea("Message");
     private final Button sendBtn = UIUtils.createStyledButton("Send", new SendAction());
 
-    public NewMessageView(User user) {
+    public NewMessageView(User user, UserResultBean userResultBean) {
+        this.userResultBean = userResultBean;
         this.user = user;
         buildContentVBox();
     }
 
     private void buildContentVBox() {
         this.contentVBox = new VBox();
-        Label messageTo = new Label("New Message");
+        Label messageTo = new Label("New Message to: "+userResultBean.getName());
         messageTo.setStyle(Style.HEADER_TEXT);
-        searchUsers();
-        Button searchBtn = UIUtils.createStyledButton("Search", new SearchUserAction());
-        HBox searchHBox = new HBox(this.searchTextField, searchBtn);
-        searchHBox.setSpacing(10);
-        this.contentVBox.getChildren().addAll(messageTo, searchHBox);
+        this.contentVBox.getChildren().addAll(messageTo);
         this.contentVBox.getChildren().addAll(subjectTextField);
         this.contentVBox.getChildren().addAll(messageTextArea);
         this.contentVBox.getChildren().add(sendBtn);
@@ -72,9 +69,7 @@ public class NewMessageView extends Pane {
         public void handle(ActionEvent event) {
             try {
                 MessagesController messagesController = new MessagesController();
-                List<UserResultBean> userResultBeans = searchController.performSearch(searchTextField.getText(), new boolean[]{false, false, false}, new String[]{"NONE", "NONE", ""}, user);
-                UserResultBean userResultBean = userResultBeans.get(0);
-                Message message = new Message(user.getId(), userResultBean.getId(), subjectTextField.getText(), messageTextArea.getText(), userResultBean.getUserType());
+                Message message = new Message(user.getId(), userResultBean.getId(), subjectTextField.getText(),messageTextArea.getText(), user.getUserType());
                 messagesController.sendMessage(message);
             } catch (RepositoryException repositoryException) {
                 logger.error("Repository Exception: {}", repositoryException.getMessage());
@@ -82,30 +77,4 @@ public class NewMessageView extends Pane {
         }
     }
 
-    private class SearchUserAction implements EventHandler<ActionEvent> {
-        @Override
-        public void handle(ActionEvent event) {
-            searchUsers();
-        }
-    }
-
-    public void searchUsers() {
-        List<UserResultBean> userResultBeans = searchController.performSearch(searchTextField.getText(), new boolean[]{false, false, false}, new String[]{"NONE", "NONE", ""}, user);
-        for (UserResultBean userResultBean : userResultBeans) {
-            switch (userResultBean.getUserType()){
-                case SOLO:
-                    SoloResultBean soloResultBean = (SoloResultBean) userResultBean;
-                    searchTextField.getEntries().add(soloResultBean.getFirstName()+" "+soloResultBean.getLastName());
-                    break;
-                case ROOM_RENTER:
-                    RoomRenterResultBean roomRenterResultBean = (RoomRenterResultBean) userResultBean;
-                    searchTextField.getEntries().add(roomRenterResultBean.getName());
-                    break;
-                case BAND:
-                    BandResultBean bandResultBean = (BandResultBean) userResultBean;
-                    searchTextField.getEntries().add(bandResultBean.getBandName());
-                    break;
-            }
-        }
-    }
 }

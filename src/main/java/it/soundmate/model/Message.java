@@ -1,5 +1,8 @@
 package it.soundmate.model;
 
+import it.soundmate.bean.messagebeans.UserMessageBean;
+import it.soundmate.controller.logic.MessagesController;
+
 public class Message {
 
     private int messageCode;
@@ -8,6 +11,7 @@ public class Message {
     private int idReceiver;
     private String subject;
     private String body;
+    private UserMessageBean userMessageBean;
 
 
     public Message() {
@@ -19,6 +23,12 @@ public class Message {
         this.subject = subject;
         this.body = body;
         this.senderUserType = senderUserType;
+        this.userMessageBean = this.getSender();
+    }
+
+    private UserMessageBean getSender() {
+        MessagesController messagesController = new MessagesController();
+        return messagesController.getSender(this.idSender);
     }
 
     public Message withCode(int code){
@@ -28,6 +38,7 @@ public class Message {
         newMessage.setSubject(this.subject);
         newMessage.setBody(this.body);
         newMessage.setMessageCode(code);
+        newMessage.setUserMessageBean(this.userMessageBean);
         return newMessage;
     }
 
@@ -77,5 +88,13 @@ public class Message {
 
     public void setBody(String body) {
         this.body = body;
+    }
+
+    public UserMessageBean getUserMessageBean() {
+        return userMessageBean;
+    }
+
+    public void setUserMessageBean(UserMessageBean userMessageBean) {
+        this.userMessageBean = userMessageBean;
     }
 }

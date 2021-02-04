@@ -75,7 +75,7 @@ public class MessageDetailView extends Pane {
     private class ReplyAction implements EventHandler<ActionEvent> {
         @Override
         public void handle(ActionEvent event) {
-            Message reply = new Message(user.getId(), message.getIdSender(), message.getSubject(), replyTextArea.getText());
+            Message reply = new Message(user.getId(), message.getIdSender(), message.getSubject(), replyTextArea.getText(), user.getUserType());
             try {
                 MessagesController messagesController = new MessagesController();
                 messagesController.sendMessage(reply);

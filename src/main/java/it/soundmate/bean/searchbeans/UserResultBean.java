@@ -66,4 +66,8 @@ public class UserResultBean {
     public void setSearcher(User searcher) {
         this.searcher = searcher;
     }
+
+    public String getName() {
+        return "";
+    }
 }

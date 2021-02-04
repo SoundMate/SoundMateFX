@@ -17,6 +17,8 @@ import javafx.event.EventHandler;
 import javafx.scene.control.*;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
+import javafx.scene.paint.ImagePattern;
+import javafx.scene.shape.Circle;
 import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -64,13 +66,18 @@ public class MessagesResults extends ListView<Message> {
             HBox messageHBox = new HBox();
             VBox messageVBox = new VBox();
             UIUtils.styleHBoxAndVBoxMessageResults(messageHBox, messageVBox);
-            Label subject = new Label(message.getSubject());
-            subject.setStyle(Style.HIGH_LABEL);
+            Label sender = new Label(message.getUserMessageBean().getName());
+            sender.setStyle(Style.HIGH_LABEL);
             Label body = new Label(message.getBody());
             body.setStyle(Style.LOW_LABEL);
-            messageVBox.getChildren().addAll(subject, body);
+            messageVBox.getChildren().addAll(sender, body);
             Button readBtn = UIUtils.createStyledButton("Read", new ReadAction(message));
-            messageHBox.getChildren().add(messageVBox);
+            Circle profileImg = new Circle();
+            profileImg.setRadius(24);
+            if (message.getUserMessageBean().getProfileImgIs() != null) {
+                profileImg.setFill(new ImagePattern(message.getUserMessageBean().getProfileImg()));
+            }
+            messageHBox.getChildren().addAll(profileImg, messageVBox);
             UIUtils.addRegion(null, messageHBox);
             messageHBox.getChildren().add(readBtn);
             return messageHBox;

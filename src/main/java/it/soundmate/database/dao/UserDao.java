@@ -8,7 +8,11 @@ package it.soundmate.database.dao;
 
 import it.soundmate.bean.LoggedBean;
 import it.soundmate.bean.LoginBean;
+import it.soundmate.bean.messagebeans.BandRenterMessageBean;
+import it.soundmate.bean.messagebeans.SoloMessageBean;
+import it.soundmate.bean.messagebeans.UserMessageBean;
 import it.soundmate.bean.registerbeans.RegisterBean;
+import it.soundmate.bean.searchbeans.BandResultBean;
 import it.soundmate.database.Connector;
 import it.soundmate.database.dbexceptions.RepositoryException;
 import it.soundmate.exceptions.InputException;
@@ -396,6 +400,36 @@ public class UserDao implements Dao<User> {
             else throw new RepositoryException("Unable to mark as read");
         } catch (SQLException sqlException) {
             throw new RepositoryException(sqlException.getMessage());
+        }
+    }
+
+    public UserMessageBean getSenderInfo(int senderId) {
+        String sql = "select u.id, email, encoded_profile_img, user_type, band_name, first_name, last_name, rr.name from registered_users join users u on registered_users.id = u.id left join band b on u.id = b.id left join solo s on u.id = s.id left join room_renter rr on u.id = rr.id where registered_users.id = (?);";
+        try (PreparedStatement preparedStatement = connector.getConnection().prepareStatement(sql)) {
+            preparedStatement.setInt(1, senderId);
+            ResultSet resultSet = preparedStatement.executeQuery();
+            if (resultSet.next()) {
+                int id = resultSet.getInt("id");
+                String email = resultSet.getString(EMAIL);
+                String encodedImg = resultSet.getString("encoded_profile_img");
+                switch (UserType.returnUserType(resultSet.getString("user_type"))) {
+                    case BAND:
+                        String bandName = resultSet.getString("band_name");
+                        return new BandRenterMessageBean(id, email, bandName, encodedImg);
+                    case ROOM_RENTER:
+                        String name = resultSet.getString("name");
+                        return new BandRenterMessageBean(id, email, name, encodedImg);
+                    case SOLO:
+                        String firstName = resultSet.getString("first_name");
+                        String lastName = resultSet.getString("last_name");
+                        return new SoloMessageBean(id, email, firstName, lastName, encodedImg);
+                    default:
+                        throw new InputException("User type not found");
+                }
+            } else throw new InputException("User not found");
+        } catch (SQLException sqlException) {
+            sqlException.printStackTrace();
+            throw new RepositoryException("SQL exception: "+sqlException.getMessage());
         }
     }
 }

@@ -8,6 +8,7 @@ package it.soundmate.view.search;
 
 import it.soundmate.bean.searchbeans.BandResultBean;
 import it.soundmate.constants.Style;
+import it.soundmate.model.Genre;
 import it.soundmate.view.UIUtils;
 import it.soundmate.view.main.SearchingView;
 import javafx.event.ActionEvent;
@@ -32,7 +33,7 @@ public class BandSearchView extends Pane {
     private final SearchingView searchingView;
 
     //UI
-    private VBox contentVBox;
+    private final VBox contentVBox;
     private final Button backBtn = UIUtils.createStyledButton("Back", new BackAction());
 
 
@@ -60,7 +61,7 @@ public class BandSearchView extends Pane {
             rectangle.setFill(new ImagePattern(bandResultBean.getProfileImg()));
         }
         vBox.getChildren().add(rectangle);
-        Label nameLabel = new Label(bandResultBean.getName());
+        Label nameLabel = new Label(bandResultBean.getBandName());
         nameLabel.setStyle(Style.HEADER_TEXT);
         vBox.getChildren().add(nameLabel);
 

@@ -244,4 +244,5 @@ public class BandDao implements Dao<Band>{
             throw new RepositoryException("Unable to update social link");
         }
     }
+
 }

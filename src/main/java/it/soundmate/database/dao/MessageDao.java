@@ -23,7 +23,7 @@ public class MessageDao {
 
     //sending...
     public Message insertMessage(Message message) {
-        String sql = "INSERT INTO messages (id_receiver, id_sender, subject, body, user_type) VALUES (?, ?, ?, ?, ?)";
+        String sql = "INSERT INTO messages (id_receiver, id_sender, subject, body, sender_user_type) VALUES (?, ?, ?, ?, ?)";
 
         try (PreparedStatement preparedStatement = connector.getConnection().prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
 
@@ -62,7 +62,7 @@ public class MessageDao {
                 message.setMessageCode(resultSet.getInt("code"));
                 message.setSubject(resultSet.getString("subject"));
                 message.setBody(resultSet.getString("body"));
-                message.setSenderUserType(UserType.returnUserType(resultSet.getString("user_type")));
+                message.setSenderUserType(UserType.returnUserType(resultSet.getString("sender_user_type")));
                 messages.add(message);
             }
             return messages;

@@ -6,6 +6,7 @@
 
 package it.soundmate.bean.searchbeans;
 
+import it.soundmate.model.Genre;
 import it.soundmate.model.UserType;
 
 import java.util.List;
@@ -39,4 +40,8 @@ public class BandResultBean extends UserResultBean {
         return genres;
     }
 
+    @Override
+    public String getName() {
+        return this.getBandName();
+    }
 }
