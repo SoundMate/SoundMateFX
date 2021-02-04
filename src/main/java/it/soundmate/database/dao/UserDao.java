@@ -281,14 +281,16 @@ public class UserDao implements Dao<User> {
         try (Connection conn = connector.getConnection();
              PreparedStatement preparedStatement = conn.prepareStatement(query)) {
             preparedStatement.setInt(1, bookingID);
+
             ResultSet resultSet = preparedStatement.executeQuery();
+
             if (resultSet.next()) {
-                int roomID = resultSet.getInt("room_id");
+                int roomID = resultSet.getInt("code");
 
                 LocalDate date = resultSet.getDate("date").toLocalDate();
                 LocalTime startTime = resultSet.getTime("start_time").toLocalTime();
                 LocalTime endTime = resultSet.getTime("end_time").toLocalTime();
-                int booker = resultSet.getInt("booker");
+                int booker = resultSet.getInt("booker_id");
                 int id = resultSet.getInt(BOOKING_ID);
                 Booking booking = new Booking(this.getRoomByID(roomID), booker, date, startTime, endTime);
                 booking.setCode(id);

@@ -18,6 +18,7 @@ public class Booking {
     private Room room;
     private int bookerUserId;
     private boolean isAccepted = false;
+    private int idRenter;
 
 
     public Booking() {
@@ -27,7 +28,16 @@ public class Booking {
         this.room = room;
         this.bookerUserId = bookerUserId;
         this.date = date;
-        this.startTime = startTime;this.endTime = endTime;}
+        this.startTime = startTime;this.endTime = endTime;
+    }
+
+    public Booking(Room room, int bookerUserId, LocalDate date, LocalTime startTime, LocalTime endTime, int idRenter) {
+        this.room = room;
+        this.bookerUserId = bookerUserId;
+        this.date = date;
+        this.startTime = startTime;this.endTime = endTime;
+        this.idRenter = idRenter;
+    }
 
     public Booking withCode(int code){
         Booking booking = new Booking();
@@ -41,6 +51,13 @@ public class Booking {
     }
 
 
+    public int getIdRenter() {
+        return idRenter;
+    }
+
+    public void setIdRenter(int idRenter) {
+        this.idRenter = idRenter;
+    }
 
     public Room getRoom() {
         return room;
