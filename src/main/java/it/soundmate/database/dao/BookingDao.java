@@ -221,6 +221,23 @@ public class BookingDao {
     }
 
 
+    public boolean deleteBooking(Booking booking) {
+        String sql = "DELETE FROM booking WHERE code = ?";
+
+        try (Connection conn = connector.getConnection();
+             PreparedStatement preparedStatement = conn.prepareStatement(sql)) {
+
+            preparedStatement.setInt(1, booking.getCode());
+
+            return preparedStatement.executeUpdate() == 1;
+
+        } catch (SQLException ex) {
+            throw new RepositoryException("Error fetching bookings. \n" + ex.getMessage(), ex);
+        }
+    }
+
+
+
 }
 
 
