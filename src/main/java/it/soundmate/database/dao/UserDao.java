@@ -12,7 +12,6 @@ import it.soundmate.bean.messagebeans.BandRenterMessageBean;
 import it.soundmate.bean.messagebeans.SoloMessageBean;
 import it.soundmate.bean.messagebeans.UserMessageBean;
 import it.soundmate.bean.registerbeans.RegisterBean;
-import it.soundmate.bean.searchbeans.BandResultBean;
 import it.soundmate.database.Connector;
 import it.soundmate.database.dbexceptions.RepositoryException;
 import it.soundmate.exceptions.InputException;
@@ -278,7 +277,7 @@ public class UserDao implements Dao<User> {
     }
 
     private Booking getBookingByID(int bookingID) {
-        String query = "SELECT * FROM booking WHERE booking_id = (?)";
+        String query = "SELECT * FROM booking WHERE code = (?)";
         try (Connection conn = connector.getConnection();
              PreparedStatement preparedStatement = conn.prepareStatement(query)) {
             preparedStatement.setInt(1, bookingID);
@@ -292,7 +291,7 @@ public class UserDao implements Dao<User> {
                 int booker = resultSet.getInt("booker");
                 int id = resultSet.getInt(BOOKING_ID);
                 Booking booking = new Booking(this.getRoomByID(roomID), booker, date, startTime, endTime);
-                booking.setBookingID(id);
+                booking.setCode(id);
                 return booking;
             } else throw new InputException("Booking not found");
         } catch (SQLException e) {
@@ -371,7 +370,7 @@ public class UserDao implements Dao<User> {
             preparedStatement.setInt(2, bookingMessage.getSender());
             preparedStatement.setString(3, MessageType.BOOK_ROOM_CONFIRMATION.name());
             preparedStatement.setBoolean(4, false);
-            preparedStatement.setInt(5, bookingMessage.getBooking().getBookingID());
+            preparedStatement.setInt(5, bookingMessage.getBooking().getCode());
             preparedStatement.execute();
             ResultSet resultSet = preparedStatement.getResultSet();
             if (resultSet.next()) {
