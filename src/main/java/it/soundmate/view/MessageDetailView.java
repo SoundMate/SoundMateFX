@@ -17,6 +17,7 @@ import it.soundmate.view.main.MessagesView;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextArea;
@@ -81,6 +82,11 @@ public class MessageDetailView extends Pane {
             try {
                 MessagesController messagesController = new MessagesController();
                 messagesController.sendMessage(reply);
+                Alert confirmedDialog = new Alert(Alert.AlertType.INFORMATION);
+                confirmedDialog.setTitle("Message sent");
+                confirmedDialog.setHeaderText(null);
+                confirmedDialog.setContentText("Message has been sent to "+message.getUserMessageBean().getName());
+                confirmedDialog.showAndWait();
             } catch (RepositoryException | InputException e) {
                 logger.error(e.getMessage());
             }

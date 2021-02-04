@@ -57,7 +57,7 @@ public class MessageDao {
             preparedStatement.setInt(1, user.getId());
             ResultSet resultSet = preparedStatement.executeQuery();
 
-            if (resultSet.next()) {
+            while (resultSet.next()) {
                 Message message = new Message();
                 message.setIdReceiver(resultSet.getInt("id_receiver"));
                 message.setIdSender(resultSet.getInt("id_sender"));
@@ -65,6 +65,7 @@ public class MessageDao {
                 message.setSubject(resultSet.getString("subject"));
                 message.setBody(resultSet.getString("body"));
                 message.setSenderUserType(UserType.returnUserType(resultSet.getString("sender_user_type")));
+                log.info("Message Result: {}", message.getBody());
                 messages.add(message);
             }
             return messages;

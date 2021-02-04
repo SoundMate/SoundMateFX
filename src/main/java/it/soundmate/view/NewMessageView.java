@@ -5,36 +5,24 @@
  */
 
 package it.soundmate.view;
-
-import it.soundmate.bean.searchbeans.BandResultBean;
-import it.soundmate.bean.searchbeans.RoomRenterResultBean;
-import it.soundmate.bean.searchbeans.SoloResultBean;
 import it.soundmate.bean.searchbeans.UserResultBean;
 import it.soundmate.constants.Style;
 import it.soundmate.controller.logic.MessagesController;
-import it.soundmate.controller.logic.SearchController;
 import it.soundmate.database.dbexceptions.RepositoryException;
 import it.soundmate.model.Message;
 import it.soundmate.model.User;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import javafx.scene.control.TextArea;
-import javafx.scene.control.TextField;
-import javafx.scene.layout.HBox;
+import javafx.scene.control.*;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
-import org.apache.http.client.UserTokenHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.List;
 
 public class NewMessageView extends Pane {
 
     private final User user;
-    private final SearchController searchController = new SearchController();
     private static final Logger logger = LoggerFactory.getLogger(NewMessageView.class);
     private final UserResultBean userResultBean;
 
@@ -71,6 +59,11 @@ public class NewMessageView extends Pane {
                 MessagesController messagesController = new MessagesController();
                 Message message = new Message(user.getId(), userResultBean.getId(), subjectTextField.getText(),messageTextArea.getText(), user.getUserType());
                 messagesController.sendMessage(message);
+                Alert confirmedDialog = new Alert(Alert.AlertType.INFORMATION);
+                confirmedDialog.setTitle("Message sent");
+                confirmedDialog.setHeaderText(null);
+                confirmedDialog.setContentText("Message has been sent to "+userResultBean.getName());
+                confirmedDialog.showAndWait();
             } catch (RepositoryException repositoryException) {
                 logger.error("Repository Exception: {}", repositoryException.getMessage());
             }
