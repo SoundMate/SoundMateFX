@@ -415,6 +415,7 @@ public class UserDao implements Dao<User> {
     }
 
     public UserMessageBean getSenderInfo(int senderId) {
+        log.info("Getting user message bean for id: {}", senderId);
         String sql = "select u.id, email, encoded_profile_img, user_type, band_name, first_name, last_name, rr.name from registered_users join users u on registered_users.id = u.id left join band b on u.id = b.id left join solo s on u.id = s.id left join room_renter rr on u.id = rr.id where registered_users.id = (?);";
         try (PreparedStatement preparedStatement = connector.getConnection().prepareStatement(sql)) {
             preparedStatement.setInt(1, senderId);
@@ -426,13 +427,16 @@ public class UserDao implements Dao<User> {
                 switch (UserType.returnUserType(resultSet.getString("user_type"))) {
                     case BAND:
                         String bandName = resultSet.getString("band_name");
+                        log.info("User result bean with name {}", bandName);
                         return new BandRenterMessageBean(id, email, bandName, encodedImg);
                     case ROOM_RENTER:
                         String name = resultSet.getString("name");
+                        log.info("User result bean with name {}", name);
                         return new BandRenterMessageBean(id, email, name, encodedImg);
                     case SOLO:
                         String firstName = resultSet.getString("first_name");
                         String lastName = resultSet.getString("last_name");
+                        log.info("User result bean with name {}", firstName);
                         return new SoloMessageBean(id, email, firstName, lastName, encodedImg);
                     default:
                         throw new InputException("User type not found");

@@ -51,7 +51,7 @@ public class MessagesView extends Pane {
         this.messageResults = new MessagesResults(this, user);
         Node top = buildTopNode();
         //Style
-        UIUtils.setBackgroundPane("#232323", this.messagesBorderPane);
+        UIUtils.setBackgroundPane("#232323", this.contentVBox);
 
         this.messagesBorderPane.setTop(top);
         buildCenterNode(user);

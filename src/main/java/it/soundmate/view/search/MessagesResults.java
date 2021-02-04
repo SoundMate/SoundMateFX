@@ -66,7 +66,7 @@ public class MessagesResults extends ListView<Message> {
             HBox messageHBox = new HBox();
             VBox messageVBox = new VBox();
             UIUtils.styleHBoxAndVBoxMessageResults(messageHBox, messageVBox);
-            Label sender = new Label(message.getUserMessageBean().getName());
+            Label sender = new Label(message.getSender().getName());
             sender.setStyle(Style.HIGH_LABEL);
             Label body = new Label(message.getBody());
             body.setStyle(Style.LOW_LABEL);
@@ -75,7 +75,7 @@ public class MessagesResults extends ListView<Message> {
             Circle profileImg = new Circle();
             profileImg.setRadius(24);
             if (message.getUserMessageBean().getProfileImgIs() != null) {
-                profileImg.setFill(new ImagePattern(message.getUserMessageBean().getProfileImg()));
+                profileImg.setFill(new ImagePattern(message.getSender().getProfileImg()));
             }
             messageHBox.getChildren().addAll(profileImg, messageVBox);
             UIUtils.addRegion(null, messageHBox);

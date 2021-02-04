@@ -23,12 +23,14 @@ public class Message {
         this.subject = subject;
         this.body = body;
         this.senderUserType = senderUserType;
-        this.userMessageBean = this.getSender();
     }
 
-    private UserMessageBean getSender() {
-        MessagesController messagesController = new MessagesController();
-        return messagesController.getSender(this.idSender);
+    public UserMessageBean getSender() {
+        if (this.getUserMessageBean() == null) {
+            MessagesController messagesController = new MessagesController();
+            this.setUserMessageBean(messagesController.getSender(this.idSender));
+        }
+        return this.getUserMessageBean();
     }
 
     public Message withCode(int code){
