@@ -17,6 +17,7 @@ public class Booking {
     private LocalDate date;
     private Room room;
     private int bookerUserId;
+    private boolean isAccepted = false;
 
 
     public Booking() {
@@ -79,6 +80,14 @@ public class Booking {
 
     public void setStartTime(LocalTime startTime) {
         this.startTime = startTime;
+    }
+
+    public boolean isAccepted() {
+        return isAccepted;
+    }
+
+    public void setAccepted(boolean accepted) {
+        isAccepted = accepted;
     }
 
     public void setCode(int code) {
