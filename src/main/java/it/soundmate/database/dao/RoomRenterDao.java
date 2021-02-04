@@ -2,7 +2,6 @@ package it.soundmate.database.dao;
 
 import it.soundmate.bean.AddRoomBean;
 import it.soundmate.bean.registerbeans.RegisterRenterBean;
-import it.soundmate.bean.searchbeans.BandResultBean;
 import it.soundmate.bean.searchbeans.RoomRenterResultBean;
 import it.soundmate.database.Connector;
 import it.soundmate.database.dbexceptions.DBException;
@@ -253,7 +252,7 @@ public class RoomRenterDao {
 
 
     public void bookRoom(Booking booking) {
-        String sql = "INSERT INTO booking (room_id, date, start_time, end_time, booker) VALUES (?, ?, ?, ?, ?) RETURNING booking_id";
+        String sql = "INSERT INTO booking (room_code, date, start_time, end_time, booker_id) VALUES (?, ?, ?, ?, ?) RETURNING booking_id";
         try (Connection conn = connector.getConnection();
              PreparedStatement preparedStatement = conn.prepareStatement(sql)) {
 
@@ -261,7 +260,7 @@ public class RoomRenterDao {
             preparedStatement.setDate(2, Date.valueOf(booking.getDate()));
             preparedStatement.setTime(3, Time.valueOf(booking.getStartTime()));
             preparedStatement.setTime(4, Time.valueOf(booking.getEndTime()));
-            preparedStatement.setInt(5, booking.getBookingUser());
+            preparedStatement.setInt(5, booking.getBookerUser());
             preparedStatement.execute();
             ResultSet resultSet = preparedStatement.getResultSet();
             if (resultSet.next()) {
@@ -274,7 +273,7 @@ public class RoomRenterDao {
     }
 
     public void checkRoomAvailability(LocalDate date, LocalTime start, LocalTime end, Room room) {
-        String sql = "SELECT * FROM booking WHERE room_id = (?)";
+        String sql = "SELECT * FROM booking WHERE room_code = (?)";
         try (Connection conn = connector.getConnection();
              PreparedStatement preparedStatement = conn.prepareStatement(sql)) {
 

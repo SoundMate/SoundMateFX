@@ -141,8 +141,8 @@ public class NotificationsResults extends ListView<Notification> {
             alert.setContentText("Canceling booking "+booking.getBookingID()+" of "+booking.getDate());
             Optional<ButtonType> result = alert.showAndWait();
             if (result.isPresent() && result.get() == ButtonType.OK) {
-                BookingNotification bookingMessageForUser = new BookingNotification(booking.getBookingUser(), booking.getBookingUser(), MessageType.BOOK_ROOM_CANCELED, false, booking);
-                BookingNotification bookingMessageForRenter = new BookingNotification(booking.getBookingUser(), booking.getRoom().getRenterID(), MessageType.BOOK_ROOM_CANCELED, false, booking);
+                BookingNotification bookingMessageForUser = new BookingNotification(booking.getBookerUser(), booking.getBookerUser(), MessageType.BOOK_ROOM_CANCELED, false, booking);
+                BookingNotification bookingMessageForRenter = new BookingNotification(booking.getBookerUser(), booking.getRoom().getRenterID(), MessageType.BOOK_ROOM_CANCELED, false, booking);
                 bookRoomController.cancelBooking(bookingMessageForUser);
                 bookRoomController.cancelBooking(bookingMessageForRenter);
             }
