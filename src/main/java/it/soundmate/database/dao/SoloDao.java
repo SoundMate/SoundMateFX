@@ -61,13 +61,14 @@ public class SoloDao implements Dao<Solo>{
             String sql = "INSERT INTO solo (id, first_name, last_name) VALUES (?, ?, ?)";
             ResultSet resultSet;
             int id = userDao.register(soloBean);
-            try (PreparedStatement prepStmt = connector.getConnection().prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
-                prepStmt.setInt(1, id);
-                prepStmt.setString(2, soloBean.getFirstName());
-                prepStmt.setString(3, soloBean.getLastName());
-                int rowAffected = prepStmt.executeUpdate();
+            try (Connection conn = connector.getConnection();
+                 PreparedStatement preparedStatement = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
+                preparedStatement.setInt(1, id);
+                preparedStatement.setString(2, soloBean.getFirstName());
+                preparedStatement.setString(3, soloBean.getLastName());
+                int rowAffected = preparedStatement.executeUpdate();
                 if (rowAffected == 1) {
-                    resultSet = prepStmt.getGeneratedKeys();
+                    resultSet = preparedStatement.getGeneratedKeys();
                     if (resultSet.next()) {
                         return resultSet.getInt(1);
                     } else throw new RepositoryException("Error registering solo user");
@@ -80,7 +81,8 @@ public class SoloDao implements Dao<Solo>{
 
     private void createGenresEntry(int userID) {
         String sql = "insert into fav_genres (id) values (?)";
-        try (PreparedStatement preparedStatement = this.connector.getConnection().prepareStatement(sql)) {
+        try (Connection conn = connector.getConnection();
+             PreparedStatement preparedStatement = conn.prepareStatement(sql)) {
             preparedStatement.setInt(1, userID);
             preparedStatement.executeUpdate();
         } catch (SQLException sqlException) {
@@ -90,7 +92,8 @@ public class SoloDao implements Dao<Solo>{
 
     public void updateFirstName(Solo solo, String firstName) {
         String query = "update solo set first_name = ? where id = ?";
-        try (PreparedStatement preparedStatement = connector.getConnection().prepareStatement(query)) {
+        try (Connection conn = connector.getConnection();
+             PreparedStatement preparedStatement = conn.prepareStatement(query)) {
             preparedStatement.setString(1, firstName);
             preparedStatement.setInt(2, solo.getId());
             if (preparedStatement.executeUpdate() == 1) solo.setFirstName(firstName);
@@ -101,7 +104,8 @@ public class SoloDao implements Dao<Solo>{
 
     public void updateLastName(Solo solo, String lastName) {
         String query = "update solo set last_name = ? where id = ?";
-        try (PreparedStatement preparedStatement = connector.getConnection().prepareStatement(query)) {
+        try (Connection conn = connector.getConnection();
+             PreparedStatement preparedStatement = conn.prepareStatement(query)) {
             preparedStatement.setString(1, lastName);
             preparedStatement.setInt(2, solo.getId());
             if (preparedStatement.executeUpdate() == 1) solo.setLastName(lastName);
@@ -138,7 +142,8 @@ public class SoloDao implements Dao<Solo>{
         " FROM registered_users LEFT OUTER JOIN users ON (registered_users.id = users.id)\n" +
         " INNER JOIN solo ON (registered_users.id = solo.id) WHERE registered_users.id = ?";
 
-        try (PreparedStatement preparedStatement = connector.getConnection().prepareStatement(query)) {
+        try (Connection conn = connector.getConnection();
+             PreparedStatement preparedStatement = conn.prepareStatement(query)) {
 
             preparedStatement.setInt(1, id);
             resultSet = preparedStatement.executeQuery();
@@ -162,7 +167,8 @@ public class SoloDao implements Dao<Solo>{
     public boolean updateInstrument(Solo solo, String instrument){
         //::text is the parsing for sql queries (the value in ? must be a text type)
         String sql = "UPDATE played_instruments SET instruments = array_append(instruments, ?::text) WHERE id = ?";
-        try (PreparedStatement preparedStatement = connector.getConnection().prepareStatement(sql)){
+        try (Connection conn = connector.getConnection();
+             PreparedStatement preparedStatement = conn.prepareStatement(sql)){
             preparedStatement.setString(1, instrument);
             preparedStatement.setInt(2, solo.getId());
             return preparedStatement.executeUpdate() == 1;
@@ -174,7 +180,8 @@ public class SoloDao implements Dao<Solo>{
     public List<String> getInstruments(int id){
         String sql = "SELECT instruments FROM played_instruments WHERE id = ?";
         List<String> instrumentList = new ArrayList<>();
-        try (PreparedStatement preparedStatement = connector.getConnection().prepareStatement(sql)){
+        try (Connection conn = connector.getConnection();
+             PreparedStatement preparedStatement = conn.prepareStatement(sql)){
             preparedStatement.setInt(1, id);
             ResultSet resultSet = preparedStatement.executeQuery();
             while(resultSet.next()){
@@ -190,7 +197,8 @@ public class SoloDao implements Dao<Solo>{
 
     public boolean updateGenre(Solo solo, Genre genre){
         String sql = "UPDATE fav_genres SET genre = array_append(genre, ?::text) WHERE id = ?";
-        try (PreparedStatement preparedStatement = connector.getConnection().prepareStatement(sql)){
+        try (Connection conn = connector.getConnection();
+             PreparedStatement preparedStatement = conn.prepareStatement(sql)){
             preparedStatement.setString(1, genre.toString());
             preparedStatement.setInt(2, solo.getId());
             boolean result = preparedStatement.executeUpdate() == 1;
@@ -204,7 +212,8 @@ public class SoloDao implements Dao<Solo>{
     public List<Genre> getGenres(int id) {
         String sql = "SELECT genre FROM fav_genres WHERE id = ?";
         List<Genre> genres = new ArrayList<>();
-        try (PreparedStatement preparedStatement = connector.getConnection().prepareStatement(sql)){
+        try (Connection conn = connector.getConnection();
+             PreparedStatement preparedStatement = conn.prepareStatement(sql)){
             return userDao.getGenreList(id, genres, preparedStatement);
         } catch (SQLException ex){
             throw new RepositoryException(ERR_MESSAGE, ex);
@@ -225,7 +234,8 @@ public class SoloDao implements Dao<Solo>{
 
     private void createInstrumentsEntry(int id) {
         String sql = "INSERT INTO played_instruments (id) VALUES (?)";
-        try (PreparedStatement preparedStatement = connector.getConnection().prepareStatement(sql)){
+        try (Connection conn = connector.getConnection();
+             PreparedStatement preparedStatement = conn.prepareStatement(sql)){
             preparedStatement.setInt(1,id);
             preparedStatement.executeUpdate();
         } catch (SQLException e){

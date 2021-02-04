@@ -99,9 +99,12 @@ public class BandDao implements Dao<Band>{
 
     private void createGenreEntry(int userID) {
         String sql = "insert into played_genres (id) values (?)";
-        try (PreparedStatement preparedStatement = this.connector.getConnection().prepareStatement(sql)) {
+        try (Connection conn = connector.getConnection();
+             PreparedStatement preparedStatement = conn.prepareStatement(sql)) {
+
             preparedStatement.setInt(1, userID);
             preparedStatement.executeUpdate();
+
         } catch (SQLException sqlException) {
             log.error("Error creating genre entry");
             sqlException.printStackTrace();
@@ -116,8 +119,8 @@ public class BandDao implements Dao<Band>{
                 " FROM registered_users LEFT OUTER JOIN users ON (registered_users.id = users.id)\n" +
                 " INNER JOIN band ON (registered_users.id = band.id) WHERE registered_users.id = ?";
 
-        try (PreparedStatement preparedStatement = connector.getConnection()
-                .prepareStatement(query)) {
+        try (Connection conn = connector.getConnection();
+                PreparedStatement preparedStatement = conn.prepareStatement(query)) {
 
             preparedStatement.setInt(1, id);
             resultSet = preparedStatement.executeQuery();
@@ -139,7 +142,8 @@ public class BandDao implements Dao<Band>{
     public List<Genre> getGenres(int id) {
         String sql = "SELECT genre FROM played_genres WHERE id = ?";
         List<Genre> genres = new ArrayList<>();
-        try (PreparedStatement preparedStatement = connector.getConnection().prepareStatement(sql)){
+        try (Connection conn = connector.getConnection();
+             PreparedStatement preparedStatement = conn.prepareStatement(sql)){
             return userDao.getGenreList(id, genres, preparedStatement);
         } catch (SQLException ex){
             throw new RepositoryException("Error fetching genres for band, SQL Exception: "+ex.getMessage(), ex);
@@ -148,7 +152,8 @@ public class BandDao implements Dao<Band>{
 
     public void updateName(String name, Band band) {
         String sql = "UPDATE band SET band_name = ? WHERE id = ?";
-        try (PreparedStatement preparedStatement = connector.getConnection().prepareStatement(sql)) {
+        try (Connection conn = connector.getConnection();
+             PreparedStatement preparedStatement = conn.prepareStatement(sql)) {
             preparedStatement.setString(1, name);
             preparedStatement.setInt(2, band.getId());
             if (preparedStatement.executeUpdate() == 1) {
@@ -161,7 +166,9 @@ public class BandDao implements Dao<Band>{
 
     public boolean updateGenre(Band band, Genre genre) {
         String sql = "UPDATE played_genres SET genre = array_append(genre, ?::text) WHERE id = ?";
-        try (PreparedStatement preparedStatement = connector.getConnection().prepareStatement(sql)){
+        try (Connection conn = connector.getConnection();
+             PreparedStatement preparedStatement = conn.prepareStatement(sql)){
+
             preparedStatement.setString(1, genre.name());
             preparedStatement.setInt(2, band.getId());
             boolean result = preparedStatement.executeUpdate() == 1;
@@ -211,7 +218,8 @@ public class BandDao implements Dao<Band>{
             default:
                 throw new InputException("Not valid position link");
         }
-        try (PreparedStatement preparedStatement = connector.getConnection().prepareStatement(sql)) {
+        try (Connection conn = connector.getConnection();
+             PreparedStatement preparedStatement = conn.prepareStatement(sql)) {
                 preparedStatement.setString(1, name);
                 preparedStatement.setInt(2, band.getId());
                 if (preparedStatement.executeUpdate() == 1) {
@@ -225,7 +233,8 @@ public class BandDao implements Dao<Band>{
     public SocialLinks[] getSocialLinks(int id) {
         SocialLinks[] socialLinks = new SocialLinks[3];
         String sql = "SELECT spotify, youtube, facebook FROM band WHERE id = (?)";
-        try (PreparedStatement preparedStatement = connector.getConnection().prepareStatement(sql)) {
+        try (Connection conn = connector.getConnection();
+             PreparedStatement preparedStatement = conn.prepareStatement(sql)) {
             preparedStatement.setInt(1, id);
             ResultSet resultSet = preparedStatement.executeQuery();
             if(resultSet.next()){

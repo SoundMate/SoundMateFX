@@ -78,7 +78,7 @@ public class RoomRenterDao {
         }
     }
 
-    public RoomRenterResultBean getBandName(int id){
+    public RoomRenterResultBean getName(int id){
         String sql = "SELECT name FROM room_renter WHERE id = ?";
         RoomRenterResultBean roomRenterResultBean = new RoomRenterResultBean();
 
@@ -105,8 +105,8 @@ public class RoomRenterDao {
                 " FROM registered_users LEFT OUTER JOIN users ON (registered_users.id = users.id)\n" +
                 " INNER JOIN room_renter rr on users.id = rr.id WHERE registered_users.id = ?";
 
-        try (PreparedStatement preparedStatement = connector.getConnection()
-                .prepareStatement(query)) {
+        try (Connection conn = connector.getConnection();
+             PreparedStatement preparedStatement = conn.prepareStatement(query)) {
             preparedStatement.setInt(1, id);
             resultSet = preparedStatement.executeQuery();
             if (resultSet.next()){
@@ -129,7 +129,8 @@ public class RoomRenterDao {
 
     public void updateName(String name, RoomRenter roomRenter) {
         String sql = "UPDATE room_renter SET name = ? WHERE id = ?";
-        try (PreparedStatement preparedStatement = connector.getConnection().prepareStatement(sql)) {
+        try (Connection conn = connector.getConnection();
+             PreparedStatement preparedStatement = conn.prepareStatement(sql)) {
             preparedStatement.setString(1, name);
             preparedStatement.setInt(2, roomRenter.getId());
             if (preparedStatement.executeUpdate() == 1) {
@@ -142,7 +143,8 @@ public class RoomRenterDao {
 
     public void updateAddress(String address, RoomRenter roomRenter) {
         String sql = "UPDATE room_renter SET address = ? WHERE id = ?";
-        try (PreparedStatement preparedStatement = connector.getConnection().prepareStatement(sql)) {
+        try (Connection conn = connector.getConnection();
+             PreparedStatement preparedStatement = conn.prepareStatement(sql)) {
             preparedStatement.setString(1, address);
             preparedStatement.setInt(2, roomRenter.getId());
             if (preparedStatement.executeUpdate() == 1) {
@@ -155,7 +157,8 @@ public class RoomRenterDao {
 
     public int addRoom(AddRoomBean addRoomBean, RoomRenter roomRenter) {
         String sql = "INSERT INTO room (id, room_price, photo, description, name) VALUES (?, ?, ?, ?, ?) RETURNING room_code";
-        try (PreparedStatement preparedStatement = connector.getConnection().prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
+        try (Connection conn = connector.getConnection();
+             PreparedStatement preparedStatement = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
             preparedStatement.setInt(1, roomRenter.getId());
             preparedStatement.setInt(2, addRoomBean.getPrice());
             preparedStatement.setString(3, addRoomBean.getEncodedImg());
@@ -178,7 +181,8 @@ public class RoomRenterDao {
         String sql = "SELECT * FROM room WHERE id = ?";
         ResultSet resultSet;
         List<Room> roomList = new ArrayList<>();
-        try (PreparedStatement preparedStatement = connector.getConnection().prepareStatement(sql)) {
+        try (Connection conn = connector.getConnection();
+             PreparedStatement preparedStatement = conn.prepareStatement(sql)) {
             preparedStatement.setInt(1, renterID);
             resultSet = preparedStatement.executeQuery();
             while (resultSet.next()) {
@@ -201,7 +205,8 @@ public class RoomRenterDao {
         ResultSet resultSet;
         String sql = "INSERT INTO room (id, room_price, room_is_free, photo, description, name) VALUES (?, ?, ?, ?, ?, ?)";
 
-        try(PreparedStatement preparedStatement = connector.getConnection().prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
+        try(Connection conn = connector.getConnection();
+            PreparedStatement preparedStatement = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
             preparedStatement.setInt(1, id);
             preparedStatement.setDouble(2, room.getPrice());
             preparedStatement.setBoolean(3, room.isRoomIsFree());
@@ -249,7 +254,9 @@ public class RoomRenterDao {
 
     public void bookRoom(Booking booking) {
         String sql = "INSERT INTO booking (room_id, date, start_time, end_time, booker) VALUES (?, ?, ?, ?, ?) RETURNING booking_id";
-        try (PreparedStatement preparedStatement = connector.getConnection().prepareStatement(sql)) {
+        try (Connection conn = connector.getConnection();
+             PreparedStatement preparedStatement = conn.prepareStatement(sql)) {
+
             preparedStatement.setInt(1, booking.getRoom().getCode());
             preparedStatement.setDate(2, Date.valueOf(booking.getDate()));
             preparedStatement.setTime(3, Time.valueOf(booking.getStartTime()));
@@ -268,7 +275,9 @@ public class RoomRenterDao {
 
     public void checkRoomAvailability(LocalDate date, LocalTime start, LocalTime end, Room room) {
         String sql = "SELECT * FROM booking WHERE room_id = (?)";
-        try (PreparedStatement preparedStatement = connector.getConnection().prepareStatement(sql)) {
+        try (Connection conn = connector.getConnection();
+             PreparedStatement preparedStatement = conn.prepareStatement(sql)) {
+
             preparedStatement.setInt(1, room.getCode());
             ResultSet resultSet = preparedStatement.executeQuery();
             while (resultSet.next()) {
@@ -292,7 +301,9 @@ public class RoomRenterDao {
 
     public void sendBookingMessageToRenter(BookingNotification message) {
         String sql = "INSERT INTO notifications (sender, receiver, type, seen, booking_id) VALUES (?, ?, ?, ?, ?) RETURNING message_id";
-        try (PreparedStatement preparedStatement = connector.getConnection().prepareStatement(sql)) {
+        try (Connection conn = connector.getConnection();
+             PreparedStatement preparedStatement = conn.prepareStatement(sql)) {
+
             preparedStatement.setInt(1, message.getSender());
             preparedStatement.setInt(2, message.getReceiver());
             preparedStatement.setString(3, MessageType.BOOK_ROOM_CONFIRMATION.name());
@@ -310,7 +321,9 @@ public class RoomRenterDao {
 
     public void cancelBooking(BookingNotification bookingMessage) {
         String sql = "INSERT INTO notifications (sender, receiver, type, seen, booking_id) VALUES (?,?,?,?,?)";
-        try (PreparedStatement preparedStatement = connector.getConnection().prepareStatement(sql)) {
+        try (Connection conn = connector.getConnection();
+             PreparedStatement preparedStatement = conn.prepareStatement(sql)) {
+
             preparedStatement.setInt(1, bookingMessage.getSender());
             preparedStatement.setInt(2, bookingMessage.getReceiver());
             preparedStatement.setString(3, MessageType.BOOK_ROOM_CANCELED.name());
