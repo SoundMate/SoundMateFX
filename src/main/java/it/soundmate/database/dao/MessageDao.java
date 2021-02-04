@@ -25,7 +25,8 @@ public class MessageDao {
     public Message insertMessage(Message message) {
         String sql = "INSERT INTO messages (id_receiver, id_sender, subject, body, sender_user_type) VALUES (?, ?, ?, ?, ?)";
 
-        try (PreparedStatement preparedStatement = connector.getConnection().prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
+        try (Connection conn = connector.getConnection();
+             PreparedStatement preparedStatement = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
 
             preparedStatement.setInt(1, message.getIdReceiver());
             preparedStatement.setInt(2, message.getIdSender());
@@ -51,7 +52,8 @@ public class MessageDao {
         String sql = "SELECT * FROM messages WHERE id_receiver = ?";
         ArrayList<Message> messages = new ArrayList<>();
 
-        try (PreparedStatement preparedStatement = connector.getConnection().prepareStatement(sql)) {
+        try (Connection conn = connector.getConnection();
+             PreparedStatement preparedStatement = conn.prepareStatement(sql)) {
             preparedStatement.setInt(1, user.getId());
             ResultSet resultSet = preparedStatement.executeQuery();
 
@@ -75,7 +77,8 @@ public class MessageDao {
     public boolean markAsRead(Message message) {
         String sql = "update messages set is_read = ? where code = ?";
 
-        try (PreparedStatement preparedStatement = connector.getConnection().prepareStatement(sql)) {
+        try (Connection conn = connector.getConnection();
+             PreparedStatement preparedStatement = conn.prepareStatement(sql)) {
 
             preparedStatement.setBoolean(1, true);
             preparedStatement.setInt(2, message.getMessageCode());
@@ -96,7 +99,8 @@ public class MessageDao {
     public boolean deleteMessageByCode(Message message) {
         String sql = "delete from messages where code = ?";
 
-        try (PreparedStatement preparedStatement = connector.getConnection().prepareStatement(sql)) {
+        try (Connection conn = connector.getConnection();
+             PreparedStatement preparedStatement = conn.prepareStatement(sql)) {
 
             preparedStatement.setInt(1, message.getMessageCode());
 

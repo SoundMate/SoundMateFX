@@ -194,7 +194,8 @@ public class UserDao implements Dao<User> {
 
     public void updatePassword(User user, String password) {
         String query = "update registered_users set password = ? where id = ?";
-        try (PreparedStatement preparedStatement = connector.getConnection().prepareStatement(query)) {
+        try (Connection conn = connector.getConnection();
+             PreparedStatement preparedStatement = conn.prepareStatement(query)) {
             preparedStatement.setString(1, password);
             preparedStatement.setInt(2, user.getId());
             preparedStatement.executeUpdate();
@@ -225,7 +226,8 @@ public class UserDao implements Dao<User> {
         log.info("Getting messages for user");
         List<Notification> notificationList = new ArrayList<>();
         String query = "select * from notifications join booking on notifications.booking_id = booking.booking_id where receiver = (?)";
-        try (PreparedStatement preparedStatement = connector.getConnection().prepareStatement(query, Statement.RETURN_GENERATED_KEYS)) {
+        try (Connection conn = connector.getConnection();
+             PreparedStatement preparedStatement = conn.prepareStatement(query, Statement.RETURN_GENERATED_KEYS)) {
             preparedStatement.setInt(1, id);
             ResultSet resultSet = preparedStatement.executeQuery();
             while (resultSet.next()) {
@@ -255,7 +257,8 @@ public class UserDao implements Dao<User> {
 
     private Room getRoomByID(int roomID) {
         String query = "SELECT * FROM room WHERE room_code = (?)";
-        try (PreparedStatement preparedStatement = connector.getConnection().prepareStatement(query)) {
+        try (Connection conn = connector.getConnection();
+             PreparedStatement preparedStatement = conn.prepareStatement(query)) {
             preparedStatement.setInt(1, roomID);
             ResultSet resultSet = preparedStatement.executeQuery();
             if (resultSet.next()) {
@@ -276,7 +279,8 @@ public class UserDao implements Dao<User> {
 
     private Booking getBookingByID(int bookingID) {
         String query = "SELECT * FROM booking WHERE booking_id = (?)";
-        try (PreparedStatement preparedStatement = connector.getConnection().prepareStatement(query)) {
+        try (Connection conn = connector.getConnection();
+             PreparedStatement preparedStatement = conn.prepareStatement(query)) {
             preparedStatement.setInt(1, bookingID);
             ResultSet resultSet = preparedStatement.executeQuery();
             if (resultSet.next()) {
@@ -298,7 +302,8 @@ public class UserDao implements Dao<User> {
 
     public void updateEmail(User user, String email) {
         String query = "update registered_users set email = ? where id = ?";
-        try (PreparedStatement preparedStatement = connector.getConnection().prepareStatement(query)) {
+        try (Connection conn = connector.getConnection();
+             PreparedStatement preparedStatement = conn.prepareStatement(query)) {
             preparedStatement.setString(1, email);
             preparedStatement.setInt(2, user.getId());
             preparedStatement.executeUpdate();
@@ -310,7 +315,8 @@ public class UserDao implements Dao<User> {
 
     public boolean deleteUserByEmail(String email){
         String query = "delete from registered_users where email = ?";
-        try (PreparedStatement preparedStatement = connector.getConnection().prepareStatement(query)) {
+        try (Connection conn = connector.getConnection();
+             PreparedStatement preparedStatement = conn.prepareStatement(query)) {
             preparedStatement.setString(1, email);
             return preparedStatement.executeUpdate() == 1;
         } catch (SQLException e) {
@@ -321,7 +327,8 @@ public class UserDao implements Dao<User> {
 
     public int updateProfilePic(int id, Path pathToImg){
         String query = "update users set encoded_profile_img = ? where id = ?";
-        try (PreparedStatement preparedStatement = connector.getConnection().prepareStatement(query)) {
+        try (Connection conn = connector.getConnection();
+             PreparedStatement preparedStatement = conn.prepareStatement(query)) {
             String encodedImg = ImgBase64Repo.encode(pathToImg);
             preparedStatement.setString(1, encodedImg);
             preparedStatement.setInt(2, id);
@@ -335,7 +342,8 @@ public class UserDao implements Dao<User> {
 
     public boolean deleteProfilePic(User user){
         String query = "update users set encoded_profile_img = null where id = ?";
-        try (PreparedStatement preparedStatement = connector.getConnection().prepareStatement(query)) {
+        try (Connection conn = connector.getConnection();
+             PreparedStatement preparedStatement = conn.prepareStatement(query)) {
             preparedStatement.setInt(1, user.getId());
             return preparedStatement.executeUpdate() == 1;
         } catch (SQLException e) {
@@ -345,7 +353,8 @@ public class UserDao implements Dao<User> {
 
     public void updateCity(String city, User user) {
         String sql = "UPDATE registered_users SET city = ? WHERE id = ?";
-        try (PreparedStatement preparedStatement = connector.getConnection().prepareStatement(sql)) {
+        try (Connection conn = connector.getConnection();
+             PreparedStatement preparedStatement = conn.prepareStatement(sql)) {
             preparedStatement.setString(1, city);
             preparedStatement.setInt(2, user.getId());
             if (preparedStatement.executeUpdate() == 1) user.setCity(city);
@@ -356,7 +365,8 @@ public class UserDao implements Dao<User> {
 
     public void sendBookingMessageToUser(BookingNotification bookingMessage) {
         String sql = "INSERT INTO notifications (sender, receiver, type, seen, booking_id) VALUES (?, ?, ?, ?, ?) RETURNING message_id";
-        try (PreparedStatement preparedStatement = connector.getConnection().prepareStatement(sql)) {
+        try (Connection conn = connector.getConnection();
+             PreparedStatement preparedStatement = conn.prepareStatement(sql)) {
             preparedStatement.setInt(1, bookingMessage.getSender());
             preparedStatement.setInt(2, bookingMessage.getSender());
             preparedStatement.setString(3, MessageType.BOOK_ROOM_CONFIRMATION.name());
@@ -390,7 +400,8 @@ public class UserDao implements Dao<User> {
 
     public void markMessageAsRead(Notification notification) {
         String sql = "UPDATE notifications SET seen = true WHERE message_id = (?)";
-        try (PreparedStatement preparedStatement = connector.getConnection().prepareStatement(sql)) {
+        try (Connection conn = connector.getConnection();
+             PreparedStatement preparedStatement = conn.prepareStatement(sql)) {
             log.info("Message ID: {}", notification.getMessageId());
             preparedStatement.setInt(1, notification.getMessageId());
             if (preparedStatement.executeUpdate() == 1) {

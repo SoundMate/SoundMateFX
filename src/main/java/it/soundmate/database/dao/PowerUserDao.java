@@ -47,7 +47,8 @@ public class PowerUserDao {
     public boolean unbanEmail(String email){
         int deletedRec;
 
-        try(Connection conn = connector.getConnection(); PreparedStatement pstmt = conn.prepareStatement(UNBAN_STAT)){
+        try(Connection conn = connector.getConnection();
+            PreparedStatement pstmt = conn.prepareStatement(UNBAN_STAT)){
 
             pstmt.setString(1, email);
             deletedRec = pstmt.executeUpdate();
