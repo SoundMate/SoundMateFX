@@ -12,15 +12,17 @@ import java.time.LocalTime;
 public class Booking {
 
     private int bookingID;
-    private LocalTime endTime;
-    private Room room;
-    private int bookingUser;
-    private LocalDate date;
     private LocalTime startTime;
+    private LocalTime endTime;
+    private LocalDate date;
+    private Room room;
+    private int bookerUser;
 
-    public Booking(Room room, int bookingUser, LocalDate date, LocalTime startTime, LocalTime endTime) {
+
+
+    public Booking(Room room, int bookerUser, LocalDate date, LocalTime startTime, LocalTime endTime) {
         this.room = room;
-        this.bookingUser = bookingUser;
+        this.bookerUser = bookerUser;
         this.date = date;
         this.startTime = startTime;this.endTime = endTime;}
 
@@ -32,12 +34,12 @@ public class Booking {
         this.room = room;
     }
 
-    public int getBookingUser() {
-        return bookingUser;
+    public int getBookerUser() {
+        return bookerUser;
     }
 
-    public void setBookingUser(int bookingUser) {
-        this.bookingUser = bookingUser;
+    public void setBookerUser(int bookerUser) {
+        this.bookerUser = bookerUser;
     }
 
     public LocalTime getEndTime() {
