@@ -11,20 +11,35 @@ import java.time.LocalTime;
 
 public class Booking {
 
-    private int bookingID;
+    private int code;
     private LocalTime startTime;
     private LocalTime endTime;
     private LocalDate date;
     private Room room;
-    private int bookerUser;
+    private int bookerUserId;
 
 
+    public Booking() {
+    }
 
-    public Booking(Room room, int bookerUser, LocalDate date, LocalTime startTime, LocalTime endTime) {
+    public Booking(Room room, int bookerUserId, LocalDate date, LocalTime startTime, LocalTime endTime) {
         this.room = room;
-        this.bookerUser = bookerUser;
+        this.bookerUserId = bookerUserId;
         this.date = date;
         this.startTime = startTime;this.endTime = endTime;}
+
+    public Booking withCode(int code){
+        Booking booking = new Booking();
+        booking.setRoom(this.room);
+        booking.setStartTime(this.startTime);
+        booking.setEndTime(this.endTime);
+        booking.setDate(this.date);
+        booking.setBookerUserId(this.bookerUserId);
+        booking.setCode(code);
+        return booking;
+    }
+
+
 
     public Room getRoom() {
         return room;
@@ -34,12 +49,12 @@ public class Booking {
         this.room = room;
     }
 
-    public int getBookerUser() {
-        return bookerUser;
+    public int getBookerUserId() {
+        return bookerUserId;
     }
 
-    public void setBookerUser(int bookerUser) {
-        this.bookerUser = bookerUser;
+    public void setBookerUserId(int bookerUserId) {
+        this.bookerUserId = bookerUserId;
     }
 
     public LocalTime getEndTime() {
@@ -66,11 +81,11 @@ public class Booking {
         this.startTime = startTime;
     }
 
-    public void setBookingID(int bookingID) {
-        this.bookingID = bookingID;
+    public void setCode(int code) {
+        this.code = code;
     }
 
-    public int getBookingID() {
-        return bookingID;
+    public int getCode() {
+        return code;
     }
 }

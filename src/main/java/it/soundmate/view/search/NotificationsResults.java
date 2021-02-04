@@ -88,7 +88,7 @@ public class NotificationsResults extends ListView<Notification> {
             logger.info("Building book canceled message");
             seenMessageStyle(notification, messageHBox, messageTypeLabel, markAsRead);
             BookingNotification bookingMessage = (BookingNotification) notification;
-            messageTypeLabel.setText("Room Booking Canceled #" + bookingMessage.getBooking().getBookingID());
+            messageTypeLabel.setText("Room Booking Canceled #" + bookingMessage.getBooking().getCode());
             Label messageLabel = new Label(MessageType.BOOK_ROOM_CANCELED.getMessageDesc()+" for "+((BookingNotification) notification).getBooking().getDate()+" from "+((BookingNotification) notification).getBooking().getStartTime() + " to "+((BookingNotification) notification).getBooking().getEndTime());
             messageLabel.setStyle(Style.LOW_LABEL);
             messageVBox.getChildren().add(messageLabel);
@@ -100,7 +100,7 @@ public class NotificationsResults extends ListView<Notification> {
         private void buildBookConfirmationMessage(Notification notification, HBox messageHBox, VBox messageVBox, Label messageTypeLabel, Button markAsRead) {
             seenMessageStyle(notification, messageHBox, messageTypeLabel, markAsRead);
             BookingNotification bookingMessage = (BookingNotification) notification;
-            messageTypeLabel.setText("Room Booking #" + bookingMessage.getBooking().getBookingID());
+            messageTypeLabel.setText("Room Booking #" + bookingMessage.getBooking().getCode());
             Label messageLabel = new Label(MessageType.BOOK_ROOM_CONFIRMATION.getMessageDesc()+" for "+((BookingNotification) notification).getBooking().getDate()+" from "+((BookingNotification) notification).getBooking().getStartTime() + " to "+((BookingNotification) notification).getBooking().getEndTime());
             messageLabel.setStyle(Style.LOW_LABEL);
             messageVBox.getChildren().add(messageLabel);
@@ -138,11 +138,11 @@ public class NotificationsResults extends ListView<Notification> {
             Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
             alert.setTitle("Confirmation Dialog");
             alert.setHeaderText("Are you sure?");
-            alert.setContentText("Canceling booking "+booking.getBookingID()+" of "+booking.getDate());
+            alert.setContentText("Canceling booking "+booking.getCode()+" of "+booking.getDate());
             Optional<ButtonType> result = alert.showAndWait();
             if (result.isPresent() && result.get() == ButtonType.OK) {
-                BookingNotification bookingMessageForUser = new BookingNotification(booking.getBookerUser(), booking.getBookerUser(), MessageType.BOOK_ROOM_CANCELED, false, booking);
-                BookingNotification bookingMessageForRenter = new BookingNotification(booking.getBookerUser(), booking.getRoom().getRenterID(), MessageType.BOOK_ROOM_CANCELED, false, booking);
+                BookingNotification bookingMessageForUser = new BookingNotification(booking.getBookerUserId(), booking.getBookerUserId(), MessageType.BOOK_ROOM_CANCELED, false, booking);
+                BookingNotification bookingMessageForRenter = new BookingNotification(booking.getBookerUserId(), booking.getRoom().getRenterID(), MessageType.BOOK_ROOM_CANCELED, false, booking);
                 bookRoomController.cancelBooking(bookingMessageForUser);
                 bookRoomController.cancelBooking(bookingMessageForRenter);
             }
