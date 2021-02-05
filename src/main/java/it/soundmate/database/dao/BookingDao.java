@@ -237,6 +237,38 @@ public class BookingDao {
     }
 
 
+    //testing purpose
+    public void deleteBookingEntries() {
+        String sql = "DELETE FROM booking";
+        int delRecs;
+
+        try (Connection conn = connector.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            delRecs = stmt.executeUpdate();
+            if (delRecs >= 1) log.info("\t ***** Booking Entries Successfully Cleaned! *****");
+            resetCode();
+
+        } catch (SQLException ex) {
+            throw new RepositoryException("Error Deleting Booking entries \n" + ex.getMessage(), ex);
+        }
+    }
+
+    private void resetCode() {
+        String sql = "ALTER SEQUENCE booking_booking_code_seq RESTART WITH 1";
+
+        try (Connection conn = connector.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            stmt.executeUpdate();
+            log.info("\t ***** Code Values reset successfully! *****");
+        } catch (SQLException ex) {
+            throw new RepositoryException("Error ResetCode", ex);
+        }
+    }
+
+
+
 
 }
 
