@@ -7,6 +7,8 @@
 package it.soundmate.database.searchengine;
 
 import it.soundmate.bean.searchbeans.BandResultBean;
+import it.soundmate.database.dao.BandDao;
+import it.soundmate.database.dao.UserDao;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -27,6 +29,7 @@ public class SearchBand implements SearchEngine<BandResultBean>, Runnable {
     private final String genre;
     private final String city;
     private final List<BandResultBean> results = new ArrayList<>();
+    private final BandDao bandDao = new BandDao(new UserDao());
 
     public SearchBand(String searchString, Connection connection, String genre, String city){
         if (searchString == null) this.searchString = "";
@@ -83,6 +86,8 @@ public class SearchBand implements SearchEngine<BandResultBean>, Runnable {
                 String [] temp = (String []) resultSet.getArray("genre").getArray();
                 genreList = Arrays.asList(temp);
             }
+            logger.info("Band ID: {}", id);
+            bandResultBean.setSocialLinks(Arrays.asList(bandDao.getSocialLinks(id)));
             bandResultBean.setGenres(genreList);
             bandResultBeanList.add(bandResultBean);
             logger.info("Building result");

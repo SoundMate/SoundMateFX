@@ -29,7 +29,7 @@ public class JoinRequestDao {
             PreparedStatement preparedStatement = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)){
 
             preparedStatement.setInt(1, application.getApplicationCode());
-            preparedStatement.setInt(2, application.getBandId());
+            preparedStatement.setInt(2, joinRequest.getIdBand());
             preparedStatement.setInt(3, joinRequest.getIdSolo());
             preparedStatement.setString(4, joinRequest.getMessage());
 

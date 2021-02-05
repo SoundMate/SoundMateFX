@@ -17,6 +17,7 @@ import it.soundmate.view.main.ProfileView;
 import it.soundmate.view.uicomponents.InstrumentGraphics;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
+import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.*;
 import javafx.scene.layout.HBox;
@@ -44,10 +45,12 @@ public class NewApplicationView extends VBox {
     public NewApplicationView(ProfileView profileView, Band band) {
         this.profileView = profileView;
         this.band = band;
-        buildContentVBox(band);
+        buildContentVBox();
     }
 
-    private void buildContentVBox(Band band) {
+    private void buildContentVBox() {
+        this.setSpacing(10);
+        this.setPadding(new Insets(25));
         Label title = new Label("New Application");
         title.setStyle(Style.HEADER_TEXT);
         Label instrumentsLabel = new Label("Looking for: ");
@@ -59,6 +62,11 @@ public class NewApplicationView extends VBox {
         this.getChildren().add(this.instrumentsHBox);
         this.getChildren().add(messageLabel);
         this.getChildren().add(messageTextArea);
+        HBox buttons = new HBox();
+        buttons.getChildren().add(backBtn);
+        UIUtils.addRegion(null, buttons);
+        buttons.getChildren().add(createApplicationBtn);
+        this.getChildren().add(buttons);
     }
 
     private class AddInstrumentAction implements EventHandler<ActionEvent> {

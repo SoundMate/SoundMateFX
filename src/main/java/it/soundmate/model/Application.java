@@ -1,5 +1,8 @@
 package it.soundmate.model;
 
+import it.soundmate.bean.searchbeans.SoloResultBean;
+import it.soundmate.controller.logic.ApplicationController;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -7,9 +10,10 @@ public class Application {
 
     private int applicationCode;
     private int bandId;
-    private List<Integer> appliedSoloList = new ArrayList<>();
+    private List<Integer> appliedSoloListID = new ArrayList<>();
     private List<String> instrumentsList = new ArrayList<>(); //instruments the band are looking for
     private String message;
+    private List<SoloResultBean> appliedSoloList = new ArrayList<>();
 
     public Application() {
     }
@@ -44,14 +48,14 @@ public class Application {
         this.bandId = bandId;
     }
 
-    public List<Integer> getAppliedSoloList() {
-        return appliedSoloList;
+    public List<Integer> getAppliedSoloListID() {
+        return appliedSoloListID;
     }
 
-    public void setAppliedSoloList(List<Integer> solosId){ this.appliedSoloList = solosId;}
+    public void setAppliedSoloListID(List<Integer> solosId){ this.appliedSoloListID = solosId;}
 
     public void addSolo(Integer soloID){
-        this.appliedSoloList.add(soloID);
+        this.appliedSoloListID.add(soloID);
     }
 
     public List<String> getInstrumentsList() {
@@ -74,4 +78,19 @@ public class Application {
         this.message = message;
     }
 
+    public List<SoloResultBean> getAppliedSoloList() {
+        return appliedSoloList;
+    }
+
+    public void setAppliedSoloList(List<SoloResultBean> appliedSoloList) {
+        this.appliedSoloList = appliedSoloList;
+    }
+
+    public List<SoloResultBean> getAppliedSolosFromID() {
+        if (this.getAppliedSoloList() == null || this.getAppliedSoloList().isEmpty()) {
+            ApplicationController applicationController = new ApplicationController();
+            this.setAppliedSoloList( applicationController.getAppliedSoloBeans(this));
+        }
+        return this.getAppliedSoloList();
+    }
 }

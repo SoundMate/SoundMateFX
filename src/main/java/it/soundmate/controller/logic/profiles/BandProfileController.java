@@ -16,6 +16,7 @@ import it.soundmate.model.Band;
 import it.soundmate.model.Genre;
 import it.soundmate.view.uicomponents.SocialLinks;
 
+import java.util.Arrays;
 import java.util.List;
 
 public class BandProfileController {
@@ -64,6 +65,14 @@ public class BandProfileController {
         try {
             ApplicationDao applicationDao = new ApplicationDao();
             applicationDao.createApplication(application);
+        } catch (RepositoryException repositoryException) {
+            throw new RepositoryException(repositoryException.getMessage());
+        }
+    }
+
+    public List<SocialLinks> getSocialLinks(int id) {
+        try {
+            return Arrays.asList(bandDao.getSocialLinks(id));
         } catch (RepositoryException repositoryException) {
             throw new RepositoryException(repositoryException.getMessage());
         }

@@ -109,6 +109,7 @@ public class BandProfileView extends VBox {
 
     private HBox buildApplicationHBox(Band band) {
         HBox applicationHBox = new HBox();
+        applicationHBox.setPadding(new Insets(0, 25, 0, 25));
         VBox applicationVBox = new VBox();
         Label applicationLabel = new Label("Application");
         applicationLabel.setStyle(Style.MID_LABEL);
@@ -120,7 +121,7 @@ public class BandProfileView extends VBox {
             vBox.setSpacing(10);
             Label title = new Label("Application #"+(i+1));
             title.setStyle(Style.MID_LABEL);
-            Button applicationBtn = UIUtils.createStyledButton("Read/Delete", new ApplicationAction(applicationList.get(i)));
+            Button applicationBtn = UIUtils.createStyledButton("Manage", new ApplicationAction(applicationList.get(i)));
             vBox.getChildren().addAll(title, applicationBtn);
             applicationHBox.getChildren().add(vBox);
         }
@@ -190,13 +191,6 @@ public class BandProfileView extends VBox {
         }
     }
 
-    private class SearchSoloAction implements EventHandler<ActionEvent> {
-        @Override
-        public void handle(ActionEvent event) {
-            logger.info("Search solo click");
-        }
-    }
-
     private class AddSocialAction implements EventHandler<ActionEvent> {
         @Override
         public void handle(ActionEvent event) {
@@ -236,7 +230,7 @@ public class BandProfileView extends VBox {
 
         @Override
         public void handle(ActionEvent event) {
-            //Navigate to application manage view
+            profileView.setProfilePage(new ManageApplicationView(profileView, band, application));
         }
     }
 
