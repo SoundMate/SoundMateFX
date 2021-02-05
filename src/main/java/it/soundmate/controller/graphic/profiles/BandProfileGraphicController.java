@@ -7,7 +7,9 @@
 package it.soundmate.controller.graphic.profiles;
 
 import it.soundmate.controller.logic.profiles.BandProfileController;
+import it.soundmate.database.dbexceptions.RepositoryException;
 import it.soundmate.exceptions.InputException;
+import it.soundmate.model.Application;
 import it.soundmate.model.Band;
 import it.soundmate.model.Genre;
 import it.soundmate.view.main.ProfileView;
@@ -74,6 +76,22 @@ public class BandProfileGraphicController extends EditGraphicController {
             return socialLinks;
         } catch (InputException inputException) {
             throw new InputException(inputException.getMessage());
+        }
+    }
+
+    public List<Application> getApplicationsList(int id) {
+        try {
+            return bandProfileController.getApplicationsList(id);
+        } catch (RepositoryException e) {
+            throw new RepositoryException(e.getMessage());
+        }
+    }
+
+    public void addApplication(Application application) {
+        try {
+            bandProfileController.addApplication(application);
+        } catch (RepositoryException repositoryException) {
+            throw new RepositoryException(repositoryException.getMessage());
         }
     }
 }

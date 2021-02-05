@@ -21,7 +21,6 @@ public class Application {
     }
 
     public Application withCode(int code){
-
         Application application = new Application();
         application.setBand(this.bandId);
         application.setMessage(this.message);

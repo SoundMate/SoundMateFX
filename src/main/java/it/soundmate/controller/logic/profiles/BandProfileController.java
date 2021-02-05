@@ -6,13 +6,17 @@
 
 package it.soundmate.controller.logic.profiles;
 
+import it.soundmate.database.dao.ApplicationDao;
 import it.soundmate.database.dao.BandDao;
 import it.soundmate.database.dao.UserDao;
 import it.soundmate.database.dbexceptions.RepositoryException;
 import it.soundmate.exceptions.InputException;
+import it.soundmate.model.Application;
 import it.soundmate.model.Band;
 import it.soundmate.model.Genre;
 import it.soundmate.view.uicomponents.SocialLinks;
+
+import java.util.List;
 
 public class BandProfileController {
 
@@ -44,6 +48,24 @@ public class BandProfileController {
             }
         } catch (RepositoryException repositoryException) {
             throw new InputException(repositoryException.getMessage());
+        }
+    }
+
+    public List<Application> getApplicationsList(int id) {
+        try {
+            ApplicationDao applicationDao = new ApplicationDao();
+            return applicationDao.getApplicationByBandId(id);
+        } catch (RepositoryException repositoryException) {
+            throw new RepositoryException(repositoryException.getMessage());
+        }
+    }
+
+    public void addApplication(Application application) {
+        try {
+            ApplicationDao applicationDao = new ApplicationDao();
+            applicationDao.createApplication(application);
+        } catch (RepositoryException repositoryException) {
+            throw new RepositoryException(repositoryException.getMessage());
         }
     }
 }

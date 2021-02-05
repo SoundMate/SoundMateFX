@@ -64,7 +64,7 @@ public class SoloProfileGraphicController extends EditGraphicController {
         }
     }
 
-    private InstrumentGraphics instrumentDialog() {
+    public static InstrumentGraphics instrumentDialog() {
         List<String> choices = new ArrayList<>();
         for (InstrumentGraphics instrumentGraphics : InstrumentGraphics.values()) {
             choices.add(instrumentGraphics.name());

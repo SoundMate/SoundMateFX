@@ -224,7 +224,7 @@ public class UserDao implements Dao<User> {
     public List<Notification> getNotificationsForUser(int id) {
         log.info("Getting messages for user");
         List<Notification> notificationList = new ArrayList<>();
-        String query = "select * from notifications join booking on notifications.booking_id = booking.booking_id where receiver = (?)";
+        String query = "select * from notifications join booking on notifications.booking_id = booking.code where receiver = (?)";
         try (Connection conn = connector.getConnection();
              PreparedStatement preparedStatement = conn.prepareStatement(query, Statement.RETURN_GENERATED_KEYS)) {
             preparedStatement.setInt(1, id);

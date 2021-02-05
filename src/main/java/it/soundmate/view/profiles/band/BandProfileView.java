@@ -9,6 +9,7 @@ package it.soundmate.view.profiles.band;
 import it.soundmate.constants.Style;
 import it.soundmate.controller.graphic.profiles.BandProfileGraphicController;
 import it.soundmate.exceptions.InputException;
+import it.soundmate.model.Application;
 import it.soundmate.model.Band;
 import it.soundmate.model.Genre;
 import it.soundmate.view.UIUtils;
@@ -32,14 +33,16 @@ import org.slf4j.LoggerFactory;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.List;
 
 
 public class BandProfileView extends VBox {
 
     private static final Logger logger = LoggerFactory.getLogger(BandProfileView.class);
-    BandProfileGraphicController bandProfileGraphicController = new BandProfileGraphicController();
+    private final BandProfileGraphicController bandProfileGraphicController = new BandProfileGraphicController();
     private final ProfileView profileView;
     private final Band band;
+    private final List<Application> applicationList;
 
     //UI
     private final Rectangle coverImg = new Rectangle();
@@ -47,7 +50,6 @@ public class BandProfileView extends VBox {
 
     //Buttons
     private final Button addCoverImgBtn = UIUtils.createStyledButton("Add cover image", new AddImageAction());
-    private final Button searchSolosBtn = UIUtils.createStyledButton("Search Solos", new SearchSoloAction());
     private final Button adSocialBtn = UIUtils.createStyledButton("Add social links", new AddSocialAction());
     private final Button editProfileBtn = UIUtils.createStyledButton("Edit profile Info", new EditProfileAction());
     private final Button addGenresBtn = UIUtils.createStyledButton("Add Genres", new AddGenreAction());
@@ -55,6 +57,7 @@ public class BandProfileView extends VBox {
     public BandProfileView(ProfileView profileView, Band user) {
         this.profileView = profileView;
         this.band = user;
+        this.applicationList = bandProfileGraphicController.getApplicationsList(user.getId());
         buildBandProfileView(user);
     }
 
@@ -62,7 +65,7 @@ public class BandProfileView extends VBox {
         StackPane stackPane = this.profileView.buildStackPane(band, addCoverImgBtn, coverImg);
         HBox userInfoVBox = buildUserInfoVBox(band);
         HBox photosHBox = this.profileView.buildMediaHBox(band, new ManageMediaAction());
-        HBox membersHBox = buildMembersHBox(band);
+        HBox membersHBox = buildApplicationHBox(band);
         HBox socialLinksHBox = buildSocialLinksHBox(band);
 
         Label nameLabel = new Label(band.getBandName());
@@ -104,14 +107,27 @@ public class BandProfileView extends VBox {
         return socialVBox;
     }
 
-    private HBox buildMembersHBox(Band band) {
-        HBox[] hBoxes = this.profileView.buildProfileSection("Members", "Send requests to Solos to join your Band", searchSolosBtn);
-        HBox mainHBox = hBoxes[0];
-        HBox membersHBox = hBoxes[1];
-        if (band.getMembers() != null) {
-            //Add members to membersHBox
+    private HBox buildApplicationHBox(Band band) {
+        HBox applicationHBox = new HBox();
+        VBox applicationVBox = new VBox();
+        Label applicationLabel = new Label("Application");
+        applicationLabel.setStyle(Style.MID_LABEL);
+        applicationVBox.getChildren().add(applicationLabel);
+        applicationHBox.setSpacing(10);
+        for (int i = 0; i < applicationList.size(); i++) {
+            VBox vBox = new VBox();
+            vBox.setAlignment(Pos.CENTER);
+            vBox.setSpacing(10);
+            Label title = new Label("Application #"+(i+1));
+            title.setStyle(Style.MID_LABEL);
+            Button applicationBtn = UIUtils.createStyledButton("Read/Delete", new ApplicationAction(applicationList.get(i)));
+            vBox.getChildren().addAll(title, applicationBtn);
+            applicationHBox.getChildren().add(vBox);
         }
-        return mainHBox;
+        UIUtils.addRegion(null, applicationHBox);
+        Button newAppBtn = UIUtils.createStyledButton("New Application", new NewApplicationAction());
+        applicationHBox.getChildren().add(newAppBtn);
+        return applicationHBox;
     }
 
     private HBox buildUserInfoVBox(Band band) {
@@ -208,6 +224,26 @@ public class BandProfileView extends VBox {
                 e.printStackTrace();
             }
 
+        }
+    }
+
+    private class ApplicationAction implements EventHandler<ActionEvent> {
+        private final Application application;
+
+        public ApplicationAction(Application application) {
+            this.application = application;
+        }
+
+        @Override
+        public void handle(ActionEvent event) {
+            //Navigate to application manage view
+        }
+    }
+
+    private class NewApplicationAction implements EventHandler<ActionEvent> {
+        @Override
+        public void handle(ActionEvent event) {
+            profileView.setProfilePage(new NewApplicationView(profileView, band));
         }
     }
 }
