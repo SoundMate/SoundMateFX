@@ -10,19 +10,19 @@ import it.soundmate.bean.messagebeans.UserMessageBean;
 import it.soundmate.bean.searchbeans.BandResultBean;
 import it.soundmate.bean.searchbeans.UserResultBean;
 import it.soundmate.database.dao.BandDao;
+import it.soundmate.database.dao.JoinRequestDao;
 import it.soundmate.database.dao.MessageDao;
 import it.soundmate.database.dao.UserDao;
 import it.soundmate.database.dbexceptions.RepositoryException;
 import it.soundmate.exceptions.InputException;
-import it.soundmate.model.Message;
-import it.soundmate.model.User;
-import it.soundmate.model.UserType;
+import it.soundmate.model.*;
 
 import java.util.List;
 
 public class MessagesController {
 
     MessageDao messageDao = new MessageDao();
+    JoinRequestDao joinRequestDao = new JoinRequestDao();
 
     public List<Message> getMessagesForUser(User user) {
         try {
@@ -47,6 +47,14 @@ public class MessagesController {
             return userDao.getSenderInfo(idSender);
         } catch (RepositoryException | InputException e) {
             throw new InputException(e.getMessage());
+        }
+    }
+
+    public void applyForBand(Application application, JoinRequest joinRequest) {
+        try {
+            joinRequestDao.sendRequestToApplication(application, joinRequest);
+        } catch (RepositoryException repositoryException) {
+            throw new RepositoryException(repositoryException.getMessage());
         }
     }
 }

@@ -1,5 +1,6 @@
 package it.soundmate.database.dao;
 
+import it.soundmate.bean.searchbeans.SoloResultBean;
 import it.soundmate.database.Connector;
 import it.soundmate.database.dbexceptions.RepositoryException;
 import it.soundmate.model.Application;
@@ -105,32 +106,39 @@ public class ApplicationDao {
         }
     }
 
-    public List<Solo> getSolosApplied(Application application) {
-        String sql = "SELECT s.id, ru.email, ru.password, s.last_name, s.first_name\n" +
+    public List<SoloResultBean> getSolosApplied(Application application) {
+        String sql = "SELECT s.id, ru.email, ru.password, s.last_name, s.first_name, pi.instruments, u.encoded_profile_img, city\n" +
                 "FROM applications " +
                 "JOIN join_request jr on applications.code = jr.code_application\n" +
                 "JOIN solo s on jr.id_solo = s.id\n" +
+                "JOIN played_instruments pi on pi.id = s.id "+
                 "JOIN registered_users ru on ru.id = s.id\n" +
+                "JOIN users u on u.id = s.id\n" +
                 "WHERE applications.code = ?";
 
-        List<Solo> solosList = new ArrayList<>();
+        List<SoloResultBean> solosList = new ArrayList<>();
         try (Connection conn = connector.getConnection();
              PreparedStatement preparedStatement = conn.prepareStatement(sql)) {
 
             preparedStatement.setInt(1, application.getApplicationCode());
-
             ResultSet resultSet = preparedStatement.executeQuery();
+
             while(resultSet.next()){
 
-                Solo solo = new Solo();
-                solo.setId(resultSet.getInt("id"));
-                solo.setEmail(resultSet.getString("email"));
-                solo.setPassword(resultSet.getString("password"));
-                solo.setLastName(resultSet.getString("last_name"));
-                solo.setFirstName(resultSet.getString("first_name"));
-
-
-                solosList.add(solo);
+                String firstName = resultSet.getString("first_name");
+                String lastName = resultSet.getString("last_name");
+                String city = resultSet.getString("city");
+                String email = resultSet.getString("email");
+                String encodedImg = resultSet.getString("encoded_profile_img");
+                int id = resultSet.getInt("id");
+                SoloResultBean soloResultBean = new SoloResultBean(id, email, encodedImg, firstName, lastName, city);
+                if (resultSet.getArray("instruments") != null){
+                    List<String> instrumentList = new ArrayList<>();
+                    String [] temp = (String []) resultSet.getArray("instruments").getArray();
+                    instrumentList = Arrays.asList(temp);
+                    soloResultBean.setInstrumentList(instrumentList);
+                }
+                solosList.add(soloResultBean);
 
             } return solosList;
 

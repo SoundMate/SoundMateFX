@@ -8,13 +8,16 @@ package it.soundmate.bean.searchbeans;
 
 import it.soundmate.model.Genre;
 import it.soundmate.model.UserType;
+import it.soundmate.view.uicomponents.SocialLinks;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class BandResultBean extends UserResultBean {
 
     private String bandName;
     private List<String> genres;
+    private List<SocialLinks> socialLinks = new ArrayList<>();
 
     public BandResultBean() {
     }
@@ -38,6 +41,18 @@ public class BandResultBean extends UserResultBean {
 
     public List<String> getGenreList() {
         return genres;
+    }
+
+    public List<String> getGenres() {
+        return genres;
+    }
+
+    public List<SocialLinks> getSocialLinks() {
+        return socialLinks;
+    }
+
+    public void setSocialLinks(List<SocialLinks> socialLinks) {
+        this.socialLinks = socialLinks;
     }
 
     @Override

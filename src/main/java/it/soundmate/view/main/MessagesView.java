@@ -1,6 +1,7 @@
 package it.soundmate.view.main;
 
 import it.soundmate.constants.Style;
+import it.soundmate.controller.logic.ApplicationController;
 import it.soundmate.controller.logic.MessagesController;
 import it.soundmate.controller.logic.NotificationsController;
 import it.soundmate.model.*;
@@ -38,6 +39,7 @@ public class MessagesView extends Pane {
     private final NotificationsResults notificationsResults = new NotificationsResults();
     private final NotificationsController notificationsController = new NotificationsController();
     private final MessagesController messagesController = new MessagesController();
+    private final ApplicationController applicationController = new ApplicationController();
 
     //UI
     private final Tab notificationsTab = new Tab("Notifications");

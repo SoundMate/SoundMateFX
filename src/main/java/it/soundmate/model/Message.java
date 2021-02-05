@@ -25,14 +25,6 @@ public class Message {
         this.senderUserType = senderUserType;
     }
 
-    public UserMessageBean getSender() {
-        if (this.getUserMessageBean() == null) {
-            MessagesController messagesController = new MessagesController();
-            this.setUserMessageBean(messagesController.getSender(this.idSender));
-        }
-        return this.getUserMessageBean();
-    }
-
     public Message withCode(int code){
         Message newMessage = new Message();
         newMessage.setIdSender(this.idSender);
@@ -98,5 +90,13 @@ public class Message {
 
     public void setUserMessageBean(UserMessageBean userMessageBean) {
         this.userMessageBean = userMessageBean;
+    }
+
+    public UserMessageBean getSender() {
+        if (this.getUserMessageBean() == null) {
+            MessagesController messagesController = new MessagesController();
+            this.setUserMessageBean(messagesController.getSender(this.idSender));
+        }
+        return this.getUserMessageBean();
     }
 }
