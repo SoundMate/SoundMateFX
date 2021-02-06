@@ -9,6 +9,7 @@ public abstract class RegisterBean {
     private String password;
     private String city;
 
+
     protected RegisterBean(String email, String password, String city){
         this.email = email;
         this.password = password;
@@ -32,8 +33,6 @@ public abstract class RegisterBean {
         this.password = password;
     }
 
-    public abstract UserType getUserType();
-
     public String getCity() {
         return city;
     }
@@ -42,6 +41,7 @@ public abstract class RegisterBean {
         this.city = city;
     }
 
+    public abstract UserType getUserType();
     /**
      * checkFields()
      * @return true if fields are not empty, false otherwise

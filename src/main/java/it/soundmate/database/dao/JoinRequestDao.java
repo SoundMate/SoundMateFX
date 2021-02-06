@@ -173,7 +173,8 @@ public class JoinRequestDao {
 
     public SoloResultBean getSoloFromJoinRequest(JoinRequest joinRequest) {
         String sql = "SELECT * from join_request join solo s on s.id = join_request.id_solo join users u on u.id = s.id join registered_users ru on ru.id = u.id join played_instruments pi on s.id = pi.id where code = (?)";
-        try (Connection conn = connector.getConnection(); PreparedStatement preparedStatement = conn.prepareStatement(sql)) {
+        try (Connection conn = connector.getConnection();
+             PreparedStatement preparedStatement = conn.prepareStatement(sql)) {
 
             preparedStatement.setInt(1, joinRequest.getCode());
             ResultSet resultSet = preparedStatement.executeQuery();
