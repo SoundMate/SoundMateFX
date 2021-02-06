@@ -10,6 +10,7 @@ import it.soundmate.bean.searchbeans.SoloResultBean;
 import it.soundmate.database.dao.ApplicationDao;
 import it.soundmate.database.dbexceptions.RepositoryException;
 import it.soundmate.model.Application;
+import it.soundmate.model.JoinRequest;
 
 import java.util.List;
 
@@ -28,6 +29,14 @@ public class ApplicationController {
     public List<Application> getApplicationsForBand(int id) {
         try {
             return applicationDao.getApplicationByBandId(id);
+        } catch (RepositoryException repositoryException) {
+            throw new RepositoryException(repositoryException.getMessage());
+        }
+    }
+
+    public List<JoinRequest> getJoinRequests(Application application) {
+        try {
+            return applicationDao.getJoinRequests(application);
         } catch (RepositoryException repositoryException) {
             throw new RepositoryException(repositoryException.getMessage());
         }

@@ -6,14 +6,17 @@
 
 package it.soundmate.controller.logic.profiles;
 
+import it.soundmate.bean.searchbeans.SoloResultBean;
 import it.soundmate.database.dao.ApplicationDao;
 import it.soundmate.database.dao.BandDao;
+import it.soundmate.database.dao.JoinRequestDao;
 import it.soundmate.database.dao.UserDao;
 import it.soundmate.database.dbexceptions.RepositoryException;
 import it.soundmate.exceptions.InputException;
 import it.soundmate.model.Application;
 import it.soundmate.model.Band;
 import it.soundmate.model.Genre;
+import it.soundmate.model.JoinRequest;
 import it.soundmate.view.uicomponents.SocialLinks;
 
 import java.util.Arrays;
@@ -76,5 +79,10 @@ public class BandProfileController {
         } catch (RepositoryException repositoryException) {
             throw new RepositoryException(repositoryException.getMessage());
         }
+    }
+
+    public SoloResultBean getSoloFromJoinRequest(JoinRequest joinRequest) {
+        JoinRequestDao joinRequestDao = new JoinRequestDao();
+        return joinRequestDao.getSoloFromJoinRequest(joinRequest);
     }
 }

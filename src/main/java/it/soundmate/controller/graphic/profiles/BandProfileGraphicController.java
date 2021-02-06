@@ -6,12 +6,14 @@
 
 package it.soundmate.controller.graphic.profiles;
 
+import it.soundmate.bean.searchbeans.SoloResultBean;
 import it.soundmate.controller.logic.profiles.BandProfileController;
 import it.soundmate.database.dbexceptions.RepositoryException;
 import it.soundmate.exceptions.InputException;
 import it.soundmate.model.Application;
 import it.soundmate.model.Band;
 import it.soundmate.model.Genre;
+import it.soundmate.model.JoinRequest;
 import it.soundmate.view.main.ProfileView;
 import it.soundmate.view.profiles.band.BandProfileView;
 import it.soundmate.view.profiles.band.EditBandView;
@@ -90,6 +92,14 @@ public class BandProfileGraphicController extends EditGraphicController {
     public void addApplication(Application application) {
         try {
             bandProfileController.addApplication(application);
+        } catch (RepositoryException repositoryException) {
+            throw new RepositoryException(repositoryException.getMessage());
+        }
+    }
+
+    public SoloResultBean getSoloFromJoinRequest(JoinRequest joinRequest) {
+        try {
+            return bandProfileController.getSoloFromJoinRequest(joinRequest);
         } catch (RepositoryException repositoryException) {
             throw new RepositoryException(repositoryException.getMessage());
         }

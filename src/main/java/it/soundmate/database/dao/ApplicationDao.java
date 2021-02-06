@@ -4,6 +4,7 @@ import it.soundmate.bean.searchbeans.SoloResultBean;
 import it.soundmate.database.Connector;
 import it.soundmate.database.dbexceptions.RepositoryException;
 import it.soundmate.model.Application;
+import it.soundmate.model.JoinRequest;
 import it.soundmate.model.Solo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -124,22 +125,8 @@ public class ApplicationDao {
             ResultSet resultSet = preparedStatement.executeQuery();
 
             while(resultSet.next()){
-
-                String firstName = resultSet.getString("first_name");
-                String lastName = resultSet.getString("last_name");
-                String city = resultSet.getString("city");
-                String email = resultSet.getString("email");
-                String encodedImg = resultSet.getString("encoded_profile_img");
-                int id = resultSet.getInt("id");
-                SoloResultBean soloResultBean = new SoloResultBean(id, email, encodedImg, firstName, lastName, city);
-                if (resultSet.getArray("instruments") != null){
-                    List<String> instrumentList = new ArrayList<>();
-                    String [] temp = (String []) resultSet.getArray("instruments").getArray();
-                    instrumentList = Arrays.asList(temp);
-                    soloResultBean.setInstrumentList(instrumentList);
-                }
+                SoloResultBean soloResultBean = JoinRequestDao.buildSoloResultBean(resultSet);
                 solosList.add(soloResultBean);
-
             } return solosList;
 
         } catch (SQLException ex){
@@ -197,8 +184,26 @@ public class ApplicationDao {
     }
 
 
-
-
-
-
+    public List<JoinRequest> getJoinRequests(Application application) {
+        String sql = "SELECT * from join_request where code_application = (?)";
+        List<JoinRequest> joinRequestList = new ArrayList<>();
+        try (PreparedStatement preparedStatement = connector.getConnection().prepareStatement(sql)) {
+            preparedStatement.setInt(1, application.getApplicationCode());
+            ResultSet resultSet = preparedStatement.executeQuery();
+            while (resultSet.next()) {
+                int requestCode = resultSet.getInt("code");
+                int idBand = resultSet.getInt("id_band");
+                int idSolo = resultSet.getInt("id_solo");
+                String message = resultSet.getString("message");
+                boolean isAccepted = resultSet.getBoolean("is_accepted");
+                JoinRequest joinRequest = new JoinRequest(idBand, application.getApplicationCode(), idSolo, message);
+                joinRequest.setCode(requestCode);
+                joinRequest.setAccepted(isAccepted);
+                joinRequestList.add(joinRequest);
+            }
+            return joinRequestList;
+        } catch (SQLException sqlException) {
+            throw new RepositoryException(sqlException.getMessage());
+        }
+    }
 }

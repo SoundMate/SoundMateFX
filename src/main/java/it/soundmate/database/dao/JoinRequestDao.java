@@ -1,5 +1,6 @@
 package it.soundmate.database.dao;
 
+import it.soundmate.bean.searchbeans.SoloResultBean;
 import it.soundmate.database.Connector;
 import it.soundmate.database.dbexceptions.RepositoryException;
 import it.soundmate.model.Application;
@@ -8,6 +9,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.sql.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import java.util.function.Predicate;
 
 public class JoinRequestDao {
@@ -111,7 +115,37 @@ public class JoinRequestDao {
     }
 
 
+    public SoloResultBean getSoloFromJoinRequest(JoinRequest joinRequest) {
+        String sql = "SELECT * from join_request join solo s on s.id = join_request.id_solo join users u on u.id = s.id join registered_users ru on ru.id = u.id join played_instruments pi on s.id = pi.id where code = (?)";
+        try (Connection conn = connector.getConnection(); PreparedStatement preparedStatement = conn.prepareStatement(sql)) {
 
+            preparedStatement.setInt(1, joinRequest.getCode());
+            ResultSet resultSet = preparedStatement.executeQuery();
 
+            if (resultSet.next()){
+                return buildSoloResultBean(resultSet);
+            } else throw new RepositoryException("Error solo");
+
+        } catch (SQLException ex){
+            throw new RepositoryException("Error fetching solos. The error was: \n" + ex.getMessage(), ex);
+        }
+    }
+
+    public static SoloResultBean buildSoloResultBean(ResultSet resultSet) throws SQLException {
+        String firstName = resultSet.getString("first_name");
+        String lastName = resultSet.getString("last_name");
+        String city = resultSet.getString("city");
+        String email = resultSet.getString("email");
+        String encodedImg = resultSet.getString("encoded_profile_img");
+        int id = resultSet.getInt("id");
+        SoloResultBean soloResultBean = new SoloResultBean(id, email, encodedImg, firstName, lastName, city);
+        if (resultSet.getArray("instruments") != null){
+            List<String> instrumentList;
+            String [] temp = (String []) resultSet.getArray("instruments").getArray();
+            instrumentList = Arrays.asList(temp);
+            soloResultBean.setInstrumentList(instrumentList);
+        }
+        return soloResultBean;
+    }
 
 }

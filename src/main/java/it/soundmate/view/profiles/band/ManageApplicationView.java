@@ -6,10 +6,11 @@
 
 package it.soundmate.view.profiles.band;
 
-import it.soundmate.bean.searchbeans.SoloResultBean;
 import it.soundmate.constants.Style;
+import it.soundmate.controller.logic.ApplicationController;
 import it.soundmate.model.Application;
 import it.soundmate.model.Band;
+import it.soundmate.model.JoinRequest;
 import it.soundmate.view.UIUtils;
 import it.soundmate.view.main.ProfileView;
 import it.soundmate.view.uicomponents.InstrumentGraphics;
@@ -35,13 +36,16 @@ public class ManageApplicationView extends VBox {
     private final Application application;
 
     //UI
+    private final ApplicationCandidates applicationCandidates;
     private final Button deleteBtn = UIUtils.createStyledButton("Delete", new DeleteAction());
     private final Button backBtn = UIUtils.createStyledButton("Back", new BackAction());
+    private ApplicationController applicationController = new ApplicationController();
 
     public ManageApplicationView(ProfileView profileView, Band band, Application application) {
         this.profileView = profileView;
         this.band = band;
         this.application = application;
+        this.applicationCandidates = new ApplicationCandidates(profileView, band, application);
         buildContentVBox(application);
     }
 
@@ -58,9 +62,14 @@ public class ManageApplicationView extends VBox {
         HBox hBox = buildInstrumentsHBox(application);
         this.getChildren().add(hBox);
         this.getChildren().add(candidatesLabel);
-        Label candidatesMessages = new Label("Access you messages section to view all the requests");
+        Label candidatesMessages = new Label("");
         candidatesMessages.setStyle(Style.LOW_LABEL);
         this.getChildren().add(candidatesMessages);
+        List<JoinRequest> joinRequestList = applicationController.getJoinRequests(application);
+        ObservableList<JoinRequest> joinRequestObservableList = FXCollections.observableArrayList(joinRequestList);
+        applicationCandidates.setItems(joinRequestObservableList);
+        applicationCandidates.setStyle("-fx-background-color: #232323; -fx-border-color: #232323");
+        this.getChildren().add(applicationCandidates);
         this.getChildren().add(backBtn);
     }
 
@@ -68,19 +77,24 @@ public class ManageApplicationView extends VBox {
         HBox instrumentsHBox = new HBox();
         instrumentsHBox.setSpacing(10);
         for (String instrument : application.getInstrumentsList()) {
-            InstrumentGraphics instrumentGraphics = InstrumentGraphics.returnInstrument(instrument);
-            Circle image = new Circle();
-            image.setRadius(24);
-            image.setFill(new ImagePattern(instrumentGraphics.getSource()));
-            Label instrumentLabel = new Label(instrumentGraphics.getName());
-            instrumentLabel.setStyle(Style.MID_LABEL);
-            VBox instrumentVBox = new VBox();
-            instrumentVBox.setSpacing(10);
-            instrumentVBox.setAlignment(Pos.CENTER);
-            instrumentVBox.getChildren().addAll(image, instrumentLabel);
+            VBox instrumentVBox = buildInstrumentVBox(instrument);
             instrumentsHBox.getChildren().add(instrumentVBox);
         }
         return instrumentsHBox;
+    }
+
+    public static VBox buildInstrumentVBox(String instrument) {
+        InstrumentGraphics instrumentGraphics = InstrumentGraphics.returnInstrument(instrument);
+        Circle image = new Circle();
+        image.setRadius(24);
+        image.setFill(new ImagePattern(instrumentGraphics.getSource()));
+        Label instrumentLabel = new Label(instrumentGraphics.getName());
+        instrumentLabel.setStyle(Style.MID_LABEL);
+        VBox instrumentVBox = new VBox();
+        instrumentVBox.setSpacing(10);
+        instrumentVBox.setAlignment(Pos.CENTER);
+        instrumentVBox.getChildren().addAll(image, instrumentLabel);
+        return instrumentVBox;
     }
 
     private class DeleteAction implements EventHandler<ActionEvent> {

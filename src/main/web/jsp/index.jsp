@@ -119,7 +119,7 @@
 
                             <li>
                                 <div class="container-band">
-                                    <img src="../../resources/it/soundmate/images/band-room-register-2.png" alt="Band Room Register" class="register-img-band">
+                                    <img src="../../resources/soundmate/images/band-room-register-2.png" alt="Band Room Register" class="register-img-band">
                                     <div class="centered"><input type="submit" value="Band Room" name="register"></div>
                                 </div>
                             </li>

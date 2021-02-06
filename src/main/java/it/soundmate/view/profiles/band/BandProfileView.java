@@ -143,6 +143,7 @@ public class BandProfileView extends VBox {
         for (Genre genre : band.getGenres()) {
             Label genreLabel = new Label(genre.name());
             genreLabel.setStyle(Style.FAV_GENRE_LABEL);
+            genreLabel.setPadding(new Insets(5));
             this.genresList.getChildren().add(genreLabel);
         }
         return mainHBox;
