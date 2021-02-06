@@ -81,12 +81,9 @@ public class BandDao implements Dao<Band>{
     public BandResultBean getBandName(int id){
         String sql = "SELECT band_name FROM band WHERE id = ?";
         BandResultBean bandResultBean = new BandResultBean();
-
         try(Connection conn = connector.getConnection();
             PreparedStatement preparedStatement = conn.prepareStatement(sql)){
-
             preparedStatement.setInt(1, id);
-
             ResultSet resultSet = preparedStatement.executeQuery();
             while(resultSet.next()){
                 bandResultBean.setBandName(resultSet.getString("band_name"));

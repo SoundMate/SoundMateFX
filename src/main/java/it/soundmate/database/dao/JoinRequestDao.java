@@ -1,10 +1,12 @@
 package it.soundmate.database.dao;
 
+import it.soundmate.bean.searchbeans.BandResultBean;
 import it.soundmate.bean.searchbeans.SoloResultBean;
 import it.soundmate.database.Connector;
 import it.soundmate.database.dbexceptions.RepositoryException;
 import it.soundmate.model.Application;
 import it.soundmate.model.JoinRequest;
+import it.soundmate.model.MessageType;
 import it.soundmate.model.RequestState;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -28,16 +30,12 @@ public class JoinRequestDao {
 
     public JoinRequest sendRequestToApplication(Application application, JoinRequest joinRequest){
         String sql = "INSERT INTO join_request (code_application, id_band, id_solo, message) values (?, ?, ?, ?)";
-
-
         try(Connection conn = connector.getConnection();
             PreparedStatement preparedStatement = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)){
-
             preparedStatement.setInt(1, application.getApplicationCode());
             preparedStatement.setInt(2, joinRequest.getIdBand());
             preparedStatement.setInt(3, joinRequest.getIdSolo());
             preparedStatement.setString(4, joinRequest.getMessage());
-
             int rowAffected = preparedStatement.executeUpdate();
             if (rowAffected == 1) {
                 ResultSet resultSet = preparedStatement.getGeneratedKeys();
@@ -51,18 +49,15 @@ public class JoinRequestDao {
         }
     }
 
-
     public boolean acceptRequest(JoinRequest joinRequest){
         String sql = "update join_request set request_state = ? where code = ?";
-
         try(Connection conn = connector.getConnection();
             PreparedStatement preparedStatement = conn.prepareStatement(sql)){
-
             preparedStatement.setString(1, RequestState.ACCEPTED.toString());
             preparedStatement.setInt(2, joinRequest.getCode());
-
-            return preparedStatement.executeUpdate() == 1;
-
+            preparedStatement.executeUpdate();
+            this.notifySolo(joinRequest.getIdBand(), joinRequest.getIdSolo(), MessageType.JOIN_BAND_CONFIRMATION, joinRequest.getCode());
+            return true;
         }catch (SQLException ex){
             throw new RepositoryException(ERROR + ex.getMessage(), ex);
         }
@@ -70,17 +65,29 @@ public class JoinRequestDao {
 
     public boolean rejectRequest(JoinRequest joinRequest){
         String sql = "update join_request set request_state = ? where code = ?";
-
         try(Connection conn = connector.getConnection();
             PreparedStatement preparedStatement = conn.prepareStatement(sql)){
-
             preparedStatement.setString(1, RequestState.REJECTED.toString());
             preparedStatement.setInt(2, joinRequest.getCode());
-
-            return preparedStatement.executeUpdate() == 1;
-
+            preparedStatement.executeUpdate();
+            this.notifySolo(joinRequest.getIdBand(), joinRequest.getIdSolo(), MessageType.JOIN_BAND_CANCELED, joinRequest.getCode());
+            return true;
         }catch (SQLException ex){
             throw new RepositoryException(ERROR + ex.getMessage(), ex);
+        }
+    }
+
+    private void notifySolo(int idBand, int idSolo, MessageType type, int joinID) {
+        String sql="insert into notifications (sender, receiver, type, seen, join_request) VALUES (?, ?, ?, ?, ?)";
+        try (PreparedStatement preparedStatement = connector.getConnection().prepareStatement(sql)) {
+            preparedStatement.setInt(1, idBand);
+            preparedStatement.setInt(2, idSolo);
+            preparedStatement.setString(3, type.toString());
+            preparedStatement.setBoolean(4, false);
+            preparedStatement.setInt(5, joinID);
+            preparedStatement.executeUpdate();
+        } catch (SQLException exception) {
+            throw new RepositoryException(exception.getMessage());
         }
     }
 
@@ -101,7 +108,6 @@ public class JoinRequestDao {
             ResultSet resultSet = preparedStatement.executeQuery();
             while (resultSet.next()) {
                 JoinRequest joinRequest = new JoinRequest();
-
                 joinRequest.setCode(resultSet.getInt("code"));
                 joinRequest.setMessage(resultSet.getString("message"));
                 joinRequest.setIdBand(resultSet.getInt("id_band"));
@@ -192,4 +198,25 @@ public class JoinRequestDao {
         return soloResultBean;
     }
 
+    public JoinRequest getJoinRequestByID(int requestID) throws SQLException {
+        log.info("Getting join request id: {}", requestID);
+        String sql = "SELECT * from join_request where code = (?)";
+        try (PreparedStatement preparedStatement = connector.getConnection().prepareStatement(sql)) {
+            preparedStatement.setInt(1, requestID);
+            ResultSet resultSet = preparedStatement.executeQuery();
+            if (resultSet.next()) {
+                int idBand = resultSet.getInt("id_band");
+                int idSolo = resultSet.getInt("id_solo");
+                String message = resultSet.getString("message");
+                int applicationCode = resultSet.getInt("code_application");
+                BandDao bandDao = new BandDao(new UserDao());
+                BandResultBean bandResultBean = bandDao.getBandName(idBand);
+                log.info("get Join Request by ID: band name {}", bandResultBean.getBandName());
+                JoinRequest joinRequest = new JoinRequest(idBand, applicationCode, idSolo, message);
+                joinRequest.setBand(bandResultBean);
+                return joinRequest;
+            }
+        }
+        return null;
+    }
 }

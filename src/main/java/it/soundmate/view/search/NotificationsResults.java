@@ -7,14 +7,13 @@
 package it.soundmate.view.search;
 
 
+import it.soundmate.bean.searchbeans.BandResultBean;
 import it.soundmate.constants.Style;
 import it.soundmate.controller.logic.BookRoomController;
 import it.soundmate.controller.logic.NotificationsController;
+import it.soundmate.controller.logic.profiles.BandProfileController;
 import it.soundmate.database.dbexceptions.RepositoryException;
-import it.soundmate.model.Booking;
-import it.soundmate.model.BookingNotification;
-import it.soundmate.model.Notification;
-import it.soundmate.model.MessageType;
+import it.soundmate.model.*;
 import it.soundmate.view.UIUtils;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
@@ -35,6 +34,7 @@ public class NotificationsResults extends ListView<Notification> {
     private static final Logger logger = LoggerFactory.getLogger(NotificationsResults.class);
     private final NotificationsController notificationsController = new NotificationsController();
     private final BookRoomController bookRoomController = new BookRoomController();
+    private BandProfileController bandProfileController = new BandProfileController();
 
     public NotificationsResults() {
         this.setCellFactory(param -> new MessageResult());
@@ -80,8 +80,25 @@ public class NotificationsResults extends ListView<Notification> {
             } else if (notification.getMessageType() == MessageType.BOOK_ROOM_CANCELED){
                 messageTypeLabel.setText("Booking Canceled");
                 buildBookCanceledMessage(notification, messageHBox, messageVBox, messageTypeLabel, markAsRead);
+            } else if (notification.getMessageType() == MessageType.JOIN_BAND_CONFIRMATION) {
+                messageTypeLabel.setText("Join Request Accepted");
+                buildJoinRequestAccepted(notification, messageHBox, messageVBox, messageTypeLabel, markAsRead);
             }
             return messageHBox;
+        }
+
+        private void buildJoinRequestAccepted(Notification notification, HBox messageHBox, VBox messageVBox, Label messageTypeLabel, Button markAsRead) {
+            logger.info("Building Join Request Accepted");
+            seenMessageStyle(notification, messageHBox, messageTypeLabel, markAsRead);
+            JoinRequestNotification joinRequestNotification = (JoinRequestNotification) notification;
+            BandResultBean bandResultBean;
+            if (joinRequestNotification.getJoinRequest().getBand() == null) {
+                bandResultBean = bandProfileController.getBandNameByID(joinRequestNotification.getJoinRequest().getIdBand());
+            } else bandResultBean = joinRequestNotification.getJoinRequest().getBand();
+            messageTypeLabel.setText("Join Request Accepted from "+bandResultBean.getBandName());
+            messageHBox.getChildren().add(messageTypeLabel);
+            UIUtils.addRegion(null, messageHBox);
+            messageHBox.getChildren().add(markAsRead);
         }
 
         private void buildBookCanceledMessage(Notification notification, HBox messageHBox, VBox messageVBox, Label messageTypeLabel, Button markAsRead) {
