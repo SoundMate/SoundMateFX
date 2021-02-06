@@ -114,7 +114,6 @@ public class JoinRequestDao {
         }catch (SQLException ex){
             throw new RepositoryException(ERROR + ex.getMessage(), ex);
         }
-
     }
 
 
