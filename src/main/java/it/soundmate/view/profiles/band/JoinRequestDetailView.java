@@ -107,10 +107,10 @@ public class JoinRequestDetailView extends VBox {
         }
     }
 
-    private class DeclineAction implements EventHandler<ActionEvent> {
+    private static class DeclineAction implements EventHandler<ActionEvent> {
         @Override
         public void handle(ActionEvent event) {
-
+            //Decline action
         }
     }
 

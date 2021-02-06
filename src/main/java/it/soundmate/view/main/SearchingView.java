@@ -6,7 +6,6 @@
 
 package it.soundmate.view.main;
 
-import it.soundmate.bean.searchbeans.SoloResultBean;
 import it.soundmate.bean.searchbeans.UserResultBean;
 import it.soundmate.model.User;
 import it.soundmate.view.NewMessageView;

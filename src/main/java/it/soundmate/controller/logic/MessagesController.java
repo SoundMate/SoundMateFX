@@ -7,9 +7,6 @@
 package it.soundmate.controller.logic;
 
 import it.soundmate.bean.messagebeans.UserMessageBean;
-import it.soundmate.bean.searchbeans.BandResultBean;
-import it.soundmate.bean.searchbeans.UserResultBean;
-import it.soundmate.database.dao.BandDao;
 import it.soundmate.database.dao.JoinRequestDao;
 import it.soundmate.database.dao.MessageDao;
 import it.soundmate.database.dao.UserDao;

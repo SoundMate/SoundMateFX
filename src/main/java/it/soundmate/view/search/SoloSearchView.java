@@ -6,23 +6,17 @@
 
 package it.soundmate.view.search;
 
-import it.soundmate.bean.searchbeans.BandResultBean;
 import it.soundmate.bean.searchbeans.SoloResultBean;
 import it.soundmate.constants.Style;
-import it.soundmate.view.NewMessageView;
 import it.soundmate.view.UIUtils;
 import it.soundmate.view.main.SearchingView;
-import it.soundmate.view.profiles.band.BandProfileView;
 import it.soundmate.view.uicomponents.InstrumentGraphics;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
-import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
-import javafx.scene.image.Image;
-import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
@@ -39,7 +33,7 @@ public class SoloSearchView extends Pane {
     private final SearchingView searchingView;
 
     //UI
-    private VBox contentVBox;
+    private final VBox contentVBox;
     private final Button backBtn = UIUtils.createStyledButton("Back", new BackAction());
 
     public SoloSearchView(SoloResultBean soloResultBean, SearchingView searchingView, boolean comingFromSearch) {

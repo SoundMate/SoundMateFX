@@ -65,7 +65,7 @@ public class BandProfileView extends VBox {
         StackPane stackPane = this.profileView.buildStackPane(band, addCoverImgBtn, coverImg);
         HBox userInfoVBox = buildUserInfoVBox(band);
         HBox photosHBox = this.profileView.buildMediaHBox(band, new ManageMediaAction());
-        HBox membersHBox = buildApplicationHBox(band);
+        HBox membersHBox = buildApplicationHBox();
         HBox socialLinksHBox = buildSocialLinksHBox(band);
 
         Label nameLabel = new Label(band.getBandName());
@@ -107,7 +107,7 @@ public class BandProfileView extends VBox {
         return socialVBox;
     }
 
-    private HBox buildApplicationHBox(Band band) {
+    private HBox buildApplicationHBox() {
         HBox applicationHBox = new HBox();
         applicationHBox.setPadding(new Insets(0, 25, 0, 25));
         VBox applicationVBox = new VBox();
@@ -158,7 +158,7 @@ public class BandProfileView extends VBox {
         }
     }
 
-    private class ManageMediaAction implements EventHandler<ActionEvent> {
+    private static class ManageMediaAction implements EventHandler<ActionEvent> {
         @Override
         public void handle(ActionEvent event) {
             logger.info("Manage media click");
@@ -210,7 +210,7 @@ public class BandProfileView extends VBox {
 
         @Override
         public void handle(MouseEvent event) {
-            URI uri = null;
+            URI uri;
             try {
                 uri = new URI(this.url);
                 java.awt.Desktop.getDesktop().browse(uri);

@@ -82,12 +82,12 @@ public class NotificationsResults extends ListView<Notification> {
                 buildBookCanceledMessage(notification, messageHBox, messageVBox, messageTypeLabel, markAsRead);
             } else if (notification.getMessageType() == MessageType.JOIN_BAND_CONFIRMATION) {
                 messageTypeLabel.setText("Join Request Accepted");
-                buildJoinRequestAccepted(notification, messageHBox, messageVBox, messageTypeLabel, markAsRead);
+                buildJoinRequestAccepted(notification, messageHBox, messageTypeLabel, markAsRead);
             }
             return messageHBox;
         }
 
-        private void buildJoinRequestAccepted(Notification notification, HBox messageHBox, VBox messageVBox, Label messageTypeLabel, Button markAsRead) {
+        private void buildJoinRequestAccepted(Notification notification, HBox messageHBox, Label messageTypeLabel, Button markAsRead) {
             logger.info("Building Join Request Accepted");
             seenMessageStyle(notification, messageHBox, messageTypeLabel, markAsRead);
             JoinRequestNotification joinRequestNotification = (JoinRequestNotification) notification;

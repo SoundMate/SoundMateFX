@@ -62,28 +62,9 @@ public class MessagesView extends Pane {
         this.messagesTabPane.getTabs().addAll(messagesTab, notificationsTab);
         buildNotificationsTab(user);
         buildMessagesTab(user);
-        switch (user.getUserType()) {
-            case BAND:
-                Tab requestsTab = new Tab("Requests");
-                buildRequestsTab((Band) user, requestsTab);
-                break;
-            case SOLO:
-                break;
-            case ROOM_RENTER:
-                Tab bookingsTab = new Tab("Bookings");
-                buildBookingsTab((RoomRenter) user, bookingsTab);
-                break;
-        }
         this.messagesBorderPane.setCenter(this.messagesTabPane);
     }
 
-    private void buildBookingsTab(RoomRenter roomRenter, Tab bookingsTab) {
-
-    }
-
-    private void buildRequestsTab(Band band, Tab requestsTab) {
-
-    }
 
     private void buildMessagesTab(User user) {
         this.messagesTab.setClosable(false);

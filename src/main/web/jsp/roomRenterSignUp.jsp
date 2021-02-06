@@ -8,8 +8,8 @@
   Time: 18:56
   To change this template use File | Settings | File Templates.
 --%>
-
-<html>
+<!DOCTYPE>
+<html lang="it">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">

@@ -29,7 +29,6 @@ public class ManageRoomsView extends VBox {
     private final ProfileView profileView;
     private final RoomRenter roomRenter;
     private final ListView<Room> roomsListView = new ListView<>();
-    private final RoomRenterProfileGraphicController roomRenterProfileGraphicController = new RoomRenterProfileGraphicController();
 
     //UI
     private final Button addRoomBtn = UIUtils.createStyledButton("Add Room", new AddRoomAction());

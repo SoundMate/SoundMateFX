@@ -36,6 +36,7 @@ public class UserDao implements Dao<User> {
 
 
     public static final String BOOKING_ID = "booking_id";
+    public static final String USER_TYPE = "user_type";
     private final Connector connector = Connector.getInstance();
     private static final Logger log = LoggerFactory.getLogger(UserDao.class);
     private static final String ERR_INSERT = "Error inserting user";
@@ -83,7 +84,7 @@ public class UserDao implements Dao<User> {
                 int id = resultSet.getInt("id");
                 String mail = resultSet.getString(EMAIL);
                 String psw = resultSet.getString(PASSWORD);
-                String userType = resultSet.getString("user_type");
+                String userType = resultSet.getString(USER_TYPE);
                 if (mail.equals(loginBean.getEmail()) && psw.equals(loginBean.getPassword())){
                     LoggedBean loggedBean = new LoggedBean(userType, id);
                     loggedBean.setQueryResult(true);
@@ -182,7 +183,7 @@ public class UserDao implements Dao<User> {
             preparedStmt.setString(1, email);
             resultSet = preparedStmt.executeQuery();
             while(resultSet.next()){
-                userType = resultSet.getString("user_type");
+                userType = resultSet.getString(USER_TYPE);
             }
         } catch (SQLException ex) {
             throw new RepositoryException("Error Querying UserCode", ex);
@@ -443,7 +444,7 @@ public class UserDao implements Dao<User> {
                 int id = resultSet.getInt("id");
                 String email = resultSet.getString(EMAIL);
                 String encodedImg = resultSet.getString("encoded_profile_img");
-                switch (UserType.returnUserType(resultSet.getString("user_type"))) {
+                switch (UserType.returnUserType(resultSet.getString(USER_TYPE))) {
                     case BAND:
                         String bandName = resultSet.getString("band_name");
                         return new BandRenterMessageBean(id, email, bandName, encodedImg);

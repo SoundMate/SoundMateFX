@@ -12,6 +12,12 @@ import java.util.List;
 
 public class BookingDao {
 
+    public static final String START_TIME = "start_time";
+    public static final String END_TIME = "end_time";
+    public static final String BOOKER_ID = "booker_id";
+    public static final String IS_ACCEPTED = "is_accepted";
+    public static final String ERROR_FETCHING_BOOKINGS = "Error fetching bookings. \n";
+    public static final String ID_RENTER = "id_renter";
     private final Connector connector = Connector.getInstance();
     private static final Logger log = LoggerFactory.getLogger(BookingDao.class);
 
@@ -63,47 +69,46 @@ public class BookingDao {
             ResultSet resultSet = preparedStatement.executeQuery();
 
             while (resultSet.next()) {
-                Booking booking = new Booking();
-                booking.setCode(resultSet.getInt("code"));
-                booking.setDate(resultSet.getDate("date").toLocalDate());
-                booking.setStartTime(resultSet.getTime("start_time").toLocalTime());
-                booking.setEndTime(resultSet.getTime("end_time").toLocalTime());
-                booking.setBookerUserId(resultSet.getInt("booker_id"));
-                booking.setAccepted(resultSet.getBoolean("is_accepted"));
+                Booking booking = buildBookingResult(resultSet);
                 bookings.add(booking);
             }
             return bookings;
         } catch (SQLException ex) {
-            throw new RepositoryException("Error fetching bookings. \n" + ex.getMessage(), ex);
+            throw new RepositoryException(ERROR_FETCHING_BOOKINGS + ex.getMessage(), ex);
         }
+    }
+
+    public Booking buildBookingResult(ResultSet resultSet) throws SQLException {
+        Booking booking = new Booking();
+        booking.setCode(resultSet.getInt("code"));
+        booking.setDate(resultSet.getDate("date").toLocalDate());
+        booking.setStartTime(resultSet.getTime(START_TIME).toLocalTime());
+        booking.setEndTime(resultSet.getTime(END_TIME).toLocalTime());
+        booking.setBookerUserId(resultSet.getInt(BOOKER_ID));
+        booking.setAccepted(resultSet.getBoolean(IS_ACCEPTED));
+        return booking;
     }
 
     //method to fetch all active bookings related to a RoomRenter user
     public List<Booking> getAllBookingsById(RoomRenter roomRenter) {
         String sql = "SELECT * FROM booking WHERE id_renter = ?";
-        ArrayList<Booking> bookings = new ArrayList<>();
+        return getBookings(sql, roomRenter.getId());
+    }
 
+    public List<Booking> getBookings(String sql, int id) {
+        ArrayList<Booking> bookings = new ArrayList<>();
         try (Connection conn = connector.getConnection();
              PreparedStatement preparedStatement = conn.prepareStatement(sql)) {
-
-            preparedStatement.setInt(1, roomRenter.getId());
-
+            preparedStatement.setInt(1, id);
             ResultSet resultSet = preparedStatement.executeQuery();
-
             while (resultSet.next()) {
-                Booking booking = new Booking();
-                booking.setCode(resultSet.getInt("code"));
-                booking.setDate(resultSet.getDate("date").toLocalDate());
-                booking.setStartTime(resultSet.getTime("start_time").toLocalTime());
-                booking.setEndTime(resultSet.getTime("end_time").toLocalTime());
-                booking.setBookerUserId(resultSet.getInt("booker_id"));
-                booking.setAccepted(resultSet.getBoolean("is_accepted"));
-                booking.setIdRenter(resultSet.getInt("id_renter"));
+                Booking booking = buildBookingResult(resultSet);
+                booking.setIdRenter(resultSet.getInt(ID_RENTER));
                 bookings.add(booking);
             }
             return bookings;
         } catch (SQLException ex) {
-            throw new RepositoryException("Error fetching bookings. \n" + ex.getMessage(), ex);
+            throw new RepositoryException(ERROR_FETCHING_BOOKINGS + ex.getMessage(), ex);
         }
     }
 
@@ -166,58 +171,7 @@ public class BookingDao {
 
     public List<Booking> getAllBookingsById(Solo solo) {
         String sql = "SELECT * FROM booking WHERE booker_id = ?";
-        ArrayList<Booking> bookings = new ArrayList<>();
-
-        try (Connection conn = connector.getConnection();
-             PreparedStatement preparedStatement = conn.prepareStatement(sql)) {
-
-            preparedStatement.setInt(1, solo.getId());
-
-            ResultSet resultSet = preparedStatement.executeQuery();
-
-            while (resultSet.next()) {
-                Booking booking = new Booking();
-                booking.setCode(resultSet.getInt("code"));
-                booking.setDate(resultSet.getDate("date").toLocalDate());
-                booking.setStartTime(resultSet.getTime("start_time").toLocalTime());
-                booking.setEndTime(resultSet.getTime("end_time").toLocalTime());
-                booking.setBookerUserId(resultSet.getInt("booker_id"));
-                booking.setAccepted(resultSet.getBoolean("is_accepted"));
-                booking.setIdRenter(resultSet.getInt("id_renter"));
-                bookings.add(booking);
-            }
-            return bookings;
-        } catch (SQLException ex) {
-            throw new RepositoryException("Error fetching bookings. \n" + ex.getMessage(), ex);
-        }
-    }
-
-    public List<Booking> getAllBookingsById(Band band) {
-        String sql = "SELECT * FROM booking WHERE booker_id = ?";
-        ArrayList<Booking> bookings = new ArrayList<>();
-
-        try (Connection conn = connector.getConnection();
-             PreparedStatement preparedStatement = conn.prepareStatement(sql)) {
-
-            preparedStatement.setInt(1, band.getId());
-
-            ResultSet resultSet = preparedStatement.executeQuery();
-
-            while (resultSet.next()) {
-                Booking booking = new Booking();
-                booking.setCode(resultSet.getInt("code"));
-                booking.setDate(resultSet.getDate("date").toLocalDate());
-                booking.setStartTime(resultSet.getTime("start_time").toLocalTime());
-                booking.setEndTime(resultSet.getTime("end_time").toLocalTime());
-                booking.setBookerUserId(resultSet.getInt("booker_id"));
-                booking.setAccepted(resultSet.getBoolean("is_accepted"));
-                booking.setIdRenter(resultSet.getInt("id_renter"));
-                bookings.add(booking);
-            }
-            return bookings;
-        } catch (SQLException ex) {
-            throw new RepositoryException("Error fetching bookings. \n" + ex.getMessage(), ex);
-        }
+        return getBookings(sql, solo.getId());
     }
 
 
@@ -232,7 +186,7 @@ public class BookingDao {
             return preparedStatement.executeUpdate() == 1;
 
         } catch (SQLException ex) {
-            throw new RepositoryException("Error fetching bookings. \n" + ex.getMessage(), ex);
+            throw new RepositoryException(ERROR_FETCHING_BOOKINGS + ex.getMessage(), ex);
         }
     }
 

@@ -15,6 +15,7 @@ import java.util.List;
 
 public class ApplicationDao {
 
+    public static final String INSTRUMENTS = "instruments";
     private final Connector connector = Connector.getInstance();
     private static final Logger log = LoggerFactory.getLogger(ApplicationDao.class);
     private static final String ERROR = "Error updating entry. The error was: \n";
@@ -59,7 +60,7 @@ public class ApplicationDao {
                 application.setApplicationCode(resultSet.getInt("code"));
                 application.setMessage(resultSet.getString("message"));
 
-                String[] instruments = (String[]) resultSet.getArray("instruments").getArray();
+                String[] instruments = (String[]) resultSet.getArray(INSTRUMENTS).getArray();
                 List<String> instrumentsList = Arrays.asList(instruments);
                 application.setInstrumentsList(instrumentsList);
 
@@ -126,9 +127,9 @@ public class ApplicationDao {
 
             while(resultSet.next()){
                 SoloResultBean soloResultBean = buildSoloResultBeans(resultSet);
-                if (resultSet.getArray("instruments") != null){
+                if (resultSet.getArray(INSTRUMENTS) != null){
                     List<String> instrumentList = new ArrayList<>();
-                    String [] temp = (String []) resultSet.getArray("instruments").getArray();
+                    String [] temp = (String []) resultSet.getArray(INSTRUMENTS).getArray();
                     instrumentList = Arrays.asList(temp);
                     soloResultBean.setInstrumentList(instrumentList);
                 }

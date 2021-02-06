@@ -7,7 +7,6 @@
 package it.soundmate.view;
 
 import it.soundmate.constants.Style;
-import it.soundmate.controller.graphic.MessagesGraphicController;
 import it.soundmate.controller.logic.MessagesController;
 import it.soundmate.database.dbexceptions.RepositoryException;
 import it.soundmate.exceptions.InputException;
