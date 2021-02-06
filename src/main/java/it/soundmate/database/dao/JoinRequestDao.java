@@ -81,6 +81,7 @@ public class JoinRequestDao {
     }
 
 
+
     public boolean cancelRequest(JoinRequest joinRequest){
         String sql = "delete from join_request where code = ?";
 
