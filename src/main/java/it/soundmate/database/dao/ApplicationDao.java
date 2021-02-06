@@ -4,7 +4,8 @@ import it.soundmate.bean.searchbeans.SoloResultBean;
 import it.soundmate.database.Connector;
 import it.soundmate.database.dbexceptions.RepositoryException;
 import it.soundmate.model.Application;
-import it.soundmate.model.Solo;
+import it.soundmate.model.JoinRequest;
+import it.soundmate.model.RequestState;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import java.sql.*;
@@ -124,14 +125,7 @@ public class ApplicationDao {
             ResultSet resultSet = preparedStatement.executeQuery();
 
             while(resultSet.next()){
-
-                String firstName = resultSet.getString("first_name");
-                String lastName = resultSet.getString("last_name");
-                String city = resultSet.getString("city");
-                String email = resultSet.getString("email");
-                String encodedImg = resultSet.getString("encoded_profile_img");
-                int id = resultSet.getInt("id");
-                SoloResultBean soloResultBean = new SoloResultBean(id, email, encodedImg, firstName, lastName, city);
+                SoloResultBean soloResultBean = buildSoloResultBeans(resultSet);
                 if (resultSet.getArray("instruments") != null){
                     List<String> instrumentList = new ArrayList<>();
                     String [] temp = (String []) resultSet.getArray("instruments").getArray();
@@ -145,6 +139,16 @@ public class ApplicationDao {
         } catch (SQLException ex){
             throw new RepositoryException("Error fetching solos. The error was: \n" + ex.getMessage(), ex);
         }
+    }
+
+    public static SoloResultBean buildSoloResultBeans(ResultSet resultSet) throws SQLException {
+        String firstName = resultSet.getString("first_name");
+        String lastName = resultSet.getString("last_name");
+        String city = resultSet.getString("city");
+        String email = resultSet.getString("email");
+        String encodedImg = resultSet.getString("encoded_profile_img");
+        int id = resultSet.getInt("id");
+        return new SoloResultBean(id, email, encodedImg, firstName, lastName, city);
     }
 
 
@@ -208,10 +212,10 @@ public class ApplicationDao {
                 int idBand = resultSet.getInt("id_band");
                 int idSolo = resultSet.getInt("id_solo");
                 String message = resultSet.getString("message");
-                boolean isAccepted = resultSet.getBoolean("is_accepted");
+                String requestState = resultSet.getString("request_state");
                 JoinRequest joinRequest = new JoinRequest(idBand, application.getApplicationCode(), idSolo, message);
                 joinRequest.setCode(requestCode);
-                joinRequest.setAccepted(isAccepted);
+                joinRequest.setRequestState(RequestState.returnRequestState(requestState));
                 joinRequestList.add(joinRequest);
             }
             return joinRequestList;

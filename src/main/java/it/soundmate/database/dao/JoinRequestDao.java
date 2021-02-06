@@ -182,13 +182,7 @@ public class JoinRequestDao {
     }
 
     public static SoloResultBean buildSoloResultBean(ResultSet resultSet) throws SQLException {
-        String firstName = resultSet.getString("first_name");
-        String lastName = resultSet.getString("last_name");
-        String city = resultSet.getString("city");
-        String email = resultSet.getString("email");
-        String encodedImg = resultSet.getString("encoded_profile_img");
-        int id = resultSet.getInt("id");
-        SoloResultBean soloResultBean = new SoloResultBean(id, email, encodedImg, firstName, lastName, city);
+        SoloResultBean soloResultBean = ApplicationDao.buildSoloResultBeans(resultSet);
         if (resultSet.getArray("instruments") != null){
             List<String> instrumentList;
             String [] temp = (String []) resultSet.getArray("instruments").getArray();

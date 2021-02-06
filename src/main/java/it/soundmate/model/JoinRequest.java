@@ -6,6 +6,9 @@
 
 package it.soundmate.model;
 
+import it.soundmate.bean.searchbeans.SoloResultBean;
+import it.soundmate.bean.searchbeans.UserResultBean;
+
 public class JoinRequest  {
 
     private int code;
@@ -14,6 +17,7 @@ public class JoinRequest  {
     private int idSolo;
     private String message;
     private RequestState requestState;
+    private SoloResultBean soloResultBean;
 
 
     public JoinRequest() {
@@ -85,7 +89,13 @@ public class JoinRequest  {
         this.message = message;
     }
 
+    public SoloResultBean getSoloResultBean() {
+        return soloResultBean;
+    }
 
+    public void setSoloResultBean(SoloResultBean soloResultBean) {
+        this.soloResultBean = soloResultBean;
+    }
 }
 
 
