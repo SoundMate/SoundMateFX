@@ -4,7 +4,6 @@ import it.soundmate.bean.searchbeans.SoloResultBean;
 import it.soundmate.database.Connector;
 import it.soundmate.database.dbexceptions.RepositoryException;
 import it.soundmate.model.Application;
-import it.soundmate.model.JoinRequest;
 import it.soundmate.model.Solo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -125,8 +124,22 @@ public class ApplicationDao {
             ResultSet resultSet = preparedStatement.executeQuery();
 
             while(resultSet.next()){
-                SoloResultBean soloResultBean = JoinRequestDao.buildSoloResultBean(resultSet);
+
+                String firstName = resultSet.getString("first_name");
+                String lastName = resultSet.getString("last_name");
+                String city = resultSet.getString("city");
+                String email = resultSet.getString("email");
+                String encodedImg = resultSet.getString("encoded_profile_img");
+                int id = resultSet.getInt("id");
+                SoloResultBean soloResultBean = new SoloResultBean(id, email, encodedImg, firstName, lastName, city);
+                if (resultSet.getArray("instruments") != null){
+                    List<String> instrumentList = new ArrayList<>();
+                    String [] temp = (String []) resultSet.getArray("instruments").getArray();
+                    instrumentList = Arrays.asList(temp);
+                    soloResultBean.setInstrumentList(instrumentList);
+                }
                 solosList.add(soloResultBean);
+
             } return solosList;
 
         } catch (SQLException ex){
