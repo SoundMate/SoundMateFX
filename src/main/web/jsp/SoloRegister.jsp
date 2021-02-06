@@ -64,14 +64,14 @@
                         <form action="" method="post" name="signUpForm">
                             <label for="email-field">Email</label> <br>
                             <input type="email" name="email" id="email-field"> <br>
-                            <label for="password">Password</label> <br>
-                            <input type="password" name="password" id="password"> <br>
-                            <label for="fName">First Name</label> <br>
-                            <input type="text" name="firstName" id="fName"> <br>
-                            <label for="lName">Last Name</label> <br>
-                            <input type="text" name="lastName" id="lName"> <br>
-                            <label for="city">City</label> <br>
-                            <input type="text" name="city" id="city"> <br>
+                            <label for="password-field">Password</label> <br>
+                            <input type="password" name="password" id="password-field"> <br>
+                            <label for="fName-field">First Name</label> <br>
+                            <input type="text" name="firstName" id="fName-field"> <br>
+                            <label for="lName-field">Last Name</label> <br>
+                            <input type="text" name="lastName" id="lName-field"> <br>
+                            <label for="city-field">City</label> <br>
+                            <input type="text" name="city" id="city-field"> <br>
                             <input type="submit" name="register" value="Sign Up" class="sign-up-form-button">
 
                         </form>
