@@ -4,6 +4,7 @@ import it.soundmate.database.Connector;
 import it.soundmate.database.dbexceptions.RepositoryException;
 import it.soundmate.model.Application;
 import it.soundmate.model.JoinRequest;
+import it.soundmate.model.RequestState;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -48,18 +49,34 @@ public class JoinRequestDao {
 
 
     public boolean acceptRequest(JoinRequest joinRequest){
-        String sql = "update join_request set is_accepted = ? where code = ?";
+        String sql = "update join_request set request_state = ? where code = ?";
 
         try(Connection conn = connector.getConnection();
             PreparedStatement preparedStatement = conn.prepareStatement(sql)){
 
-            preparedStatement.setBoolean(1, true);
+            preparedStatement.setString(1, RequestState.ACCEPTED.toString());
             preparedStatement.setInt(2, joinRequest.getCode());
 
             return preparedStatement.executeUpdate() == 1;
 
         }catch (SQLException ex){
-            throw new RepositoryException("Error deleting entry. The error was: \n" + ex.getMessage(), ex);
+            throw new RepositoryException(ERROR + ex.getMessage(), ex);
+        }
+    }
+
+    public boolean rejectRequest(JoinRequest joinRequest){
+        String sql = "update join_request set request_state = ? where code = ?";
+
+        try(Connection conn = connector.getConnection();
+            PreparedStatement preparedStatement = conn.prepareStatement(sql)){
+
+            preparedStatement.setString(1, RequestState.REJECTED.toString());
+            preparedStatement.setInt(2, joinRequest.getCode());
+
+            return preparedStatement.executeUpdate() == 1;
+
+        }catch (SQLException ex){
+            throw new RepositoryException(ERROR + ex.getMessage(), ex);
         }
     }
 
