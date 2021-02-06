@@ -89,7 +89,7 @@ public class JoinRequestDao {
         String sql = "SELECT jr.code, jr.id_band, jr.id_solo, jr.message, jr.request_state " +
                      "from applications " +
                      "JOIN join_request jr on applications.code = jr.code_application " +
-                     "WHERE code = ?";
+                     "WHERE applications.code = ?";
 
         List<JoinRequest> joinRequestList = new ArrayList<>();
 

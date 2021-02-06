@@ -16,6 +16,14 @@ class JoinRequestDaoTest {
     private static final ApplicationDao applicationDao = new ApplicationDao();
     private static final JoinRequestDao sut = new JoinRequestDao();
 
+    @AfterAll
+    static void tearDown(){
+        userDao.deleteAll();
+        applicationDao.deleteApplications();
+        sut.deleteJoinRequests();
+
+    }
+
     @Test
     @Order(1)
     void sendRequestTest() {
@@ -68,16 +76,50 @@ class JoinRequestDaoTest {
 
     }
 
+    @Test
+    @Order(4)
+    void rejectRequestTest(){
+        RegisterBandBean regBandBean = new RegisterBandBean("band3@", "asd", "DT", "Boston");
+        int bandId = bandDao.registerBand(regBandBean);
+        RegisterSoloBean regSoloBean = new RegisterSoloBean("solo3@", "asd", "pippo", "pluto", "Rome");
+        int soloId = soloDao.registerSolo(regSoloBean);
 
+        Application application = new Application(bandId, "drums", "ciao, sono pippo");
+        application = applicationDao.createApplication(application);
 
-    @AfterAll
-    static void tearDown(){
-        userDao.deleteAll();
-        applicationDao.deleteApplications();
-        sut.deleteJoinRequests();
+        JoinRequest jrNoCode = new JoinRequest(bandId, application.getApplicationCode(), soloId, "s'allebba la pampuja");
+        JoinRequest jrWithCode = sut.sendRequestToApplication(application, jrNoCode);
+
+        Assertions.assertTrue(sut.rejectRequest(jrWithCode));
 
     }
 
+    @Test
+    @Order(5)
+    void getJoinRequestByApplicationCodeTest() {
+        RegisterBandBean regBandBean = new RegisterBandBean("band4@", "asd", "DT", "Boston");
+        int bandId = bandDao.registerBand(regBandBean);
+        RegisterSoloBean regSoloBean = new RegisterSoloBean("solo4@", "asd", "pippo", "pluto", "Rome");
+        int soloId = soloDao.registerSolo(regSoloBean);
+
+        Application application = new Application(bandId, "drums", "ciao, sono pippo");
+        application = applicationDao.createApplication(application);
+
+        JoinRequest jrNoCode = new JoinRequest(bandId, application.getApplicationCode(), soloId, "joinRequestTest");
+        JoinRequest jrWithCode = sut.sendRequestToApplication(application, jrNoCode);
+
+        JoinRequest jrNoCode2 = new JoinRequest(bandId, application.getApplicationCode(), soloId, "joinRequestTest2");
+        JoinRequest jrWithCode2 = sut.sendRequestToApplication(application, jrNoCode2);
+
+        JoinRequest jrNoCode3 = new JoinRequest(bandId, application.getApplicationCode(), soloId, "joinRequestTest3");
+        JoinRequest jrWithCode3 = sut.sendRequestToApplication(application, jrNoCode3);
+
+        JoinRequest jrNoCode4 = new JoinRequest(bandId, application.getApplicationCode(), soloId, "joinRequestTest4");
+        JoinRequest jrWithCode4 = sut.sendRequestToApplication(application, jrNoCode4);
+
+        Assertions.assertEquals(4, sut.getJoinRequestsByApplicationCode(application).size());
+
+    }
 
 
 }
