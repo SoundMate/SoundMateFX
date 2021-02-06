@@ -107,7 +107,7 @@
                     <input type="submit" name="login" value="Sign In" class="sign-in-form-button">
                 </form>
 
-                <form action="register.jsp" method="get" name="register-selection">
+                <form action="" method="get" name="register-selection">
                     <div class="register-box">
                         <h3>Sign Up Now</h3>
                         <ul class="band-solo-boxes">

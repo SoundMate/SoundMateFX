@@ -8,8 +8,8 @@
   Time: 14:45
   To change this template use File | Settings | File Templates.
 --%>
-
-<html>
+<!DOCTYPE>
+<html lang="it">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -52,12 +52,6 @@
 <div class="main">
     <header>
         <a href="#" class="logo-link"><img src="../../resources/soundmate/images/logo.svg" alt="Soundmate Logo" class="header-logo"></a>
-        <ul class="links">
-            <li><a href="#" class="nav-link">Home</a></li>
-            <li><a href="#" class="nav-link" onclick="smoothScroll(document.getElementById('#feature-wrapper'))">Sign In</a></li>
-            <li><a href="#" class="nav-link" onclick="smoothScroll(document.getElementById('#footer'))">Contacts</a></li>
-
-        </ul>
     </header>
 
     <div class="main-wrapper">
