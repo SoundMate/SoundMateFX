@@ -1,20 +1,15 @@
 <%@ page import="it.soundmate.controller.logic.RegisterController" %>
-<%@ page import="it.soundmate.bean.registerbeans.RegisterSoloBean" %>
-<%@ page import="it.soundmate.bean.registerbeans.RegisterBean" %>
-<%@ page import="it.soundmate.model.User" %>
-<%@ page import="it.soundmate.bean.LoginBean" %>
-<%@ page import="it.soundmate.controller.logic.LoginController" %>
-<%@ page import="it.soundmate.model.Solo" %>
+<%@ page import="it.soundmate.model.Band" %>
 
 <%--
   Created by IntelliJ IDEA.
   User: Matteo D'Alessandro
   Date: 06/02/2021
-  Time: 14:45
+  Time: 18:56
   To change this template use File | Settings | File Templates.
 --%>
 
-
+<html>
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -27,13 +22,13 @@
 </head>
 
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
-<jsp:useBean id="soloRegBean" scope="request" class="it.soundmate.bean.registerbeans.RegisterSoloBean"/>
-<jsp:setProperty name="soloRegBean" property="*"/>
+<jsp:useBean id="bandRegBean" scope="request" class="it.soundmate.bean.registerbeans.RegisterBandBean"/>
+<jsp:setProperty name="bandRegBean" property="*"/>
 
 <!-- Registration Request -->
 <%
     if (request.getParameter("register")!=null) {
-        if (!soloRegBean.checkFields())
+        if (!bandRegBean.checkFields())
         {
 %>
 <div style="align-content: center; color: red; justify-content: center; align-items: center;">
@@ -42,8 +37,8 @@
 <%
         } else {
             RegisterController registerController = new RegisterController();
-            Solo solo = registerController.registerSolo(soloRegBean);
-            session.setAttribute("soloUser", solo);
+            Band band = registerController.registerBand(bandRegBean);
+            session.setAttribute("bandUser", band);
             response.sendRedirect("home.jsp");
         }
     }
@@ -68,8 +63,8 @@
     <div class="main-wrapper">
 
         <div class="text-main">
-            <h3>Join now as a Solo</h3>
-            <h3>Music begins with you</h3>
+            <h3>Join now as a Band</h3>
+            <h3>Manage, promote, search for new musicians.</h3>
         </div>
 
         <div class="specific-form">
@@ -78,35 +73,32 @@
 
                 <div class="form-group">
                     <label for="email-field">Email</label>  <br>
-                    <input type="email" name="email" id="email-field">  <br>
+                    <input type="email" name="email" id="email-field" placeholder="Email">  <br>
                     <small id="emailHelp" class="form-text text-muted">We'll never share your email with anyone else.</small>
                 </div>
                 <div class="form-group">
                     <label for="password-field">Password</label> <br>
-                    <input type="password" name="password" id="password-field"> <br>
+                    <input type="password" name="password" id="password-field" placeholder="Password"> <br>
                 </div>
                 <div class="form-group">
-                    <label for="fName-field">First Name</label> <br>
-                    <input type="text" name="firstName" id="fName-field"> <br>
-                </div>
-                <div class="form-group">
-                    <label for="lName-field">Last Name</label> <br>
-                    <input type="text" name="lastName" id="lName-field"> <br>
+                    <label for="bName-field">Band Name</label> <br>
+                    <input type="text" name="bandName" id="bName-field" placeholder="Band Name"> <br>
                 </div>
                 <div class="form-group">
                     <label for="city-field">City</label> <br>
-                    <input type="text" name="city" id="city-field"> <br>
+                    <input type="text" name="city" id="city-field" placeholder="City"> <br>
                 </div>
 
-                <input type="submit" name="register" value="Sign Up" class="btn mb-3">
+                <input type="submit" name="register" value="Sign Up" class="btn mb-6">
 
             </form>
 
         </div>
 
     </div>
-</div>
 
+
+</div>
 <div class="footer" id="#footer">
 
     <ul class="contacts-list">
@@ -118,6 +110,6 @@
     </ul>
 
 </div>
-
 </body>
 
+</html>
