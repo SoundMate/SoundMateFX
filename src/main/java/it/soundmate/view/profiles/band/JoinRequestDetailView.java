@@ -9,6 +9,8 @@ package it.soundmate.view.profiles.band;
 import it.soundmate.bean.searchbeans.SoloResultBean;
 import it.soundmate.constants.Style;
 import it.soundmate.controller.graphic.profiles.BandProfileGraphicController;
+import it.soundmate.controller.logic.profiles.BandProfileController;
+import it.soundmate.database.dbexceptions.RepositoryException;
 import it.soundmate.model.Application;
 import it.soundmate.model.Band;
 import it.soundmate.model.JoinRequest;
@@ -18,11 +20,14 @@ import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.layout.HBox;
-import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 
 public class JoinRequestDetailView extends VBox {
 
@@ -35,6 +40,7 @@ public class JoinRequestDetailView extends VBox {
     private final Button acceptBtn = UIUtils.createStyledButton("Accept", new AcceptAction());
     private final Button declineBtn = UIUtils.createStyledButton("Decline", new DeclineAction());
     private final Button backBtn = UIUtils.createStyledButton("Back", new BackAction());
+    private static final Logger logger = LoggerFactory.getLogger(JoinRequestDetailView.class);
 
     public JoinRequestDetailView(JoinRequest joinRequest, ProfileView profileView, Band band, Application application) {
         this.joinRequest = joinRequest;
@@ -89,7 +95,15 @@ public class JoinRequestDetailView extends VBox {
     private class AcceptAction implements EventHandler<ActionEvent> {
         @Override
         public void handle(ActionEvent event) {
-
+            try {
+                BandProfileController bandProfileController = new BandProfileController();
+                bandProfileController.acceptRequest(joinRequest);
+                Alert confirmation = new Alert(Alert.AlertType.INFORMATION);
+                confirmation.setContentText("Request accepted");
+                confirmation.showAndWait();
+            } catch (RepositoryException repositoryException) {
+                logger.error("Request not accepted: {}", repositoryException.getMessage());
+            }
         }
     }
 

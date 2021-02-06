@@ -6,8 +6,8 @@
 
 package it.soundmate.model;
 
+import it.soundmate.bean.searchbeans.BandResultBean;
 import it.soundmate.bean.searchbeans.SoloResultBean;
-import it.soundmate.bean.searchbeans.UserResultBean;
 
 public class JoinRequest  {
 
@@ -18,6 +18,7 @@ public class JoinRequest  {
     private String message;
     private RequestState requestState;
     private SoloResultBean soloResultBean;
+    private BandResultBean band;
 
 
     public JoinRequest() {
@@ -95,6 +96,14 @@ public class JoinRequest  {
 
     public void setSoloResultBean(SoloResultBean soloResultBean) {
         this.soloResultBean = soloResultBean;
+    }
+
+    public BandResultBean getBand() {
+        return band;
+    }
+
+    public void setBand(BandResultBean band) {
+        this.band = band;
     }
 }
 

@@ -41,6 +41,7 @@ public class UserDao implements Dao<User> {
     private static final String ERR_INSERT = "Error inserting user";
     private static final String EMAIL = "email";
     private static final String PASSWORD = "password";
+    private final JoinRequestDao joinRequestDao = new JoinRequestDao();
 
 
     @Override
@@ -222,14 +223,14 @@ public class UserDao implements Dao<User> {
     }
 
     public List<Notification> getNotificationsForUser(int id) {
-        log.info("Getting messages for user");
+        log.info("Getting messages for user {}", id);
         List<Notification> notificationList = new ArrayList<>();
-        String query = "select * from notifications join booking on notifications.booking_id = booking.code where receiver = (?)";
-        try (Connection conn = connector.getConnection();
-             PreparedStatement preparedStatement = conn.prepareStatement(query, Statement.RETURN_GENERATED_KEYS)) {
+        String query = "select * from notifications left join booking on notifications.booking_id = booking.code left join join_request jr on jr.code = notifications.join_request where receiver = (?)";
+        try (Connection conn = connector.getConnection(); PreparedStatement preparedStatement = conn.prepareStatement(query, Statement.RETURN_GENERATED_KEYS)) {
             preparedStatement.setInt(1, id);
             ResultSet resultSet = preparedStatement.executeQuery();
             while (resultSet.next()) {
+                log.info("Result set");
                 int sender = resultSet.getInt("sender");
                 int receiver = resultSet.getInt("receiver");
                 boolean seen = resultSet.getBoolean("seen");
@@ -246,6 +247,21 @@ public class UserDao implements Dao<User> {
                     BookingNotification bookingMessage = new BookingNotification(sender,receiver, MessageType.BOOK_ROOM_CANCELED, seen, booking);
                     bookingMessage.setMessageId(messageID);
                     notificationList.add(bookingMessage);
+                } else if (resultSet.getString("type").equals(MessageType.JOIN_BAND_CONFIRMATION.toString())) {
+                    log.info("Found join request accepted");
+                    int requestID = resultSet.getInt("join_request");
+                    JoinRequest joinRequest = joinRequestDao.getJoinRequestByID(requestID);
+                    JoinRequestNotification joinRequestNotification = new JoinRequestNotification(sender, receiver, MessageType.JOIN_BAND_CONFIRMATION, seen);
+                    joinRequestNotification.setMessageId(messageID);
+                    joinRequestNotification.setJoinRequest(joinRequest);
+                    notificationList.add(joinRequestNotification);
+                } else {
+                    int requestID = resultSet.getInt("join_request");
+                    JoinRequest joinRequest = joinRequestDao.getJoinRequestByID(requestID);
+                    JoinRequestNotification joinRequestNotification = new JoinRequestNotification(sender, receiver, MessageType.JOIN_BAND_CANCELED, seen);
+                    joinRequestNotification.setMessageId(messageID);
+                    joinRequestNotification.setJoinRequest(joinRequest);
+                    notificationList.add(joinRequestNotification);
                 }
             }
             return notificationList;
