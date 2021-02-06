@@ -66,7 +66,7 @@
             <h3>Join now as a Solo</h3>
             <h3>Music begins with you</h3>
         </div>
-    </div>
+
         <div class="specific-form">
 
             <form action="" method="post" name="signUpForm">
@@ -98,6 +98,7 @@
             </form>
 
         </div>
+    </div>
 
 
 </div>
