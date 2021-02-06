@@ -9,6 +9,8 @@ public abstract class RegisterBean {
     private String password;
     private String city;
 
+    protected RegisterBean() {
+    }
 
     protected RegisterBean(String email, String password, String city){
         this.email = email;

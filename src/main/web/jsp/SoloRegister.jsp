@@ -62,6 +62,7 @@
 
                     <div>
                         <form action="" method="post" name="signUpForm">
+
                             <label for="email-field">Email</label> <br>
                             <input type="email" name="email" id="email-field"> <br>
                             <label for="password-field">Password</label> <br>

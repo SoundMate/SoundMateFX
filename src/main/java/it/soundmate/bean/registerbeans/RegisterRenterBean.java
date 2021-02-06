@@ -12,6 +12,9 @@ public class RegisterRenterBean extends RegisterBean {
 
     private static final UserType USER_TYPE = ROOM_RENTER;
 
+    public RegisterRenterBean() {
+    }
+
     public RegisterRenterBean(String email, String password, String address, String name, String city) {
         super(email, password, city);
         this.address = address;
