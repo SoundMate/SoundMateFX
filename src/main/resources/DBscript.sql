@@ -258,23 +258,23 @@ create unique index applications_code_uindex
 
 create table join_request
 (
-    code             serial  not null
+    code             serial                       not null
         constraint join_request_pk
             primary key,
     code_application integer
         constraint join_request_applications_code_fk
             references applications
             on update cascade on delete cascade,
-    id_band          integer not null
+    id_band          integer                      not null
         constraint join_request_band_id_fk
             references band
             on update cascade on delete cascade,
-    id_solo          integer not null
+    id_solo          integer                      not null
         constraint join_request_solo_id_fk
             references solo
             on update cascade on delete cascade,
     message          text,
-    request_state    text default 'CREATED'::text
+    request_state    text default 'CREATED'::text not null
 );
 
 alter table join_request
