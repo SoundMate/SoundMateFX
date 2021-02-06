@@ -9,6 +9,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.sql.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import java.util.function.Predicate;
 
 public class JoinRequestDao {
@@ -80,6 +83,39 @@ public class JoinRequestDao {
         }
     }
 
+
+    public List<JoinRequest> getJoinRequestsByApplicationCode(Application application){
+        String sql = "SELECT jr.code, jr.id_band, jr.id_solo, jr.message, jr.request_state " +
+                     "from applications " +
+                     "JOIN join_request jr on applications.code = jr.code_application " +
+                     "WHERE code = ?";
+
+        List<JoinRequest> joinRequestList = new ArrayList<>();
+
+        try(Connection conn = connector.getConnection();
+            PreparedStatement preparedStatement = conn.prepareStatement(sql)){
+
+            preparedStatement.setInt(1, application.getApplicationCode());
+
+            ResultSet resultSet = preparedStatement.executeQuery();
+            while (resultSet.next()) {
+                JoinRequest joinRequest = new JoinRequest();
+
+                joinRequest.setCode(resultSet.getInt("code"));
+                joinRequest.setMessage(resultSet.getString("message"));
+                joinRequest.setIdBand(resultSet.getInt("id_band"));
+                joinRequest.setIdSolo(resultSet.getInt("id_solo"));
+                joinRequest.setRequestState(RequestState.returnRequestState(resultSet.getString("request_state")));
+                joinRequest.setCodeApplication(application.getApplicationCode());
+                joinRequestList.add(joinRequest);
+            }
+            return joinRequestList;
+
+        }catch (SQLException ex){
+            throw new RepositoryException(ERROR + ex.getMessage(), ex);
+        }
+
+    }
 
 
     public boolean cancelRequest(JoinRequest joinRequest){
