@@ -6,7 +6,6 @@
 
 package it.soundmate.bean.searchbeans;
 
-import it.soundmate.model.Genre;
 import it.soundmate.model.UserType;
 import it.soundmate.view.uicomponents.SocialLinks;
 
@@ -40,10 +39,6 @@ public class BandResultBean extends UserResultBean {
     }
 
     public List<String> getGenreList() {
-        return genres;
-    }
-
-    public List<String> getGenres() {
         return genres;
     }
 
