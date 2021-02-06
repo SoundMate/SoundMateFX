@@ -6,8 +6,6 @@
 
 package it.soundmate.model;
 
-import it.soundmate.bean.searchbeans.SoloResultBean;
-
 public class JoinRequest  {
 
     private int code;
@@ -15,8 +13,8 @@ public class JoinRequest  {
     private int idBand;
     private int idSolo;
     private String message;
-    private boolean isAccepted;
-    private SoloResultBean soloResultBean;
+    private RequestState requestState;
+
 
     public JoinRequest() {
     }
@@ -34,8 +32,18 @@ public class JoinRequest  {
         joinRequest.setCodeApplication(this.codeApplication);
         joinRequest.setIdBand(this.idBand);
         joinRequest.setIdSolo(this.idSolo);
+        joinRequest.setRequestState(this.requestState);
         joinRequest.setCode(code);
         return joinRequest;
+    }
+
+
+    public RequestState getRequestState() {
+        return requestState;
+    }
+
+    public void setRequestState(RequestState requestState) {
+        this.requestState = requestState;
     }
 
     public int getCode() {
@@ -77,21 +85,7 @@ public class JoinRequest  {
         this.message = message;
     }
 
-    public boolean isAccepted() {
-        return isAccepted;
-    }
 
-    public void setAccepted(boolean accepted) {
-        isAccepted = accepted;
-    }
-
-    public SoloResultBean getSoloResultBean() {
-        return soloResultBean;
-    }
-
-    public void setSoloResultBean(SoloResultBean soloResultBean) {
-        this.soloResultBean = soloResultBean;
-    }
 }
 
 

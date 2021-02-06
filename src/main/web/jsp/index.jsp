@@ -1,5 +1,6 @@
 <%@ page import="it.soundmate.controller.logic.LoginController" %>
 <%@ page import="it.soundmate.model.User" %>
+
 <%--
   ~ Copyright (c) 2020.
   ~ This file was created by Soundmate organization Lorenzo Pantano & Matteo D'Alessandro
