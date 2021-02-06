@@ -25,6 +25,7 @@ public class RoomRenterResultBean extends UserResultBean {
         this.name = name;
     }
 
+    @Override
     public String getName() {
         return name;
     }

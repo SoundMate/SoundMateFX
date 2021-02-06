@@ -22,6 +22,7 @@ public class UserResultBean {
     private  UserType userType;
     private  String city;
     private User searcher;
+    private final String emptyName = "";
 
     public UserResultBean() {
     }
@@ -68,6 +69,6 @@ public class UserResultBean {
     }
 
     public String getName() {
-        return "";
+        return emptyName;
     }
 }
