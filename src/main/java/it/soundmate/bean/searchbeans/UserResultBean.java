@@ -10,11 +10,14 @@ import it.soundmate.model.User;
 import it.soundmate.model.UserType;
 import it.soundmate.utils.Cache;
 import javafx.scene.image.Image;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.InputStream;
 
 public class UserResultBean {
 
+    private static final Logger logger = LoggerFactory.getLogger(UserResultBean.class);
     private  int id;
     private  String email;
     private  InputStream profileImgIs;
@@ -22,7 +25,7 @@ public class UserResultBean {
     private  UserType userType;
     private  String city;
     private User searcher;
-    private final String emptyName = "";
+    private static final String EMPTY_NAME = "";
 
     public UserResultBean() {
     }
@@ -32,7 +35,11 @@ public class UserResultBean {
         this.email = email;
         this.profileImgIs = Cache.getInstance().buildProfileImg(id, encodedImg);
         this.city = city;
-        this.profileImg = new Image(this.profileImgIs);
+        try {
+            this.profileImg = new Image(this.profileImgIs);
+        } catch (NullPointerException nullPointerException) {
+            logger.error("Null Pointer Exception: {}", nullPointerException.getMessage());
+        }
         this.userType = userType;
     }
 
@@ -69,6 +76,6 @@ public class UserResultBean {
     }
 
     public String getName() {
-        return emptyName;
+        return EMPTY_NAME;
     }
 }

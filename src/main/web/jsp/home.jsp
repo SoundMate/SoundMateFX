@@ -1,3 +1,4 @@
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <%@ page import="it.soundmate.model.User" %>
 <%@ page import="it.soundmate.model.Solo" %>
 <%@ page import="it.soundmate.model.Band" %>
@@ -55,7 +56,7 @@
                     <a class="nav-link" href="#">Home <span class="sr-only">(current)</span></a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="#">Messages</a>
+                    <a class="nav-link" href="messages.jsp">Messages</a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link" href="profile.jsp">Profile</a>
@@ -74,14 +75,26 @@
 
     <%
         HomeController homeController = new HomeController(user);
+        System.out.println("Working Directory = " + System.getProperty("user.dir"));
         List<SoloResultBean> soloList = homeController.searchHomeSolos(user.getCity());
         List<BandResultBean> bandList = homeController.searchHomeBands(user.getCity());
         List<RoomRenterResultBean> roomRenterResultBeanList = homeController.searchHomeRenters(user.getCity());
+        request.setAttribute("soloList",soloList);
+        request.setAttribute("bandList", bandList);
+        request.setAttribute("roomRenterList", roomRenterResultBeanList);
     %>
 
     <!-- Musicians you may know -->
 
     <h3>Musicians you may know</h3>
+
+    <c:forEach items="${soloList}" var="solo">
+        <tr>
+            <td>Name: <c:out value="${solo.name}"/></td>
+            <td>Email: <c:out value="${solo.email}"/></td>
+        </tr>
+    </c:forEach>
+
     <div class="row mx-auto">
 
         <div class="col-md-2 " style="margin-bottom:10px;">

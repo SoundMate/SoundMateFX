@@ -29,6 +29,11 @@ public class Connector {
 
     public Connection getConnection() throws SQLException {
         if (connection == null) {
+            try {
+                Class.forName("org.postgresql.jdbc.Driver");
+            } catch (ClassNotFoundException e) {
+                e.printStackTrace();
+            }
             connection = DriverManager.getConnection(host, user, password);
             log.info("Connected to the Database! {}",connection.getClientInfo());
         }else if (connection.isClosed()){
@@ -37,7 +42,7 @@ public class Connector {
         return connection;
     }
 
-    public static Connector getInstance(){
+    public static Connector getInstance() {
         if(instance == null){
             instance = new Connector();
             getConnectorProperties();

@@ -92,7 +92,7 @@ public class UserDao implements Dao<User> {
                 }
             }
         } catch (SQLException sqlException){
-            throw new RepositoryException("Error: DB not responding! \n Check stacktrace for details");
+            throw new RepositoryException("Error: DB not responding! SQL Exception: "+sqlException.getMessage());
         }
         throw new LoginException("User not found");
     }

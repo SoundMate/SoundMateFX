@@ -18,8 +18,8 @@ import java.util.List;
 
 public class MessagesController {
 
-    MessageDao messageDao = new MessageDao();
-    JoinRequestDao joinRequestDao = new JoinRequestDao();
+    private final MessageDao messageDao = new MessageDao();
+    private final JoinRequestDao joinRequestDao = new JoinRequestDao();
 
     public List<Message> getMessagesForUser(User user) {
         try {

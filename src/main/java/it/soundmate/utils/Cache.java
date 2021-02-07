@@ -44,7 +44,6 @@ public class Cache {
             return new ByteArrayInputStream(os.toByteArray());
         } catch (IOException e) {
             logger.error("IO Exception: {}", e.getMessage());
-            e.printStackTrace();
             return null;
         }
     }

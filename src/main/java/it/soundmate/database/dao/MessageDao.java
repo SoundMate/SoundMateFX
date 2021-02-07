@@ -65,6 +65,7 @@ public class MessageDao {
                 message.setSubject(resultSet.getString("subject"));
                 message.setBody(resultSet.getString("body"));
                 message.setSenderUserType(UserType.returnUserType(resultSet.getString("sender_user_type")));
+                message.setUserMessageBean(new UserDao().getSenderInfo(resultSet.getInt("id_sender")));
                 log.info("Message Result: {}", message.getBody());
                 messages.add(message);
             }
@@ -77,13 +78,10 @@ public class MessageDao {
 
     public boolean markAsRead(Message message) {
         String sql = "update messages set is_read = ? where code = ?";
-
         try (Connection conn = connector.getConnection();
              PreparedStatement preparedStatement = conn.prepareStatement(sql)) {
-
             preparedStatement.setBoolean(1, true);
             preparedStatement.setInt(2, message.getMessageCode());
-
             int rowAffected = preparedStatement.executeUpdate();
             if (rowAffected == 1) {
                 log.info(SUCCESS);

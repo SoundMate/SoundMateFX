@@ -10,6 +10,7 @@ import it.soundmate.bean.searchbeans.SoloResultBean;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.nio.file.Paths;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -80,6 +81,7 @@ public class SearchSolo implements SearchEngine<SoloResultBean>, Runnable {
 
 
     private void buildSoloResult(ResultSet resultSet, List<SoloResultBean> soloResultBeans) throws SQLException {
+        logger.info("Working Directory = {}", Paths.get(".").toAbsolutePath().normalize());
         logger.info("Building solo result");
         int id = resultSet.getInt("id");
         String email = resultSet.getString("email");
