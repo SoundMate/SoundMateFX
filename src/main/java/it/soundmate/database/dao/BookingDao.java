@@ -1,5 +1,6 @@
 package it.soundmate.database.dao;
 
+import it.soundmate.bean.messagebeans.UserMessageBean;
 import it.soundmate.database.Connector;
 import it.soundmate.database.dbexceptions.RepositoryException;
 import it.soundmate.model.*;
@@ -89,6 +90,8 @@ public class BookingDao {
         booking.setBookerUserId(resultSet.getInt(BOOKER_ID));
         booking.setAccepted(resultSet.getBoolean(IS_ACCEPTED));
         Room room = userDao.getRoomByID(resultSet.getInt("room_code"));
+        UserMessageBean userMessageBean = userDao.getSenderInfo(resultSet.getInt(BOOKER_ID));
+        booking.setBooker(userMessageBean);
         booking.setRoom(room);
         return booking;
     }
@@ -117,17 +120,13 @@ public class BookingDao {
     }
 
 
-    public boolean acceptBooking(Booking booking){
+    public void acceptBooking(Booking booking){
         String sql = "UPDATE booking SET is_accepted = ? WHERE code = ?";
-
         try(Connection conn = connector.getConnection();
             PreparedStatement preparedStatement = conn.prepareStatement(sql)){
-
             preparedStatement.setBoolean(1, true);
             preparedStatement.setInt(2, booking.getCode());
-
-            return preparedStatement.executeUpdate() == 1;
-
+            preparedStatement.executeUpdate();
         } catch (SQLException ex){
             throw new RepositoryException("Error updating the field. The error was: \n" + ex.getMessage(), ex);
         }
@@ -181,14 +180,9 @@ public class BookingDao {
 
     public boolean deleteBooking(Booking booking) {
         String sql = "DELETE FROM booking WHERE code = ?";
-
-        try (Connection conn = connector.getConnection();
-             PreparedStatement preparedStatement = conn.prepareStatement(sql)) {
-
+        try (Connection conn = connector.getConnection(); PreparedStatement preparedStatement = conn.prepareStatement(sql)) {
             preparedStatement.setInt(1, booking.getCode());
-
             return preparedStatement.executeUpdate() == 1;
-
         } catch (SQLException ex) {
             throw new RepositoryException(ERROR_FETCHING_BOOKINGS + ex.getMessage(), ex);
         }
@@ -224,9 +218,6 @@ public class BookingDao {
             throw new RepositoryException("Error ResetCode", ex);
         }
     }
-
-
-
 
 }
 

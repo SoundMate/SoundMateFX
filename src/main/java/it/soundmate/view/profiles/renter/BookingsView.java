@@ -37,7 +37,7 @@ public class BookingsView extends VBox {
         this.profileView = profileView;
         this.roomRenter = roomRenter;
         this.bookingList = bookingList;
-        this.bookingsListView = new BookingsListView(profileView);
+        this.bookingsListView = new BookingsListView(profileView, roomRenter);
         buildContentVBox();
     }
 
@@ -49,6 +49,7 @@ public class BookingsView extends VBox {
         this.getChildren().add(label);
         ObservableList<Booking> bookingObservableList = FXCollections.observableArrayList(bookingList);
         this.bookingsListView.setItems(bookingObservableList);
+        this.bookingsListView.setStyle("-fx-background-color: #232323; -fx-border-color: #232323");
         this.getChildren().add(bookingsListView);
         this.getChildren().add(backBtn);
     }

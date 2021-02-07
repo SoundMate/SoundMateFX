@@ -6,7 +6,7 @@
 
 package it.soundmate.model;
 
-import it.soundmate.bean.searchbeans.UserResultBean;
+import it.soundmate.bean.messagebeans.UserMessageBean;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -21,7 +21,7 @@ public class Booking {
     private int bookerUserId;
     private boolean isAccepted = false;
     private int idRenter;
-    private UserResultBean booker;
+    private UserMessageBean booker;
 
 
     public Booking() {
@@ -111,11 +111,11 @@ public class Booking {
         return code;
     }
 
-    public UserResultBean getBooker() {
+    public UserMessageBean getBooker() {
         return booker;
     }
 
-    public void setBooker(UserResultBean booker) {
+    public void setBooker(UserMessageBean booker) {
         this.booker = booker;
     }
 }

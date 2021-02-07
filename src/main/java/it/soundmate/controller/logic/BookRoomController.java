@@ -64,4 +64,20 @@ public class BookRoomController {
             throw new RepositoryException(repositoryException.getMessage());
         }
     }
+
+    public void declineBooking(Booking booking) {
+        try {
+            bookingDao.deleteBooking(booking);
+        } catch (RepositoryException repositoryException) {
+            throw new RepositoryException(repositoryException.getMessage());
+        }
+    }
+
+    public void acceptBooking(Booking booking) {
+        try {
+            bookingDao.acceptBooking(booking);
+        } catch (RepositoryException repositoryException) {
+            throw new RepositoryException(repositoryException.getMessage());
+        }
+    }
 }

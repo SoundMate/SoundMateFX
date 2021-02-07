@@ -8,6 +8,7 @@ package it.soundmate.view.profiles.renter;
 
 import it.soundmate.constants.Style;
 import it.soundmate.model.Booking;
+import it.soundmate.model.RoomRenter;
 import it.soundmate.view.UIUtils;
 import it.soundmate.view.main.ProfileView;
 import javafx.event.ActionEvent;
@@ -27,9 +28,11 @@ public class BookingsListView extends ListView<Booking> {
 
     private static final Logger logger = LoggerFactory.getLogger(BookingsListView.class);
     private final ProfileView profileView;
+    private final RoomRenter roomRenter;
 
-    public BookingsListView(ProfileView profileView) {
+    public BookingsListView(ProfileView profileView, RoomRenter roomRenter) {
         this.profileView = profileView;
+        this.roomRenter = roomRenter;
         this.setCellFactory(param -> new BookingResult());
         this.setOrientation(Orientation.VERTICAL);
         this.setPrefHeight(200);
@@ -82,7 +85,7 @@ public class BookingsListView extends ListView<Booking> {
 
             @Override
             public void handle(ActionEvent event) {
-                profileView.setProfilePage(new BookingDetailView(profileView, booking));
+                profileView.setProfilePage(new BookingDetailView(profileView, booking, roomRenter));
             }
         }
     }

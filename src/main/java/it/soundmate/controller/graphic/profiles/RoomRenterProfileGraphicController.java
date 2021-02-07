@@ -81,10 +81,9 @@ public class RoomRenterProfileGraphicController extends EditGraphicController {
         }
     }
 
-    public void bookRoom(Booking booking, int renterID) {
+    public void bookRoom(Booking booking) {
         try {
-            Booking doneBooking = bookRoomController.bookRoom(booking);
-            bookRoomController.sendBookingInfo(doneBooking, renterID);
+            bookRoomController.bookRoom(booking);
         } catch (RepositoryException repositoryException) {
             throw new RepositoryException(repositoryException.getMessage());
         }
@@ -93,6 +92,23 @@ public class RoomRenterProfileGraphicController extends EditGraphicController {
     public List<Booking> getBookings(RoomRenter roomRenter) {
         try {
             return bookRoomController.getBookingsForRenter(roomRenter);
+        } catch (RepositoryException repositoryException) {
+            throw new RepositoryException(repositoryException.getMessage());
+        }
+    }
+
+    public void acceptBooking(Booking booking) {
+        try {
+            bookRoomController.acceptBooking(booking);
+            bookRoomController.sendBookingInfo(booking, booking.getIdRenter());
+        } catch (RepositoryException repositoryException) {
+            throw new RepositoryException(repositoryException.getMessage());
+        }
+    }
+
+    public void declineBooking(Booking booking) {
+        try {
+            bookRoomController.declineBooking(booking);
         } catch (RepositoryException repositoryException) {
             throw new RepositoryException(repositoryException.getMessage());
         }

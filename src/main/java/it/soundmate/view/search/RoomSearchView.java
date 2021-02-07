@@ -144,7 +144,7 @@ public class RoomSearchView extends VBox {
                 alert.setContentText("Booking "+room.getName()+" "+datePicker.getValue()+" from "+startTimeTextField.getText()+" to "+endTimeTextField.getText());
                 Optional<ButtonType> result = alert.showAndWait();
                 if (result.isPresent() && result.get() == ButtonType.OK) {
-                    roomRenterProfileGraphicController.bookRoom(booking, roomRenterResultBean.getId());
+                    roomRenterProfileGraphicController.bookRoom(booking);
                 }
                 Alert confirmedDialog = new Alert(Alert.AlertType.INFORMATION);
                 confirmedDialog.setTitle("Booking confirmation");
