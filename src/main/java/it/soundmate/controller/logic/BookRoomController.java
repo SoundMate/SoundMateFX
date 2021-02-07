@@ -6,6 +6,7 @@
 
 package it.soundmate.controller.logic;
 
+import it.soundmate.database.dao.BookingDao;
 import it.soundmate.database.dao.RoomRenterDao;
 import it.soundmate.database.dao.UserDao;
 import it.soundmate.database.dbexceptions.RepositoryException;
@@ -14,15 +15,17 @@ import it.soundmate.model.*;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.List;
 
 public class BookRoomController {
 
     private final UserDao userDao = new UserDao();
     private final RoomRenterDao roomRenterDao = new RoomRenterDao(userDao);
+    private final BookingDao bookingDao = new BookingDao();
 
-    public void bookRoom(Booking booking) {
+    public Booking bookRoom(Booking booking) {
         try {
-            roomRenterDao.bookRoom(booking);
+            return bookingDao.sendBookingRequest(booking);
         } catch (RepositoryException repositoryException) {
             throw new RepositoryException(repositoryException.getMessage());
         }
@@ -51,6 +54,14 @@ public class BookRoomController {
             roomRenterDao.cancelBooking(bookingMessage);
         } catch (InputException inputException) {
             throw new InputException(inputException.getMessage());
+        }
+    }
+
+    public List<Booking> getBookingsForRenter(RoomRenter roomRenter) {
+        try {
+            return bookingDao.getAllBookingsById(roomRenter);
+        } catch (RepositoryException repositoryException) {
+            throw new RepositoryException(repositoryException.getMessage());
         }
     }
 }

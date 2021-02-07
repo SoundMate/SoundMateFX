@@ -10,6 +10,7 @@ import it.soundmate.constants.Style;
 import it.soundmate.controller.graphic.profiles.RoomRenterProfileGraphicController;
 import it.soundmate.exceptions.InputException;
 import it.soundmate.exceptions.UpdateException;
+import it.soundmate.model.Booking;
 import it.soundmate.model.Room;
 import it.soundmate.model.RoomRenter;
 import it.soundmate.utils.Cache;
@@ -29,6 +30,7 @@ import javafx.scene.paint.ImagePattern;
 import javafx.scene.shape.Rectangle;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import java.util.List;
 
 public class RenterProfileView extends VBox {
 
@@ -167,6 +169,8 @@ public class RenterProfileView extends VBox {
         @Override
         public void handle(ActionEvent event) {
             logger.info("Bookings click");
+            List<Booking> bookings = roomRenterProfileGraphicController.getBookings(roomRenter);
+            profileView.setProfilePage(new BookingsView(profileView, roomRenter, bookings));
         }
     }
 }

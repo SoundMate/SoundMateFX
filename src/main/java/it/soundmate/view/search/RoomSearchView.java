@@ -137,6 +137,7 @@ public class RoomSearchView extends VBox {
             try {
                 roomRenterProfileGraphicController.checkRoomAvailability(datePicker.getValue(), startTimeTextField.getText(), endTimeTextField.getText(), room);
                 Booking booking = new Booking(room, roomRenterResultBean.getSearcher().getId(), datePicker.getValue(), LocalTime.parse(startTimeTextField.getText()), LocalTime.parse(endTimeTextField.getText()));
+                booking.setIdRenter(roomRenterResultBean.getId());
                 Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
                 alert.setTitle("Confirmation Dialog");
                 alert.setHeaderText("Are you sure?");

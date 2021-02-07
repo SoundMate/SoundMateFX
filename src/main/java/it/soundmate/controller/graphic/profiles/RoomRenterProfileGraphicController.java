@@ -23,6 +23,7 @@ import org.slf4j.LoggerFactory;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.List;
 
 import static java.time.temporal.ChronoUnit.MINUTES;
 
@@ -82,8 +83,16 @@ public class RoomRenterProfileGraphicController extends EditGraphicController {
 
     public void bookRoom(Booking booking, int renterID) {
         try {
-            bookRoomController.bookRoom(booking);
-            bookRoomController.sendBookingInfo(booking, renterID);
+            Booking doneBooking = bookRoomController.bookRoom(booking);
+            bookRoomController.sendBookingInfo(doneBooking, renterID);
+        } catch (RepositoryException repositoryException) {
+            throw new RepositoryException(repositoryException.getMessage());
+        }
+    }
+
+    public List<Booking> getBookings(RoomRenter roomRenter) {
+        try {
+            return bookRoomController.getBookingsForRenter(roomRenter);
         } catch (RepositoryException repositoryException) {
             throw new RepositoryException(repositoryException.getMessage());
         }

@@ -24,7 +24,7 @@ public class BookingDao {
 
     //insert
     public Booking sendBookingRequest(Booking booking){
-        String sql = "INSERT INTO booking (room_code, date, start_time, end_time, booker_id, is_accepted, id_renter) VALUES (?, ?, ?, ?, ?, ?, ?)";
+        String sql = "INSERT INTO booking (room_code, date, start_time, end_time, booker_id, is_accepted, id_renter) VALUES (?, ?, ?, ?, ?, ?, ?) returning code";
         Date date = Date.valueOf(booking.getDate());
         Time startTime = Time.valueOf(booking.getStartTime());
         Time endTime = Time.valueOf(booking.getEndTime());
@@ -44,6 +44,7 @@ public class BookingDao {
             if (rowAffected == 1) {
                 ResultSet resultSet = preparedStatement.getGeneratedKeys();
                 if (resultSet.next()) {
+                    log.info("Setting booking code: {}", resultSet.getInt("code"));
                     return booking.withCode(resultSet.getInt("code"));
                 }
             }
@@ -79,6 +80,7 @@ public class BookingDao {
     }
 
     public Booking buildBookingResult(ResultSet resultSet) throws SQLException {
+        UserDao userDao = new UserDao();
         Booking booking = new Booking();
         booking.setCode(resultSet.getInt("code"));
         booking.setDate(resultSet.getDate("date").toLocalDate());
@@ -86,6 +88,8 @@ public class BookingDao {
         booking.setEndTime(resultSet.getTime(END_TIME).toLocalTime());
         booking.setBookerUserId(resultSet.getInt(BOOKER_ID));
         booking.setAccepted(resultSet.getBoolean(IS_ACCEPTED));
+        Room room = userDao.getRoomByID(resultSet.getInt("room_code"));
+        booking.setRoom(room);
         return booking;
     }
 

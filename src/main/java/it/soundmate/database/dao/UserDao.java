@@ -271,7 +271,7 @@ public class UserDao implements Dao<User> {
         }
     }
 
-    private Room getRoomByID(int roomID) {
+    public Room getRoomByID(int roomID) {
         String query = "SELECT * FROM room WHERE room_code = (?)";
         try (Connection conn = connector.getConnection();
              PreparedStatement preparedStatement = conn.prepareStatement(query)) {
@@ -298,18 +298,16 @@ public class UserDao implements Dao<User> {
         try (Connection conn = connector.getConnection();
              PreparedStatement preparedStatement = conn.prepareStatement(query)) {
             preparedStatement.setInt(1, bookingID);
-
             ResultSet resultSet = preparedStatement.executeQuery();
-
             if (resultSet.next()) {
-                int roomID = resultSet.getInt("code");
-
+                int roomID = resultSet.getInt("room_code");
                 LocalDate date = resultSet.getDate("date").toLocalDate();
                 LocalTime startTime = resultSet.getTime("start_time").toLocalTime();
                 LocalTime endTime = resultSet.getTime("end_time").toLocalTime();
                 int booker = resultSet.getInt("booker_id");
-                int id = resultSet.getInt(BOOKING_ID);
-                Booking booking = new Booking(this.getRoomByID(roomID), booker, date, startTime, endTime);
+                int id = resultSet.getInt("code");
+                Room room = this.getRoomByID(roomID);
+                Booking booking = new Booking(room, booker, date, startTime, endTime);
                 booking.setCode(id);
                 return booking;
             } else throw new InputException("Booking not found");
