@@ -27,7 +27,7 @@
     %>
 
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-        <a class="navbar-brand" href="#">Soundmate</a>
+        <a href="#" class="logo-link"><img src="../../resources/soundmate/images/logo.svg" alt="Soundmate Logo" class="header-logo"></a>
 
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
             <ul class="navbar-nav mr-auto">
@@ -36,6 +36,9 @@
                 </li>
                 <li class="nav-item">
                     <a class="nav-link" href="messages.jsp">Messages</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="messages.jsp">Join Request</a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link active" href="profile.jsp">Profile <span class="sr-only">(current)</span></a>
@@ -50,20 +53,19 @@
             </form>
         </div>
     </nav>
-
     <div class="row py-5 px-4">
         <div class="col-md-5 mx-auto">
             <!-- Profile widget -->
             <div class="bg-black shadow rounded overflow-hidden">
-                <div class="px-4 pt-0 pb-4 cover">
-                    <div class="media align-items-end profile-head">
-                        <div class="profile mr-3"><img src="https://images.unsplash.com/photo-1522075469751-3a6694fb2f61?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=500&q=80" alt="..." width="130" class="rounded mb-2 img-thumbnail"><a href="#" class="btn btn-outline-dark btn-sm btn-block">Edit profile</a></div>
-                        <div class="media-body mb-5 text-black">
-                            <h4 class="mt-0 mb-0"><%System.out.println(solo.getFirstName()+ " "+solo.getLastName());%></h4>  <!--Non funziona così-->
-                            <p class="small mb-4"> <em class="fas fa-map-marker-alt mr-2"></em><%System.out.println(solo.getCity());%></p>
-                        </div>
-                    </div>
-                </div>
+<%--                <div class="px-4 pt-0 pb-4 cover">--%>
+<%--                    <div class="media align-items-end profile-head">--%>
+<%--                        <div class="profile mr-3"><img src="https://images.unsplash.com/photo-1522075469751-3a6694fb2f61?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=500&q=80" alt="..." width="130" class="rounded mb-2 img-thumbnail"><a href="#" class="btn btn-outline-dark btn-sm btn-block">Edit profile</a></div>--%>
+<%--                        <div class="media-body mb-5 text-black">--%>
+<%--                            <h4 class="mt-0 mb-0"><%System.out.println(solo.getFirstName()+ " "+solo.getLastName());%></h4>  <!--Non funziona così-->--%>
+<%--                            <p class="small mb-4"> <em class="fas fa-map-marker-alt mr-2"></em><%System.out.println(solo.getCity());%></p>--%>
+<%--                        </div>--%>
+<%--                    </div>--%>
+<%--                </div>--%>
                 <div class="bg-dark p-4 d-flex justify-content-end text-center">
                     <ul class="list-inline mb-0">
                         <li class="list-inline-item">
@@ -95,6 +97,7 @@
             </div>
         </div>
     </div>
+
 
 </body>
 </html>
