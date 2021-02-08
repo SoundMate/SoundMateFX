@@ -7,6 +7,8 @@
 package it.soundmate.database.searchengine;
 
 import it.soundmate.bean.searchbeans.RoomRenterResultBean;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 
 import java.sql.Connection;
@@ -18,10 +20,12 @@ import java.util.List;
 
 public class SearchRenter implements SearchEngine<RoomRenterResultBean>, Runnable {
 
+    private static final Logger logger = LoggerFactory.getLogger(SearchRenter.class);
     private final List<RoomRenterResultBean> results = new ArrayList<>();
     private final String searchString;
     private final Connection connection;
     private final String city;
+    private static final String ERRORSRC = "Error Search";
 
     public SearchRenter(String searchString, Connection connection, String city){
         this.searchString = searchString;
@@ -48,7 +52,7 @@ public class SearchRenter implements SearchEngine<RoomRenterResultBean>, Runnabl
                 roomRenterResultBeanList.add(resultBean);
             }
         } catch (SQLException sqlException) {
-            sqlException.printStackTrace();
+            logger.error(ERRORSRC, sqlException);
         }
         return roomRenterResultBeanList;
     }
