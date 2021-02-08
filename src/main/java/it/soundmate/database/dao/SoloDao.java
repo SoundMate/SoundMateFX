@@ -32,28 +32,28 @@ public class SoloDao implements Dao<Solo>{
     private static final String ACC_BANNED_ERR = "\t ***** THIS ACCOUNT HAS BEEN BANNED *****";
     private static final String EMAIL_EXISTS_ERR = "\t ***** THIS EMAIL ALREADY EXISTS *****";
     private static final String ERR_MESSAGE = "Error, check stack trace for details";
-
-    public SoloDao(UserDao userDao) {
-        this.userDao = userDao;
-    }
-
+    private static final String SELECT_SQL = "SELECT soloId FROM ins1\n";  //even if marked red, it works -> needed to solve sonar smell.
     private static final String REG_SOLO_SQL = "WITH ins1 AS (\n" +
             "    INSERT INTO registered_users (email, password, user_type, city)\n" +
             "        VALUES (?, ?, ?, ?)\n" +
             "        RETURNING id AS soloId\n" +
             "    ), ins2 AS (\n" +
             "        INSERT INTO users (id)\n" +
-            "        SELECT soloId FROM ins1\n" +
+                    SELECT_SQL +
             "    ), ins3 AS(\n" +
             "        INSERT INTO played_instruments(id)\n" +
-            "        SELECT soloId FROM ins1\n" +
+                    SELECT_SQL +
             "    ), ins4 AS(\n" +
             "        INSERT INTO fav_genres(id)\n" +
-            "        SELECT soloId FROM ins1\n" +
+                    SELECT_SQL +
             "    )\n" +
             "    INSERT INTO solo (id,first_name, last_name)\n" +
             "    SELECT soloId, ?, ? FROM ins1;";
 
+
+    public SoloDao(UserDao userDao) {
+        this.userDao = userDao;
+    }
 
     public int registerSolo(RegisterSoloBean soloBean){
         if (userDao.checkIfBanned(soloBean.getEmail())){

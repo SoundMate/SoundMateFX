@@ -7,7 +7,6 @@
 package it.soundmate.view.profiles.renter;
 
 import it.soundmate.constants.Style;
-import it.soundmate.controller.graphic.profiles.RoomRenterProfileGraphicController;
 import it.soundmate.model.Room;
 import it.soundmate.model.RoomRenter;
 import it.soundmate.view.UIUtils;
