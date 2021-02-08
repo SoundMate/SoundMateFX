@@ -39,7 +39,7 @@ public class ManageApplicationView extends VBox {
     private final ApplicationCandidates applicationCandidates;
     private final Button deleteBtn = UIUtils.createStyledButton("Delete", new DeleteAction());
     private final Button backBtn = UIUtils.createStyledButton("Back", new BackAction());
-    private ApplicationController applicationController = new ApplicationController();
+    private final ApplicationController applicationController = new ApplicationController();
 
     public ManageApplicationView(ProfileView profileView, Band band, Application application) {
         this.profileView = profileView;
