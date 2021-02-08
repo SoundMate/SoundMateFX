@@ -3,7 +3,8 @@
 <%@ page import="it.soundmate.model.Solo" %>
 <%@ page import="it.soundmate.controller.logic.MessagesController" %>
 <%@ page import="java.util.List" %>
-<%@ page import="it.soundmate.model.Message" %><%--
+<%@ page import="it.soundmate.model.Message" %>
+<%@ page import="it.soundmate.controller.logic.SearchController" %><%--
   ~ Copyright (c) 2021.
   ~ Created by Lorenzo Pantano on 07/02/21, 22:07
   ~ Last edited: 07/02/21, 22:07
@@ -42,6 +43,13 @@
                 System.out.println("Message has been sent to: "+messageBean.getIdReceiver() + " "+messageBean.getBody());
             }
         }
+
+        if (request.getParameter("search") != null) {
+            searchBean.setAdvancedFilters(new String[]{"NONE", "NONE", ""});
+            searchBean.setFilters(new boolean[]{false, false, false});
+            searchBean.setUser((User) session.getAttribute("loggedUser"));
+            response.sendRedirect("search.jsp");
+        }
     %>
 
     <!-- Navigation -->
@@ -50,11 +58,11 @@
 
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
             <ul class="navbar-nav mr-auto">
-                <li class="nav-item active">
-                    <a class="nav-link" href="#">Home <span class="sr-only">(current)</span></a>
+                <li class="nav-item">
+                    <a class="nav-link" href="home.jsp">Home</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="messages.jsp">Messages</a>
+                    <a class="nav-link active" href="messages.jsp">Messages<span class="sr-only">(current)</span></a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link" href="profile.jsp">Profile</a>
@@ -64,8 +72,8 @@
                 </li>
             </ul>
             <form class="form-inline my-2 my-lg-0">
-                <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">
-                <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
+                <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search" name="searchString">
+                <button class="btn btn-outline-success my-2 my-sm-0" type="submit" name="search">Search</button>
             </form>
         </div>
     </nav>

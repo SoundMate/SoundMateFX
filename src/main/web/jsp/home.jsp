@@ -13,7 +13,8 @@
   ~ Created by Lorenzo Pantano on 01/02/21, 22:12
   ~ Last edited: 01/02/21, 22:12
   --%>
-
+<jsp:useBean id="searchBean" class="it.soundmate.bean.searchbeans.SearchBean" scope="session"/>
+<jsp:setProperty name="searchBean" property="searchString"/>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <!DOCTYPE html>
 <html lang="it">
@@ -47,6 +48,13 @@
         }
     %>
 
+    <%
+        if (request.getParameter("search") != null) {
+            session.setAttribute("searchString", searchBean.getSearchString());
+            response.sendRedirect("search.jsp");
+        }
+    %>
+
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
         <a class="navbar-brand" href="#">Soundmate</a>
 
@@ -66,8 +74,8 @@
                 </li>
             </ul>
             <form class="form-inline my-2 my-lg-0">
-                <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">
-                <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
+                <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search" name="searchString">
+                <input class="btn btn-outline-success my-2 my-sm-0" type="submit" value="Search" name="search"/>
             </form>
         </div>
     </nav>
@@ -75,7 +83,6 @@
 
     <%
         HomeController homeController = new HomeController(user);
-        System.out.println("Working Directory = " + System.getProperty("user.dir"));
         List<SoloResultBean> soloList = homeController.searchHomeSolos(user.getCity());
         List<BandResultBean> bandList = homeController.searchHomeBands(user.getCity());
         List<RoomRenterResultBean> roomRenterResultBeanList = homeController.searchHomeRenters(user.getCity());
