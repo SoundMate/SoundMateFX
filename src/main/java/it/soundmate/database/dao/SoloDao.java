@@ -37,17 +37,22 @@ public class SoloDao implements Dao<Solo>{
         this.userDao = userDao;
     }
 
-    String sqlSolo = " WITH ins1 AS (\\n\" +\n" +
-            "                    \"     INSERT INTO registered_users (email, password, user_type, city)\\n\" +\n" +
-            "                    \"         VALUES (?, ?, ?, ?)\\n\" +\n" +
-            "                    \" -- ON     CONFLICT DO NOTHING         -- optional addition in Postgres 9.5+\\n\" +\n" +
-            "                    \"         RETURNING id AS sample_id\\n\" +\n" +
-            "                    \" ), ins2 AS (\\n\" +\n" +
-            "                    \"     INSERT INTO users (id)\\n\" +\n" +
-            "                    \"         SELECT sample_id FROM ins1\\n\" +\n" +
-            "                    \" )\\n\" +\n" +
-            "                    \"INSERT INTO solo (id,first_name, last_name)\\n\" +\n" +
-            "                    \"SELECT sample_id, ?, ? FROM ins1;";
+    private static final String REG_SOLO_SQL = "WITH ins1 AS (\n" +
+            "    INSERT INTO registered_users (email, password, user_type, city)\n" +
+            "        VALUES (?, ?, ?, ?)\n" +
+            "        RETURNING id AS soloId\n" +
+            "    ), ins2 AS (\n" +
+            "        INSERT INTO users (id)\n" +
+            "        SELECT soloId FROM ins1\n" +
+            "    ), ins3 AS(\n" +
+            "        INSERT INTO played_instruments(id)\n" +
+            "        SELECT soloId FROM ins1\n" +
+            "    ), ins4 AS(\n" +
+            "        INSERT INTO fav_genres(id)\n" +
+            "        SELECT soloId FROM ins1\n" +
+            "    )\n" +
+            "    INSERT INTO solo (id,first_name, last_name)\n" +
+            "    SELECT soloId, ?, ? FROM ins1;";
 
 
     public int registerSolo(RegisterSoloBean soloBean){
@@ -58,15 +63,20 @@ public class SoloDao implements Dao<Solo>{
             log.error(EMAIL_EXISTS_ERR);
             throw new DuplicatedEmailException("Duplicated email "+soloBean.getEmail());
         } else {
-            String sql = "INSERT INTO solo (id, first_name, last_name) VALUES (?, ?, ?)";
             ResultSet resultSet;
-            int id = userDao.register(soloBean);
             try (Connection conn = connector.getConnection();
-                 PreparedStatement preparedStatement = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
-                preparedStatement.setInt(1, id);
-                preparedStatement.setString(2, soloBean.getFirstName());
-                preparedStatement.setString(3, soloBean.getLastName());
+                 PreparedStatement preparedStatement = conn.prepareStatement(REG_SOLO_SQL, Statement.RETURN_GENERATED_KEYS)) {
+
+
+                preparedStatement.setString(1, soloBean.getEmail());
+                preparedStatement.setString(2, soloBean.getPassword());
+                preparedStatement.setString(3, soloBean.getUserType().toString());
+                preparedStatement.setString(4, soloBean.getCity());
+                preparedStatement.setString(5, soloBean.getFirstName());
+                preparedStatement.setString(6, soloBean.getLastName());
+
                 int rowAffected = preparedStatement.executeUpdate();
+
                 if (rowAffected == 1) {
                     resultSet = preparedStatement.getGeneratedKeys();
                     if (resultSet.next()) {
@@ -220,6 +230,9 @@ public class SoloDao implements Dao<Solo>{
         }
     }
 
+
+    //DA RIVEDERE
+    //
     @Override
     public int register(RegisterBean registerBean) {
         try {
@@ -231,6 +244,8 @@ public class SoloDao implements Dao<Solo>{
             throw new RepositoryException(repositoryException.getMessage());
         }
     }
+    //
+    //DAO INTERFACE è necessaria?
 
     private void createInstrumentsEntry(int id) {
         String sql = "INSERT INTO played_instruments (id) VALUES (?)";
