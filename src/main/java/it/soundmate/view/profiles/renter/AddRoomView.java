@@ -165,7 +165,7 @@ public class AddRoomView extends VBox {
                     logger.info("Saved image to cache with RENTER ID: {}, ROOM CODE: {}", roomRenter.getId(), roomCode);
                 }
             } catch (IOException ioException) {
-                ioException.printStackTrace();
+                logger.error("IOException catched", ioException);
             } catch (InputException inputException) {
                 logger.error("Input Exception: {}", inputException.getMessage());
             } catch (UpdateException updateException) {

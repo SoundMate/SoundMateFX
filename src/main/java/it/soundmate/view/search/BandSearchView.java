@@ -159,7 +159,7 @@ public class BandSearchView extends Pane {
                             URI uri = new URI(socialLink.getLink());
                             java.awt.Desktop.getDesktop().browse(uri);
                         } catch (URISyntaxException | IOException e) {
-                            e.printStackTrace();
+                            logger.error("URI or IO Exception catched. Check the stacktrace for details: {}",  e.getMessage());
                         }
                     });
                 }
