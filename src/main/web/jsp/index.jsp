@@ -104,7 +104,7 @@
                     <input type="email" name="email" id="email-field"> <br>
                     <label for="password-field">Password</label> <br>
                     <input type="password" name="password" id="password-field"> <br>
-                    <input type="submit" name="login" value="Sign In" class="sign-in-form-button">
+                    <input type="submit" name="login" value="Login" class="sign-in-form-button">
                 </form>
 
                 <form action="" method="get" name="register-selection">

@@ -15,6 +15,8 @@
   Time: 22:07
   To change this template use File | Settings | File Templates.
 --%>
+<jsp:useBean id="messageBean" class="it.soundmate.model.Message"/>
+<jsp:setProperty name="messageBean" property="body"/>
 <%@ page contentType="text/html;charset=UTF-8"%>
 <!DOCTYPE>
 <html lang="it">
@@ -27,6 +29,19 @@
 
     <%
         User loggedUser = (User) session.getAttribute("loggedUser");
+        MessagesController messagesController = new MessagesController();
+        List<Message> messageList = messagesController.getMessagesForUser(loggedUser);
+        request.setAttribute("messageList", messageList);
+        for (Message message : messageList) {
+            if (request.getParameter("reply" + message.getMessageCode()) != null) {
+                messageBean.setIdReceiver(message.getIdSender());
+                messageBean.setIdSender(message.getIdReceiver());
+                messageBean.setSubject(message.getSubject());
+                messageBean.setSenderUserType(loggedUser.getUserType());
+                messagesController.sendMessage(messageBean);
+                System.out.println("Message has been sent to: "+messageBean.getIdReceiver() + " "+messageBean.getBody());
+            }
+        }
     %>
 
     <!-- Navigation -->
@@ -57,29 +72,24 @@
 
     <h1>Messages for <%=loggedUser.getName()%></h1>
 
-    <%
-        MessagesController messagesController = new MessagesController();
-        List<Message> messageList = messagesController.getMessagesForUser(loggedUser);
-        request.setAttribute("messageList", messageList);
-    %>
 
     <c:forEach items="${messageList}" var="message">
-        <div class="d-flex justify-content-between">
+        <div class="d-flex justify-content-around">
             <h3><c:out value="${message.sender.name}"/></h3>
             <p><c:out value="${message.subject}"/></p>
-            <a class="btn btn-primary" data-toggle="collapse" href="#collapseExample" role="button" aria-expanded="false" aria-controls="collapseExample">
+            <a class="btn btn-primary" data-toggle="collapse" href="#collapseExample${message.messageCode}" role="button" aria-expanded="false" aria-controls="collapseExample">
                 Read
             </a>
         </div>
-        <div class="collapse" id="collapseExample">
+        <div class="collapse" id="collapseExample${message.messageCode}">
             <div class="card card-body">
                 <p><c:out value="${message.body}"/></p>
                 <form>
                 <div class="form-group">
                     <label for="exampleFormControlTextarea1">Reply</label>
-                    <textarea class="form-control" id="exampleFormControlTextarea1" rows="3"></textarea>
+                    <textarea class="form-control" id="exampleFormControlTextarea1" rows="3" name="body"></textarea>
                 </div>
-                <input type="submit" class="btn btn-primary" value="Reply">
+                <input type="submit" class="btn btn-primary" value="Reply" name="reply${message.messageCode}"/>>
             </form>
             </div>
         </div>
