@@ -80,7 +80,6 @@ public class RoomRenterProfileController extends EditController {
         } catch (MalformedURLException e) {
             logger.error("MalformedURLException, URL: {}", finalUrl);
             logger.error("UrlException", e);
-            e.printStackTrace();
         } catch (ProtocolException e) {
             logger.error("Protocol Exception: {}", e.getMessage());
             logger.error("Protocol exception", e);
