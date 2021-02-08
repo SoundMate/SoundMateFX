@@ -215,8 +215,7 @@ public class BandProfileView extends VBox {
                 uri = new URI(this.url);
                 java.awt.Desktop.getDesktop().browse(uri);
             } catch (URISyntaxException | IOException e) {
-                logger.error("Url exception browser");
-                e.printStackTrace();
+                logger.error("Url exception browser", e);
             }
 
         }

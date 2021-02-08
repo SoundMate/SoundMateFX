@@ -97,12 +97,9 @@ public class MessageDao {
 
     public boolean deleteMessageByCode(Message message) {
         String sql = "delete from messages where code = ?";
-
         try (Connection conn = connector.getConnection();
              PreparedStatement preparedStatement = conn.prepareStatement(sql)) {
-
             preparedStatement.setInt(1, message.getMessageCode());
-
             int rowAffected = preparedStatement.executeUpdate();
             if (rowAffected == 1) {
                 log.info(SUCCESS);
@@ -111,7 +108,6 @@ public class MessageDao {
                 log.info(FAILED);
                 return false;
             }
-
         } catch (SQLException ex) {
             throw new RepositoryException("Operation failed. The error was: \n" + ex.getMessage(), ex);
         }
@@ -121,32 +117,24 @@ public class MessageDao {
     public void deleteAllMessages() {
         String sql = "DELETE FROM messages";
         int delRecs;
-
         try (Connection conn = connector.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
-
             delRecs = stmt.executeUpdate();
             if (delRecs >= 1) log.info("\t ***** Messages Entries Successfully Cleaned! *****");
             resetCode();
-
         } catch (SQLException ex) {
             throw new RepositoryException("Error Deleting Messages", ex);
         }
     }
-
     private void resetCode() {
         String sql = "ALTER SEQUENCE messages_code_seq RESTART WITH 1";
-
         try (Connection conn = connector.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
-
             stmt.executeUpdate();
             log.info("\t ***** Code Values reset successfully! *****");
         } catch (SQLException ex) {
             throw new RepositoryException("Error ResetCode", ex);
         }
     }
-
-
 
 }

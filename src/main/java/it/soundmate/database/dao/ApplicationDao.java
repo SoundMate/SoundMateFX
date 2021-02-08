@@ -109,16 +109,17 @@ public class ApplicationDao {
     }
 
     public List<SoloResultBean> getSolosApplied(Application application) {
-        String sql = "SELECT s.id, ru.email, ru.password, s.last_name, s.first_name, pi.instruments, u.encoded_profile_img, city\n" +
+        String sql = "SELECT s.id, ru.email, ru.password, s.last_name, s.first_name, pi.instruments, u.encoded_profile_img, ru.city\n" +
                 "FROM applications " +
                 "JOIN join_request jr on applications.code = jr.code_application\n" +
                 "JOIN solo s on jr.id_solo = s.id\n" +
-                "JOIN played_instruments pi on pi.id = s.id "+
+                "JOIN played_instruments pi on s.id = pi.id "+
                 "JOIN registered_users ru on ru.id = s.id\n" +
                 "JOIN users u on u.id = s.id\n" +
                 "WHERE applications.code = ?";
 
         List<SoloResultBean> solosList = new ArrayList<>();
+
         try (Connection conn = connector.getConnection();
              PreparedStatement preparedStatement = conn.prepareStatement(sql)) {
 
@@ -128,7 +129,7 @@ public class ApplicationDao {
             while(resultSet.next()){
                 SoloResultBean soloResultBean = buildSoloResultBeans(resultSet);
                 if (resultSet.getArray(INSTRUMENTS) != null){
-                    List<String> instrumentList = new ArrayList<>();
+                    List<String> instrumentList;
                     String [] temp = (String []) resultSet.getArray(INSTRUMENTS).getArray();
                     instrumentList = Arrays.asList(temp);
                     soloResultBean.setInstrumentList(instrumentList);

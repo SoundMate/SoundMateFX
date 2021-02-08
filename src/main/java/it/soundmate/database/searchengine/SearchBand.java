@@ -30,6 +30,7 @@ public class SearchBand implements SearchEngine<BandResultBean>, Runnable {
     private final String city;
     private final List<BandResultBean> results = new ArrayList<>();
     private final BandDao bandDao = new BandDao(new UserDao());
+    private static final String ERRORSRC = "Error Search";
 
     public SearchBand(String searchString, Connection connection, String genre, String city){
         if (searchString == null) this.searchString = "";
@@ -50,7 +51,7 @@ public class SearchBand implements SearchEngine<BandResultBean>, Runnable {
             resultSet = preparedStatement.executeQuery();
             return buildBandResults(bandResultBeanList, resultSet);
         } catch (SQLException sqlException) {
-            sqlException.printStackTrace();
+            logger.error(ERRORSRC, sqlException);
         }
         return bandResultBeanList;
     }
@@ -67,7 +68,7 @@ public class SearchBand implements SearchEngine<BandResultBean>, Runnable {
             resultSet = preparedStatement.executeQuery();
             return buildBandResults(bandResultBeanList, resultSet);
         } catch (SQLException sqlException) {
-            sqlException.printStackTrace();
+            logger.error(ERRORSRC, sqlException);
             return new ArrayList<>();
         }
     }

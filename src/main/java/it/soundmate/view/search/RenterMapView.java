@@ -9,7 +9,6 @@ package it.soundmate.view.search;
 import com.lynden.gmapsfx.GoogleMapView;
 import com.lynden.gmapsfx.MapComponentInitializedListener;
 import com.lynden.gmapsfx.javascript.object.*;
-import it.soundmate.bean.MapBean;
 import it.soundmate.bean.searchbeans.RoomRenterResultBean;
 import it.soundmate.constants.Style;
 import it.soundmate.controller.graphic.profiles.RoomRenterProfileGraphicController;
@@ -67,7 +66,7 @@ public class RenterMapView extends VBox implements MapComponentInitializedListen
         webVBox.setPrefWidth(600);
         webVBox.getChildren().add(googleMapView);
         try {
-            MapBean mapBean = renterProfileGraphicController.displayMap(roomRenterResultBean.getCity(), roomRenterResultBean.getAddress());
+            renterProfileGraphicController.displayMap(roomRenterResultBean.getCity(), roomRenterResultBean.getAddress());
         } catch (InputException inputException) {
             logger.error("Input Exception: {}", inputException.getMessage());
             webEngine.loadContent("Map not available", "text/html");

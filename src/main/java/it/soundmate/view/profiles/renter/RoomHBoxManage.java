@@ -45,7 +45,7 @@ public class RoomHBoxManage extends ListCell<Room> {
 
     private class EditRoomAction implements EventHandler<ActionEvent> {
 
-        private final Room room;
+        final Room room;
 
         public EditRoomAction(Room room) {
             this.room = room;
@@ -53,7 +53,7 @@ public class RoomHBoxManage extends ListCell<Room> {
 
         @Override
         public void handle(ActionEvent event) {
-
+            //metodo vuoto, sonar smell
         }
     }
 }

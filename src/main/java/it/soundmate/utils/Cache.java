@@ -102,8 +102,7 @@ public class Cache {
             ImgBase64Repo.decode(encodedProfileImg, Path.of(Cache.getInstance().buildProfilePicCacheName(id)));
             return Cache.getInstance().getProfilePicFromCache(id);
         } catch (IOException e) {
-            logger.error("IOException: Error decoding image in Cache");
-            e.printStackTrace();
+            logger.error("IOException: Error decoding image in Cache", e);
             return null;
         }
     }

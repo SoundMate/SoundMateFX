@@ -7,7 +7,6 @@
 package it.soundmate.view.search;
 
 import it.soundmate.constants.Style;
-import it.soundmate.controller.logic.MessagesController;
 import it.soundmate.model.*;
 import it.soundmate.view.MessageDetailView;
 import it.soundmate.view.UIUtils;
@@ -27,7 +26,6 @@ import org.slf4j.LoggerFactory;
 public class MessagesResults extends ListView<Message> {
 
     private static final Logger logger = LoggerFactory.getLogger(MessagesResults.class);
-    private final MessagesController messagesController = new MessagesController();
     private final MessagesView messagesView;
     private final User user;
 

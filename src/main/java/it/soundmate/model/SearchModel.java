@@ -5,9 +5,12 @@ import it.soundmate.bean.searchbeans.RoomRenterResultBean;
 import it.soundmate.bean.searchbeans.SoloResultBean;
 import it.soundmate.bean.searchbeans.UserResultBean;
 import it.soundmate.database.Connector;
+import it.soundmate.database.dbexceptions.RepositoryException;
 import it.soundmate.database.searchengine.SearchBand;
 import it.soundmate.database.searchengine.SearchRenter;
 import it.soundmate.database.searchengine.SearchSolo;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.sql.Connection;
 import java.sql.SQLException;
@@ -17,14 +20,16 @@ import java.util.List;
 
 public class SearchModel {
 
-    private Connection connection;
+    private static final Logger logger = LoggerFactory.getLogger(SearchModel.class);
+    private static final String INPUT_EXC = "Input Exception Catched";
+    private final Connection connection;
 
     public SearchModel() {
         Connector connector = Connector.getInstance();
         try {
             this.connection = connector.getConnection();
         } catch (SQLException sqlException) {
-            sqlException.printStackTrace();
+            throw new RepositoryException("Error:\n" + sqlException.getMessage(), sqlException);
         }
     }
 
@@ -63,7 +68,7 @@ public class SearchModel {
         try {
             searchThread.join();
         } catch (InterruptedException e) {
-            e.printStackTrace();
+            logger.error(INPUT_EXC, e);
             searchThread.interrupt();
         }
         return searchSolo.getResults();
@@ -80,7 +85,7 @@ public class SearchModel {
         try {
             searchThread.join();
         } catch (InterruptedException e) {
-            e.printStackTrace();
+            logger.error(INPUT_EXC, e);
             searchThread.interrupt();
         }
         return searchBand.getResults();
@@ -97,7 +102,7 @@ public class SearchModel {
         try {
             searchThread.join();
         } catch (InterruptedException e) {
-            e.printStackTrace();
+            logger.error(INPUT_EXC, e);
             searchThread.interrupt();
         }
         return searchRenter.getResults();

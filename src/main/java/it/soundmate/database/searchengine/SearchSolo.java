@@ -27,6 +27,7 @@ public class SearchSolo implements SearchEngine<SoloResultBean>, Runnable {
     private final String[] advancedFilters;
     private final List<SoloResultBean> results = new ArrayList<>();
     private final String city;
+    private static final String ERRORSRC = "Error Search";
 
     public SearchSolo(String searchString, Connection connection, String[] advancedFilters){
         this.searchString = searchString;
@@ -56,7 +57,7 @@ public class SearchSolo implements SearchEngine<SoloResultBean>, Runnable {
                 buildSoloResult(resultSet, soloResults);
             }
         } catch (SQLException sqlException) {
-            sqlException.printStackTrace();
+            logger.error(ERRORSRC, sqlException);
         }
         return soloResults;
     }

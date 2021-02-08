@@ -1,5 +1,6 @@
 package it.soundmate.controller.database;
 
+import it.soundmate.bean.registerbeans.RegisterRenterBean;
 import it.soundmate.database.dao.RoomRenterDao;
 import it.soundmate.database.dao.UserDao;
 import it.soundmate.model.Room;
@@ -16,14 +17,18 @@ class GenericTest {
 
     @Test
     void codeReturnTest(){
+        RegisterRenterBean registerRenterBean = new RegisterRenterBean("pippo@", "prova", "viadelculo", "gino", "roma");
+        int id = renterDao.registerRoomRenter(registerRenterBean);
         Room room = new Room("rosso", 120.0, "sasa", "img");
-        Assertions.assertEquals(1, renterDao.insertRoom(room, 15));
+        Assertions.assertEquals(1, renterDao.insertRoom(room, id));
 
     }
 
     @AfterAll
     static void tearDown(){
         renterDao.deleteAllRoom();
+        userDao.deleteAll();
     }
+
 
 }

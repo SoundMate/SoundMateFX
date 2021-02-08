@@ -103,7 +103,7 @@ public class BandDao implements Dao<Band>{
 
         } catch (SQLException sqlException) {
             log.error("Error creating genre entry");
-            sqlException.printStackTrace();
+            throw new RepositoryException("Error creating genre entry", sqlException);
         }
     }
 
@@ -222,7 +222,7 @@ public class BandDao implements Dao<Band>{
                     band.setSocialLinks(this.getSocialLinks(band.getId()));
                 }
         } catch (SQLException e) {
-            throw new RepositoryException("Unable to update social link");
+            throw new RepositoryException("Unable to update social link", e);
         }
     }
 
@@ -246,7 +246,7 @@ public class BandDao implements Dao<Band>{
                 return socialLinks;
             } else throw new RepositoryException("Unable to fetch social links");
         } catch (SQLException e) {
-            throw new RepositoryException("Unable to update social link");
+            throw new RepositoryException("Unable to update social link", e);
         }
     }
 

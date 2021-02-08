@@ -30,7 +30,7 @@ public class RoomRenterProfileController extends EditController {
     private static final Logger logger = LoggerFactory.getLogger(RoomRenterProfileController.class);
     private final RoomRenterDao roomRenterDao = new RoomRenterDao(new UserDao());
     private static final String API_KEY = "zfE7Bgu4VoHQEIkULvSXcq8GN2eDfnF1";
-    private String defaultUrl = "https://www.mapquestapi.com/geocoding/v1/address?key="+API_KEY+"&inFormat=kvp&outFormat=json&location=";
+    private static final String DEFAULT_URL = "https://www.mapquestapi.com/geocoding/v1/address?key="+API_KEY+"&inFormat=kvp&outFormat=json&location=";
     private static final String FILTER_RESULTS_URL = "&thumbMaps=false&maxResults=1";
 
     public int addRoom(AddRoomBean addRoomBean, RoomRenter roomRenter) {
@@ -79,18 +79,18 @@ public class RoomRenterProfileController extends EditController {
             return response.toString();
         } catch (MalformedURLException e) {
             logger.error("MalformedURLException, URL: {}", finalUrl);
-            e.printStackTrace();
+            logger.error("UrlException", e);
         } catch (ProtocolException e) {
             logger.error("Protocol Exception: {}", e.getMessage());
-            e.printStackTrace();
+            logger.error("Protocol exception", e);
         } catch (IOException ioException) {
-            ioException.printStackTrace();
+            logger.error("IOException catched", ioException);
         }
         return null;
     }
 
     private String buildUrl(String city, String address) {
-        StringBuilder stringBuilder = new StringBuilder(defaultUrl);
+        StringBuilder stringBuilder = new StringBuilder(DEFAULT_URL);
         stringBuilder.append(city).append("+");
         String[] splitAddress = address.split(" ");
         for (int i = 0; i < splitAddress.length; i++) {
