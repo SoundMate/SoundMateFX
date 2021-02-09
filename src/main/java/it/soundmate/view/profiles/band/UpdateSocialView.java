@@ -13,7 +13,7 @@ import it.soundmate.model.Band;
 import it.soundmate.view.UIUtils;
 import it.soundmate.view.main.ProfileView;
 import it.soundmate.view.profiles.EditProfileView;
-import it.soundmate.view.uicomponents.SocialLinks;
+import it.soundmate.model.SocialLinks;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;

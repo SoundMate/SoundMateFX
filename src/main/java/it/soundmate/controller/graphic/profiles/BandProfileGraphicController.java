@@ -18,7 +18,7 @@ import it.soundmate.view.main.ProfileView;
 import it.soundmate.view.profiles.band.BandProfileView;
 import it.soundmate.view.profiles.band.EditBandView;
 import it.soundmate.view.profiles.band.UpdateSocialView;
-import it.soundmate.view.uicomponents.SocialLinks;
+import it.soundmate.model.SocialLinks;
 import javafx.scene.control.ChoiceDialog;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

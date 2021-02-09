@@ -18,7 +18,7 @@ import it.soundmate.model.Application;
 import it.soundmate.model.Band;
 import it.soundmate.model.Genre;
 import it.soundmate.model.JoinRequest;
-import it.soundmate.view.uicomponents.SocialLinks;
+import it.soundmate.model.SocialLinks;
 
 import java.util.Arrays;
 import java.util.List;

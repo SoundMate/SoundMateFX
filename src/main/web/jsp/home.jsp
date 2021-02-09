@@ -8,6 +8,8 @@
 <%@ page import="it.soundmate.bean.searchbeans.SoloResultBean" %>
 <%@ page import="it.soundmate.bean.searchbeans.BandResultBean" %>
 <%@ page import="it.soundmate.bean.searchbeans.RoomRenterResultBean" %>
+<%@ page import="it.soundmate.bean.searchbeans.UserResultBean" %>
+<%@ page import="java.util.ArrayList" %>
 <%--
   ~ Copyright (c) 2021.
   ~ Created by Lorenzo Pantano on 01/02/21, 22:12
@@ -48,6 +50,7 @@
         }
     %>
 
+    <!--Search action-->
     <%
         if (request.getParameter("search") != null) {
             session.setAttribute("searchString", searchBean.getSearchString());
@@ -84,11 +87,26 @@
     <%
         HomeController homeController = new HomeController(user);
         List<SoloResultBean> soloList = homeController.searchHomeSolos(user.getCity());
-        List<BandResultBean> bandList = homeController.searchHomeBands(user.getCity());
+        //List<BandResultBean> bandList = homeController.searchHomeBands(user.getCity());
         List<RoomRenterResultBean> roomRenterResultBeanList = homeController.searchHomeRenters(user.getCity());
+        List<UserResultBean> allResults = new ArrayList<>();
+        allResults.addAll(soloList);
+        //allResults.addAll(bandList);
+        allResults.addAll(roomRenterResultBeanList);
         request.setAttribute("soloList",soloList);
-        request.setAttribute("bandList", bandList);
+        //request.setAttribute("bandList", bandList);
         request.setAttribute("roomRenterList", roomRenterResultBeanList);
+
+        //Visit profile action
+        for (UserResultBean userResultBean : allResults) {
+            System.out.println(userResultBean.getId());
+            System.out.println(request.getParameter("visit"+userResultBean.getId()));
+            if (request.getParameter("visit" + userResultBean.getId()) != null) {
+                System.out.println(userResultBean.getId() + "not null request");
+                session.setAttribute("visitedUser", userResultBean);
+                response.sendRedirect("visitProfile.jsp");
+            }
+        }
     %>
 
     <!-- Musicians you may know -->
@@ -96,26 +114,21 @@
     <h3>Musicians you may know</h3>
 
     <c:forEach items="${soloList}" var="solo">
-        <tr>
-            <td>Name: <c:out value="${solo.name}"/></td>
-            <td>Email: <c:out value="${solo.email}"/></td>
-        </tr>
-    </c:forEach>
-
-    <div class="row mx-auto">
-
-        <div class="col-md-2 " style="margin-bottom:10px;">
-            <div class="card" style="width: 18rem;">
-                <img class="card-img-top" src="" alt="">
-                <div class="card-body">
-                    <h5 class="card-title">Lorenzo Pantano (eg)</h5>
-                    <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
-                    <input type="submit" name="visit" value="Visit Profile" class="btn btn-primary">
+        <div class="row mx-auto">
+            <div class="col-md-2 " style="margin-bottom:10px;">
+                <div class="card" style="width: 18rem;">
+                    <img class="card-img-top" src="" alt="">
+                    <div class="card-body">
+                        <h5 class="card-title"><c:out value="${solo.name}"/></h5>
+                        <form>
+                            <input type="submit" name="visit${solo.id}" value="Visit Profile" class="btn btn-primary">
+                        </form>
+                    </div>
                 </div>
             </div>
         </div>
+    </c:forEach>
 
-    </div>
 
     <!-- Musicians you may know -->
 

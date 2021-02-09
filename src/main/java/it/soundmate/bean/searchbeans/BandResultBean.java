@@ -7,7 +7,7 @@
 package it.soundmate.bean.searchbeans;
 
 import it.soundmate.model.UserType;
-import it.soundmate.view.uicomponents.SocialLinks;
+import it.soundmate.model.SocialLinks;
 
 import java.util.ArrayList;
 import java.util.List;

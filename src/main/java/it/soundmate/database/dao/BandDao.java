@@ -10,7 +10,7 @@ import it.soundmate.exceptions.InputException;
 import it.soundmate.exceptions.UpdateException;
 import it.soundmate.model.Band;
 import it.soundmate.model.Genre;
-import it.soundmate.view.uicomponents.SocialLinks;
+import it.soundmate.model.SocialLinks;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

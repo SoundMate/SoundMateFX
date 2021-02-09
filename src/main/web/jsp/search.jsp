@@ -74,6 +74,7 @@
         List<BandResultBean> bandResultBeanList = new ArrayList<>();
         List<RoomRenterResultBean> roomRenterResultBeanList = new ArrayList<>();
         for (UserResultBean userResultBean : userResultBeanList) {
+            System.out.println(userResultBean.getName());
             switch (userResultBean.getUserType()) {
                 case SOLO:
                     soloResultBeanList.add((SoloResultBean) userResultBean);
@@ -104,10 +105,10 @@
 
     <h3>Bands</h3>
     <!--Bands-->
-    <c:forEach items="${bandResults}" var="solo">
+    <c:forEach items="${bandResults}" var="band">
         <tr>
-            <td>Name: <c:out value="${solo.name}"/></td>
-            <td>Email: <c:out value="${solo.email}"/></td>
+            <td>Name: <c:out value="${band.name}"/></td>
+            <td>Email: <c:out value="${band.email}"/></td>
         </tr>
     </c:forEach>
 

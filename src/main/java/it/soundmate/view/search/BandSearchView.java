@@ -16,7 +16,7 @@ import it.soundmate.model.JoinRequest;
 import it.soundmate.view.UIUtils;
 import it.soundmate.view.main.SearchingView;
 import it.soundmate.view.uicomponents.InstrumentGraphics;
-import it.soundmate.view.uicomponents.SocialLinks;
+import it.soundmate.model.SocialLinks;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;

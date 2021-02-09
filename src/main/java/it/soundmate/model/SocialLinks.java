@@ -1,10 +1,10 @@
 /*
  * Copyright (c) 2021.
- * Created by Lorenzo Pantano on 27/01/21, 17:50
- * Last edited: 27/01/21, 17:50
+ * Created by Lorenzo Pantano on 08/02/21, 19:35
+ * Last edited: 08/02/21, 19:31
  */
 
-package it.soundmate.view.uicomponents;
+package it.soundmate.model;
 
 import javafx.scene.image.Image;
 

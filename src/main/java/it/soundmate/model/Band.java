@@ -6,8 +6,6 @@
 
 package it.soundmate.model;
 
-import it.soundmate.view.uicomponents.SocialLinks;
-
 import java.util.List;
 
 import static it.soundmate.model.UserType.BAND;
