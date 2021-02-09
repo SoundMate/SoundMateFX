@@ -6,7 +6,8 @@
 <%@ page import="it.soundmate.bean.searchbeans.UserResultBean" %>
 <%@ page import="it.soundmate.bean.searchbeans.SoloResultBean" %>
 <%@ page import="it.soundmate.bean.searchbeans.BandResultBean" %>
-<%@ page import="it.soundmate.bean.searchbeans.RoomRenterResultBean" %><%--
+<%@ page import="it.soundmate.bean.searchbeans.RoomRenterResultBean" %>
+<%@ page import="it.soundmate.controller.logic.MessagesController" %><%--
   ~ Copyright (c) 2021.
   ~ Created by Lorenzo Pantano on 09/02/21, 11:49
   ~ Last edited: 09/02/21, 11:49
@@ -22,6 +23,9 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <jsp:useBean id="searchBean" class="it.soundmate.bean.searchbeans.SearchBean" scope="session"/>
 <jsp:setProperty name="searchBean" property="searchString"/>
+<jsp:useBean id="messageBean" class="it.soundmate.model.Message"/>
+<jsp:setProperty name="messageBean" property="body"/>
+<jsp:setProperty name="messageBean" property="subject"/>
 <!DOCTYPE>
 <html lang="it">
 <head>
@@ -35,6 +39,8 @@
 <%
     SoloResultBean solo = (SoloResultBean) session.getAttribute("soloVisitedUser");
     request.setAttribute("solo", solo);
+    User loggedUser = (User) session.getAttribute("loggedUser");
+    request.setAttribute("loggedUser", loggedUser);
 %>
 
 
@@ -43,6 +49,16 @@
     if (request.getParameter("search") != null) {
         session.setAttribute("searchString", searchBean.getSearchString());
         response.sendRedirect("search.jsp");
+    }
+%>
+
+<%
+    if (request.getParameter("sendMessage") != null) {
+        MessagesController messagesController = new MessagesController();
+        messageBean.setSenderUserType(loggedUser.getUserType());
+        messageBean.setIdSender(loggedUser.getId());
+        messageBean.setIdReceiver(solo.getId());
+        messagesController.sendMessage(messageBean);
     }
 %>
 
@@ -84,7 +100,8 @@
                     </div>
                 </div>
             </div>
-            <div class="bg-dark p-4 d-flex justify-content-end text-center">
+            <h5>Instruments</h5>
+            <div class="bg-light p-4 d-flex justify-content-start text-center">
                 <ul class="list-inline mb-0">
                     <c:forEach items="${solo.instrumentList}" var="instrument">
                         <li class="inline-list-item">
@@ -92,6 +109,34 @@
                         </li>
                     </c:forEach>
                 </ul>
+            </div>
+            <h5>Genres</h5>
+            <div class="bg-light p-4 d-flex justify-content-start text-center">
+                <ul class="list-inline mb-0">
+                    <c:forEach items="${solo.genreList}" var="genre">
+                        <li class="inline-list-item">
+                            <c:out value="${genre}"/>
+                        </li>
+                    </c:forEach>
+                </ul>
+            </div>
+            <div class="px-4 py-3">
+                <a class="btn btn-primary" data-toggle="collapse" href="#collapseExample" role="button" aria-expanded="false" aria-controls="collapseExample">
+                    Send Message
+                </a>
+            </div>
+            <div class="collapse" id="collapseExample">
+                <div class="card card-body">
+                    <form>
+                        <div class="form-group">
+                            <label for="exampleFormControlTextarea1">Subject</label>
+                            <textarea class="form-control" id="exampleFormControlTextarea1" rows="1" name="subject"></textarea>
+                            <label for="exampleFormControlTextarea1">Body</label>
+                            <textarea class="form-control" id="exampleFormControlTextarea2" rows="3" name="body"></textarea>
+                        </div>
+                        <input type="submit" class="btn btn-primary" value="Send" name="sendMessage"/>>
+                    </form>
+                </div>
             </div>
             <div class="px-4 py-3">
                 <h5 class="mb-0">Bands</h5>
