@@ -7,6 +7,7 @@
 package it.soundmate.controller.graphic.profiles;
 
 import it.soundmate.bean.searchbeans.SoloResultBean;
+import it.soundmate.controller.logic.ApplicationController;
 import it.soundmate.controller.logic.profiles.BandProfileController;
 import it.soundmate.database.dbexceptions.RepositoryException;
 import it.soundmate.exceptions.InputException;
@@ -78,7 +79,8 @@ public class BandProfileGraphicController extends EditGraphicController {
 
     public void addApplication(Application application) {
         try {
-            bandProfileController.addApplication(application);
+            ApplicationController applicationController = new ApplicationController();
+            applicationController.addApplication(application);
         } catch (RepositoryException repositoryException) {
             throw new RepositoryException(repositoryException.getMessage());
         }

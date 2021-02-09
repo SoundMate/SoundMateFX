@@ -90,35 +90,77 @@
         request.setAttribute("soloResults", soloResultBeanList);
         request.setAttribute("bandResults", bandResultBeanList);
         request.setAttribute("roomRenterResults", roomRenterResultBeanList);
+
+        //Visit profile action
+        for (UserResultBean userResultBean : userResultBeanList) {
+            System.out.println(userResultBean.getId());
+            System.out.println(request.getParameter("visit"+userResultBean.getId()));
+            if (request.getParameter("visit" + userResultBean.getId()) != null) {
+                System.out.println(userResultBean.getId() + "not null request");
+                session.setAttribute("visitedUser", userResultBean);
+                response.sendRedirect("visitProfile.jsp");
+            }
+        }
     %>
 
     <h1>Search Results for <%=searchString%></h1>
 
     <h3>Solos</h3>
-    <!--Solos-->
+
     <c:forEach items="${soloResults}" var="solo">
-        <tr>
-            <td>Name: <c:out value="${solo.name}"/></td>
-            <td>Email: <c:out value="${solo.email}"/></td>
-        </tr>
+        <div class="row mx-auto">
+            <div class="col-md-2 " style="margin-bottom:10px;">
+                <div class="card" style="width: 18rem;">
+                    <img class="card-img-top" src="" alt="">
+                    <div class="card-body">
+                        <h5 class="card-title"><c:out value="${solo.name}"/></h5>
+                        <form>
+                            <input type="submit" name="visit${solo.id}" value="Visit Profile" class="btn btn-primary">
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
     </c:forEach>
+
+
+    <!-- Musicians you may know -->
 
     <h3>Bands</h3>
-    <!--Bands-->
     <c:forEach items="${bandResults}" var="band">
-        <tr>
-            <td>Name: <c:out value="${band.name}"/></td>
-            <td>Email: <c:out value="${band.email}"/></td>
-        </tr>
+        <div class="row mx-auto">
+            <div class="col-md-2 " style="margin-bottom:10px;">
+                <div class="card" style="width: 18rem;">
+                    <img class="card-img-top" src="" alt="">
+                    <div class="card-body">
+                        <h5 class="card-title"><c:out value="${band.name}"/></h5>
+                        <form>
+                            <input type="submit" name="visit${band.id}" value="Visit Profile" class="btn btn-primary">
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
     </c:forEach>
 
+
+    <!-- Musicians you may know -->
+
     <h3>Room Renters</h3>
-    <!--Solos-->
-    <c:forEach items="${roomRenterResults}" var="solo">
-        <tr>
-            <td>Name: <c:out value="${solo.name}"/></td>
-            <td>Email: <c:out value="${solo.email}"/></td>
-        </tr>
+    <c:forEach items="${roomRenterResults}" var="renter">
+        <div class="row mx-auto">
+            <div class="col-md-2 " style="margin-bottom:10px;">
+                <div class="card" style="width: 18rem;">
+                    <img class="card-img-top" src="" alt="">
+                    <div class="card-body">
+                        <h5 class="card-title"><c:out value="${renter.name}"/></h5>
+                        <form>
+                            <input type="submit" name="visit${renter.id}" value="Visit Profile" class="btn btn-primary">
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
     </c:forEach>
 
 </body>

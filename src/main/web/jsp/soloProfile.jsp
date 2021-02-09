@@ -39,9 +39,6 @@
                     <a class="nav-link" href="messages.jsp">Messages</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="messages.jsp">Join Request</a>
-                </li>
-                <li class="nav-item">
                     <a class="nav-link active" href="profile.jsp">Profile <span class="sr-only">(current)</span></a>
                 </li>
                 <li class="nav-item">

@@ -43,14 +43,6 @@ public class BandProfileController {
         }
     }
 
-    public void addApplication(Application application) {
-        try {
-            ApplicationDao applicationDao = new ApplicationDao();
-            applicationDao.createApplication(application);
-        } catch (RepositoryException repositoryException) {
-            throw new RepositoryException(repositoryException.getMessage());
-        }
-    }
 
     public SoloResultBean getSoloFromJoinRequest(JoinRequest joinRequest) {
         JoinRequestDao joinRequestDao = new JoinRequestDao();

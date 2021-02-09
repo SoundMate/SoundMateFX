@@ -41,4 +41,12 @@ public class ApplicationController {
             throw new RepositoryException(repositoryException.getMessage());
         }
     }
+
+    public void addApplication(Application application) {
+        try {
+            applicationDao.createApplication(application);
+        } catch (RepositoryException repositoryException) {
+            throw new RepositoryException(repositoryException.getMessage());
+        }
+    }
 }

@@ -135,6 +135,7 @@
                 <div class="p-4 rounded shadow-sm bg-dark">
                     <c:forEach items="${applicationList}" var="application">
                         <div class="px-4 py-3">
+                            <h6>Application ${application.applicationCode}</h6>
                             <a class="btn btn-primary" data-toggle="collapse" href="#collapseExample${application.applicationCode}" role="button" aria-expanded="false" aria-controls="collapseExample">
                                 View Application
                             </a>
