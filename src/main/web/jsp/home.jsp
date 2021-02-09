@@ -87,14 +87,14 @@
     <%
         HomeController homeController = new HomeController(user);
         List<SoloResultBean> soloList = homeController.searchHomeSolos(user.getCity());
-        //List<BandResultBean> bandList = homeController.searchHomeBands(user.getCity());
+        List<BandResultBean> bandList = homeController.searchHomeBands(user.getCity());
         List<RoomRenterResultBean> roomRenterResultBeanList = homeController.searchHomeRenters(user.getCity());
         List<UserResultBean> allResults = new ArrayList<>();
         allResults.addAll(soloList);
-        //allResults.addAll(bandList);
+        allResults.addAll(bandList);
         allResults.addAll(roomRenterResultBeanList);
         request.setAttribute("soloList",soloList);
-        //request.setAttribute("bandList", bandList);
+        request.setAttribute("bandList", bandList);
         request.setAttribute("roomRenterList", roomRenterResultBeanList);
 
         //Visit profile action
@@ -133,37 +133,41 @@
     <!-- Musicians you may know -->
 
     <h3>Bands in your city</h3>
-    <div class="row mx-auto">
-
-        <div class="col-md-2 " style="margin-bottom:10px;">
-            <div class="card" style="width: 18rem;">
-                <img class="card-img-top" src="" alt="">
-                <div class="card-body">
-                    <h5 class="card-title">Dream Theatre</h5>
-                    <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
-                    <input type="submit" name="visit" value="Visit Profile" class="btn btn-primary">
+    <c:forEach items="${bandList}" var="band">
+        <div class="row mx-auto">
+            <div class="col-md-2 " style="margin-bottom:10px;">
+                <div class="card" style="width: 18rem;">
+                    <img class="card-img-top" src="" alt="">
+                    <div class="card-body">
+                        <h5 class="card-title"><c:out value="${band.name}"/></h5>
+                        <form>
+                            <input type="submit" name="visit${band.id}" value="Visit Profile" class="btn btn-primary">
+                        </form>
+                    </div>
                 </div>
             </div>
         </div>
-
-    </div>
+    </c:forEach>
 
 
     <!-- Musicians you may know -->
 
     <h3>Room Renters near you</h3>
-    <div class="row mx-auto">
-        <div class="col-md-2 " style="margin-bottom:10px;">
-            <div class="card" style="width: 18rem;">
-                <img class="card-img-top" src="" alt="">
-                <div class="card-body">
-                    <h5 class="card-title">Music Station</h5>
-                    <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
-                    <input type="submit" name="visit" value="Visit Profile" class="btn btn-primary">
+    <c:forEach items="${roomRenterList}" var="renter">
+        <div class="row mx-auto">
+            <div class="col-md-2 " style="margin-bottom:10px;">
+                <div class="card" style="width: 18rem;">
+                    <img class="card-img-top" src="" alt="">
+                    <div class="card-body">
+                        <h5 class="card-title"><c:out value="${renter.name}"/></h5>
+                        <form>
+                            <input type="submit" name="visit${renter.id}" value="Visit Profile" class="btn btn-primary">
+                        </form>
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
+    </c:forEach>
 
 </body>
 </html>

@@ -16,7 +16,6 @@ import it.soundmate.model.JoinRequest;
 import it.soundmate.view.UIUtils;
 import it.soundmate.view.main.SearchingView;
 import it.soundmate.view.uicomponents.InstrumentGraphics;
-import it.soundmate.model.SocialLinks;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
@@ -34,9 +33,6 @@ import javafx.scene.shape.Rectangle;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.IOException;
-import java.net.URI;
-import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -94,11 +90,6 @@ public class BandSearchView extends Pane {
         genresLabel.setStyle(Style.HIGH_LABEL);
         HBox genresList = buildGenresHBox(bandResultBean);
         vBox.getChildren().addAll(genresLabel, genresList);
-        Label socialLabel = new Label("Social Links");
-        socialLabel.setStyle(Style.HIGH_LABEL);
-        vBox.getChildren().add(socialLabel);
-        HBox socialLinksHBox = buildSocialLinksHBox(bandResultBean);
-        vBox.getChildren().add(socialLinksHBox);
         Label applicationsLabel = new Label("Applications");
         applicationsLabel.setStyle(Style.HIGH_LABEL);
         HBox applicationsHBox = buildApplicationsHBox(bandResultBean);
@@ -137,37 +128,6 @@ public class BandSearchView extends Pane {
             applicationHBox.getChildren().addAll(applicationVBox);
         }
         return applicationHBox;
-    }
-
-    private HBox buildSocialLinksHBox(BandResultBean bandResultBean) {
-        HBox socialHBox = new HBox();
-        socialHBox.setSpacing(10);
-        for (SocialLinks socialLink : bandResultBean.getSocialLinks()) {
-            if (socialLink != null) {
-                VBox socialVBox = new VBox();
-                socialVBox.setAlignment(Pos.CENTER);
-                socialVBox.setSpacing(10);
-                Circle image = new Circle();
-                image.setRadius(24);
-                image.setFill(new ImagePattern(socialLink.getSource()));
-                Label socialLabel = new Label(socialLink.getName());
-                socialLabel.setStyle(Style.MID_LABEL);
-                if (socialLink.getLink() != null) {
-                    socialLabel.setUnderline(true);
-                    socialLabel.setOnMouseClicked(event -> {
-                        try {
-                            URI uri = new URI(socialLink.getLink());
-                            java.awt.Desktop.getDesktop().browse(uri);
-                        } catch (URISyntaxException | IOException e) {
-                            logger.error("URI or IO Exception catched. Check the stacktrace for details: {}",  e.getMessage());
-                        }
-                    });
-                }
-                socialVBox.getChildren().addAll(image, socialLabel);
-                socialHBox.getChildren().add(socialVBox);
-            }
-        }
-        return socialHBox;
     }
 
     private HBox buildGenresHBox(BandResultBean soloResultBean) {

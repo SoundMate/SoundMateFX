@@ -18,9 +18,7 @@ import it.soundmate.model.Application;
 import it.soundmate.model.Band;
 import it.soundmate.model.Genre;
 import it.soundmate.model.JoinRequest;
-import it.soundmate.model.SocialLinks;
 
-import java.util.Arrays;
 import java.util.List;
 
 public class BandProfileController {
@@ -33,26 +31,6 @@ public class BandProfileController {
             return genre;
         } else {
             throw new InputException("Genre not added (Controller Insert)");
-        }
-    }
-
-    public void addSocialLink(SocialLinks socialLinks, Band band) {
-        try {
-            switch (socialLinks) {
-                case SPOTIFY:
-                    bandDao.updateSocialLink(socialLinks.getLink(), 0, band);
-                    break;
-                case YOUTUBE:
-                    bandDao.updateSocialLink(socialLinks.getLink(), 1, band);
-                    break;
-                case FACEBOOK:
-                    bandDao.updateSocialLink(socialLinks.getLink(), 2, band);
-                    break;
-                default:
-                    throw new InputException("Social not recognized");
-            }
-        } catch (RepositoryException repositoryException) {
-            throw new InputException(repositoryException.getMessage());
         }
     }
 
@@ -69,14 +47,6 @@ public class BandProfileController {
         try {
             ApplicationDao applicationDao = new ApplicationDao();
             applicationDao.createApplication(application);
-        } catch (RepositoryException repositoryException) {
-            throw new RepositoryException(repositoryException.getMessage());
-        }
-    }
-
-    public List<SocialLinks> getSocialLinks(int id) {
-        try {
-            return Arrays.asList(bandDao.getSocialLinks(id));
         } catch (RepositoryException repositoryException) {
             throw new RepositoryException(repositoryException.getMessage());
         }

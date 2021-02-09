@@ -79,7 +79,6 @@ public class LoginController {
         BandDao bandDao = new BandDao(userDao);
         Band band = bandDao.getBandByID(id);
         band.setGenres(bandDao.getGenres(id));
-        band.setSocialLinks(bandDao.getSocialLinks(id));
         band.setMessages(userDao.getNotificationsForUser(id));
         return band;
     }

@@ -36,10 +36,12 @@
             case BAND:
                 band = (BandResultBean) visitedUser;
                 session.setAttribute("bandVisitedUser", band);
+                response.sendRedirect("bandProfileVisited.jsp");
                 break;
             case ROOM_RENTER:
                 roomRenter = (RoomRenterResultBean) visitedUser;
                 session.setAttribute("renterVisitedUser", roomRenter);
+                response.sendRedirect("renterProfileVisited.jsp");
                 break;
         }
     %>

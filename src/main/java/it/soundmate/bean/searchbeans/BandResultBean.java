@@ -7,19 +7,15 @@
 package it.soundmate.bean.searchbeans;
 
 import it.soundmate.model.UserType;
-import it.soundmate.model.SocialLinks;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class BandResultBean extends UserResultBean {
 
     private String bandName;
     private List<String> genres;
-    private List<SocialLinks> socialLinks = new ArrayList<>();
 
-    public BandResultBean() {
-    }
+    public BandResultBean(){}
 
     public BandResultBean(int id, String email, String encodedImg, String bandName, String city) {
         super(id, email, encodedImg, city, UserType.BAND);
@@ -40,14 +36,6 @@ public class BandResultBean extends UserResultBean {
 
     public List<String> getGenreList() {
         return genres;
-    }
-
-    public List<SocialLinks> getSocialLinks() {
-        return socialLinks;
-    }
-
-    public void setSocialLinks(List<SocialLinks> socialLinks) {
-        this.socialLinks = socialLinks;
     }
 
     @Override

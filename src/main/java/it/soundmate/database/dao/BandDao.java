@@ -6,11 +6,9 @@ import it.soundmate.bean.searchbeans.BandResultBean;
 import it.soundmate.database.Connector;
 import it.soundmate.database.dbexceptions.DuplicatedEmailException;
 import it.soundmate.database.dbexceptions.RepositoryException;
-import it.soundmate.exceptions.InputException;
 import it.soundmate.exceptions.UpdateException;
 import it.soundmate.model.Band;
 import it.soundmate.model.Genre;
-import it.soundmate.model.SocialLinks;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -197,57 +195,6 @@ public class BandDao implements Dao<Band>{
     @Override
     public Band get(int id) {
         return null;
-    }
-
-    public void updateSocialLink(String name, int position, Band band) {
-        String sql;
-        switch (position) {
-            case 0:
-                sql = "UPDATE band set spotify = (?) where id = (?)";
-                break;
-            case 1:
-                sql = "UPDATE band set youtube = (?) where id = (?)";
-                break;
-            case 2:
-                sql = "UPDATE band set facebook = (?) where id = (?)";
-                break;
-            default:
-                throw new InputException("Not valid position link");
-        }
-        try (Connection conn = connector.getConnection();
-             PreparedStatement preparedStatement = conn.prepareStatement(sql)) {
-                preparedStatement.setString(1, name);
-                preparedStatement.setInt(2, band.getId());
-                if (preparedStatement.executeUpdate() == 1) {
-                    band.setSocialLinks(this.getSocialLinks(band.getId()));
-                }
-        } catch (SQLException e) {
-            throw new RepositoryException("Unable to update social link", e);
-        }
-    }
-
-    public SocialLinks[] getSocialLinks(int id) {
-        SocialLinks[] socialLinks = new SocialLinks[3];
-        String sql = "SELECT spotify, youtube, facebook FROM band WHERE id = (?)";
-        try (Connection conn = connector.getConnection();
-             PreparedStatement preparedStatement = conn.prepareStatement(sql)) {
-            preparedStatement.setInt(1, id);
-            ResultSet resultSet = preparedStatement.executeQuery();
-            if(resultSet.next()){
-                String spotifyLink = resultSet.getString("spotify");
-                String youtubeLink = resultSet.getString("youtube");
-                String facebookLink = resultSet.getString("facebook");
-                socialLinks[0] = SocialLinks.SPOTIFY;
-                socialLinks[0].setLink(spotifyLink);
-                socialLinks[1] = SocialLinks.YOUTUBE;
-                socialLinks[1].setLink(youtubeLink);
-                socialLinks[2] = SocialLinks.FACEBOOK;
-                socialLinks[2].setLink(facebookLink);
-                return socialLinks;
-            } else throw new RepositoryException("Unable to fetch social links");
-        } catch (SQLException e) {
-            throw new RepositoryException("Unable to update social link", e);
-        }
     }
 
 }
