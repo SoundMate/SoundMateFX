@@ -118,4 +118,5 @@ public class Booking {
     public void setBooker(UserMessageBean booker) {
         this.booker = booker;
     }
+
 }

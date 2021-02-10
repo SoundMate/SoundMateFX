@@ -250,27 +250,6 @@ public class RoomRenterDao {
     }
 
 
-    public void bookRoom(Booking booking) {
-        String sql = "INSERT INTO booking (room_code, date, start_time, end_time, booker_id) VALUES (?, ?, ?, ?, ?) RETURNING booking_id";
-        try (Connection conn = connector.getConnection();
-             PreparedStatement preparedStatement = conn.prepareStatement(sql)) {
-
-            preparedStatement.setInt(1, booking.getRoom().getCode());
-            preparedStatement.setDate(2, Date.valueOf(booking.getDate()));
-            preparedStatement.setTime(3, Time.valueOf(booking.getStartTime()));
-            preparedStatement.setTime(4, Time.valueOf(booking.getEndTime()));
-            preparedStatement.setInt(5, booking.getBookerUserId());
-            preparedStatement.execute();
-            ResultSet resultSet = preparedStatement.getResultSet();
-            if (resultSet.next()) {
-                log.info("Returning generated key: {}",  resultSet.getInt(1));
-                booking.setCode(resultSet.getInt(1));
-            }
-        } catch (SQLException sqlException) {
-            throw new RepositoryException(sqlException.getMessage());
-        }
-    }
-
     public void checkRoomAvailability(LocalDate date, LocalTime start, LocalTime end, Room room) {
         String sql = "SELECT * FROM booking WHERE room_code = (?)";
         try (Connection conn = connector.getConnection();

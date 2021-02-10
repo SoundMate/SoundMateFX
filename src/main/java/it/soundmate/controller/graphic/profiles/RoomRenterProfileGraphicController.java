@@ -46,11 +46,11 @@ public class RoomRenterProfileGraphicController extends EditGraphicController {
         }
     }
 
-    public MapBean displayMap(String city, String address) {
+    public void displayMap(String city, String address) {
         try {
             double[] coordinates = roomRenterProfileController.getRenterMap(city,address);
             logger.info("Result coordinates: {}, {}", coordinates[0], coordinates[1]);
-            return new MapBean(coordinates[0], coordinates[1]);
+            new MapBean(coordinates[0], coordinates[1]);
         } catch (InputException inputException) {
             throw new InputException(inputException.getMessage());
         }

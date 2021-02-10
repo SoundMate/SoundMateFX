@@ -7,6 +7,8 @@
 package it.soundmate.database.searchengine;
 
 import it.soundmate.bean.searchbeans.RoomRenterResultBean;
+import it.soundmate.database.dao.RoomRenterDao;
+import it.soundmate.database.dao.UserDao;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -35,6 +37,7 @@ public class SearchRenter implements SearchEngine<RoomRenterResultBean>, Runnabl
 
     @Override
     public List<RoomRenterResultBean> search(String name, String city) {
+        RoomRenterDao roomRenterDao = new RoomRenterDao(new UserDao());
         String sql = "SELECT users.id, email, encoded_profile_img, name, city, address FROM users JOIN room_renter rr on users.id = rr.id JOIN registered_users ru on users.id = ru.id WHERE LOWER(name) LIKE LOWER(?) AND LOWER(city) LIKE LOWER(?)";
         List<RoomRenterResultBean> roomRenterResultBeanList = new ArrayList<>();
         try (PreparedStatement preparedStatement = this.connection.prepareStatement(sql)) {
@@ -49,6 +52,7 @@ public class SearchRenter implements SearchEngine<RoomRenterResultBean>, Runnabl
                 String address = resultSet.getString("address");
                 RoomRenterResultBean resultBean = new RoomRenterResultBean(id, email, encodedImg, renterName, renterCity);
                 resultBean.setAddress(address);
+                resultBean.setRooms(roomRenterDao.getRenterRooms(id));
                 roomRenterResultBeanList.add(resultBean);
             }
         } catch (SQLException sqlException) {
