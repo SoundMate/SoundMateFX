@@ -23,6 +23,8 @@
 <jsp:useBean id="messageBean" class="it.soundmate.model.Message"/>
 <jsp:setProperty name="messageBean" property="body"/>
 <jsp:setProperty name="messageBean" property="subject"/>
+<jsp:useBean id="joinRequest" class="it.soundmate.model.JoinRequest"/>
+<jsp:setProperty name="joinRequest" property="message"/>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <!DOCTYPE>
 <html lang="it">
@@ -54,6 +56,7 @@
     }
 %>
 
+<!-- Message Action -->
 <%
     if (request.getParameter("sendMessage") != null) {
         MessagesController messagesController = new MessagesController();
@@ -61,6 +64,18 @@
         messageBean.setIdSender(loggedUser.getId());
         messageBean.setIdReceiver(band.getId());
         messagesController.sendMessage(messageBean);
+    }
+%>
+
+<!-- Join Request Action -->
+<%
+    for (Application app : applicationList) {
+        if (request.getParameter("sendRequest"+app.getApplicationCode()) != null) {
+            joinRequest.setIdBand(band.getId());
+            joinRequest.setIdSolo(loggedUser.getId());
+            MessagesController messagesController = new MessagesController();
+            messagesController.applyForBand(app, joinRequest);
+        }
     }
 %>
 
@@ -123,7 +138,7 @@
                         <div class="form-group">
                             <label for="exampleFormControlTextarea1">Subject</label>
                             <textarea class="form-control" id="exampleFormControlTextarea1" rows="1" name="subject"></textarea>
-                            <label for="exampleFormControlTextarea1">Body</label>
+                            <label for="exampleFormControlTextarea2">Body</label>
                             <textarea class="form-control" id="exampleFormControlTextarea2" rows="3" name="body"></textarea>
                         </div>
                         <input type="submit" class="btn btn-primary" value="Send" name="sendMessage"/>>
@@ -151,7 +166,11 @@
                                         <label for="exampleFormControlTextarea1">Instruments Wanted</label>
                                         <p class="form-control" id="exampleFormControlTextarea5">${application.instrumentsList}</p>
                                     </div>
-                                    <input type="submit" class="btn btn-primary" value="Send Request" name="sendRequest"/>>
+                                    <div class="form-group">
+                                        <label for="exampleFormControlTextareaMessage">Add message</label>
+                                        <textarea rows="3" class="form-control" id="exampleFormControlTextareaMessage" name="message"></textarea>
+                                    </div>
+                                    <input type="submit" class="btn btn-primary" value="Send Request" name="sendRequest${application.applicationCode}"/>>
                                 </form>
                             </div>
                         </div>
