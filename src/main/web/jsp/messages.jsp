@@ -1,7 +1,6 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ page import="it.soundmate.controller.logic.MessagesController" %>
 <%@ page import="java.util.List" %>
-<%@ page import="it.soundmate.controller.logic.SearchController" %>
 <%@ page import="it.soundmate.controller.logic.NotificationsController" %>
 <%@ page import="it.soundmate.model.*" %>
 <%@ page import="java.util.ArrayList" %><%--
@@ -96,61 +95,56 @@
 
     <h2>Messages and Notifications for <%=loggedUser.getName()%></h2>
 
-    <div id="exTab2" class="container">
-        <ul class="nav nav-tabs">
-            <li class="active">
-                <a  href="#1" data-toggle="tab">Messages</a>
-            </li>
-            <li><a href="#2" data-toggle="tab">Bookings Notifications</a>
-            </li>
-            <li><a href="#3" data-toggle="tab">Join Request Notifications</a>
-            </li>
-        </ul>
-
-        <div class="tab-content ">
-            <div class="tab-pane active" id="1">
-                <!--Messages-->
-                <c:forEach items="${messageList}" var="message">
-                    <div class="d-flex justify-content-around">
-                        <h3><c:out value="${message.sender.name}"/></h3>
-                        <p><c:out value="${message.subject}"/></p>
-                        <a class="btn btn-primary" data-toggle="collapse" href="#collapseExample${message.messageCode}" role="button" aria-expanded="false" aria-controls="collapseExample">
-                            Read
-                        </a>
+    <nav>
+        <div class="nav nav-tabs" id="nav-tab" role="tablist">
+            <a class="nav-item nav-link active" id="nav-home-tab" data-toggle="tab" href="#nav-home" role="tab" aria-controls="nav-home" aria-selected="true">Messages</a>
+            <a class="nav-item nav-link" id="nav-notificationsb-tab" data-toggle="tab" href="#nav-notifications-bookings" role="tab" aria-controls="nav-notifications-bookings" aria-selected="false">Booking Notifications</a>
+            <a class="nav-item nav-link" id="nav-notificationsr-tab" data-toggle="tab" href="#nav-notifications-requests" role="tab" aria-controls="nav-notifications-requests" aria-selected="false">Requests Notifications</a>
+        </div>
+    </nav>
+    <div class="tab-content" id="nav-tabContent">
+        <div class="tab-pane active" id="nav-home">
+            <!--Messages-->
+            <c:forEach items="${messageList}" var="message">
+                <div class="d-flex justify-content-around">
+                    <h3><c:out value="${message.sender.name}"/></h3>
+                    <p><c:out value="${message.subject}"/></p>
+                    <a class="btn btn-primary" data-toggle="collapse" href="#collapseExample${message.messageCode}" role="button" aria-expanded="false" aria-controls="collapseExample">
+                        Read
+                    </a>
+                </div>
+                <div class="collapse" id="collapseExample${message.messageCode}">
+                    <div class="card card-body">
+                        <p><c:out value="${message.body}"/></p>
+                        <form>
+                            <div class="form-group">
+                                <label for="exampleFormControlTextarea1">Reply</label>
+                                <textarea class="form-control" id="exampleFormControlTextarea1" rows="3" name="body"></textarea>
+                            </div>
+                            <input type="submit" class="btn btn-primary" value="Reply" name="reply${message.messageCode}"/>>
+                        </form>
                     </div>
-                    <div class="collapse" id="collapseExample${message.messageCode}">
-                        <div class="card card-body">
-                            <p><c:out value="${message.body}"/></p>
-                            <form>
-                                <div class="form-group">
-                                    <label for="exampleFormControlTextarea1">Reply</label>
-                                    <textarea class="form-control" id="exampleFormControlTextarea1" rows="3" name="body"></textarea>
-                                </div>
-                                <input type="submit" class="btn btn-primary" value="Reply" name="reply${message.messageCode}"/>>
-                            </form>
-                        </div>
-                    </div>
-                </c:forEach>
-            </div>
-            <div class="tab-pane" id="2">
-                <!--Booking Notifications-->
-                <c:forEach items="${bookingNotifications}" var="notification">
-                    <div class="d-flex justify-content-around">
-                        <h3><c:out value="${notification.booking.booker.name}"/></h3>
-                    </div>
-                    <div class="collapse" id="collapseExample${notification.messageId}">
-                        <div class="card card-body">
-                            <p><c:out value="${notification.messageType}"/></p>
-                        </div>
-                    </div>
-                </c:forEach>
-            </div>
+                </div>
+            </c:forEach>
+        </div>
+        <div class="tab-pane fade" id="nav-notifications-bookings" role="tabpanel" aria-labelledby="nav-profile-tab">
+            <c:forEach items="${bookingNotifications}" var="booking">
+                <div class="d-flex justify-content-around">
+                    <h3>Booking #<c:out value="${booking.booking.code}"/></h3>
+                    <p>Booking for room <c:out value="${booking.booking.room.name}"/> on <c:out value="${booking.booking.date}"/> from <c:out value="${booking.booking.startTime}"/> to <c:out value="${booking.booking.endTime}"/> has been
+                        <c:out value="${booking.messageType.toString() == 'BOOK_ROOM_CONFIRMATION' ? 'CONFIRMED' : 'CANCELED'}"/>
+                    </p>
+                </div>
+            </c:forEach>
+        </div>
+        <div class="tab-pane fade" id="nav-notifications-requests" role="tabpanel" aria-labelledby="nav-profile-tab">
+            <c:forEach items="${joinRequestNotifications}" var="joinRequest">
+                <div class="d-flex justify-content-around">
+                    <h3>Join Request for <c:out value="${joinRequest.joinRequest.band.name}"/><c:out value="${joinRequest.messageType.toString() == 'JOIN_BAND_CONFIRMATION' ? ' has been ACCEPTED' : ' is still pending'}"/></h3>
+                </div>
+            </c:forEach>
         </div>
     </div>
-
-    <h1>Messages for </h1>
-
-
 
 
 </body>
