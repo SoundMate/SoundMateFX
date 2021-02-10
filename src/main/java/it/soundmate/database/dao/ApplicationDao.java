@@ -63,7 +63,8 @@ public class ApplicationDao {
                 String[] instruments = (String[]) resultSet.getArray(INSTRUMENTS).getArray();
                 List<String> instrumentsList = Arrays.asList(instruments);
                 application.setInstrumentsList(instrumentsList);
-
+                application.setAppliedSoloList(this.getSolosApplied(application));
+                application.setJoinRequestList(this.getJoinRequests(application));
                 applicationsList.add(application);
             }
             return applicationsList;
@@ -117,15 +118,11 @@ public class ApplicationDao {
                 "JOIN registered_users ru on ru.id = s.id\n" +
                 "JOIN users u on u.id = s.id\n" +
                 "WHERE applications.code = ?";
-
         List<SoloResultBean> solosList = new ArrayList<>();
-
         try (Connection conn = connector.getConnection();
              PreparedStatement preparedStatement = conn.prepareStatement(sql)) {
-
             preparedStatement.setInt(1, application.getApplicationCode());
             ResultSet resultSet = preparedStatement.executeQuery();
-
             while(resultSet.next()){
                 SoloResultBean soloResultBean = buildSoloResultBeans(resultSet);
                 if (resultSet.getArray(INSTRUMENTS) != null){
@@ -135,8 +132,9 @@ public class ApplicationDao {
                     soloResultBean.setInstrumentList(instrumentList);
                 }
                 solosList.add(soloResultBean);
-
-            } return solosList;
+            }
+            application.setAppliedSoloList(solosList);
+            return solosList;
 
         } catch (SQLException ex){
             throw new RepositoryException("Error fetching solos. The error was: \n" + ex.getMessage(), ex);
@@ -205,6 +203,7 @@ public class ApplicationDao {
 
     public List<JoinRequest> getJoinRequests(Application application) {
         String sql = "SELECT * from join_request where code_application = (?)";
+        JoinRequestDao joinRequestDao = new JoinRequestDao();
         List<JoinRequest> joinRequestList = new ArrayList<>();
         try (PreparedStatement preparedStatement = connector.getConnection().prepareStatement(sql)) {
             preparedStatement.setInt(1, application.getApplicationCode());
@@ -218,6 +217,7 @@ public class ApplicationDao {
                 JoinRequest joinRequest = new JoinRequest(idBand, application.getApplicationCode(), idSolo, message);
                 joinRequest.setCode(requestCode);
                 joinRequest.setRequestState(RequestState.returnRequestState(requestState));
+                joinRequest.setSoloResultBean(joinRequestDao.getSoloFromJoinRequest(joinRequest));
                 joinRequestList.add(joinRequest);
             }
             return joinRequestList;

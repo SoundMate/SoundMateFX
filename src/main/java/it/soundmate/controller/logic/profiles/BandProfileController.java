@@ -49,14 +49,6 @@ public class BandProfileController {
         return joinRequestDao.getSoloFromJoinRequest(joinRequest);
     }
 
-    public void acceptRequest(JoinRequest joinRequest) {
-        try {
-            JoinRequestDao joinRequestDao = new JoinRequestDao();
-            joinRequestDao.acceptRequest(joinRequest);
-        } catch (RepositoryException e) {
-            throw new RepositoryException(e.getMessage());
-        }
-    }
 
     public BandResultBean getBandNameByID(int idBand) {
         try {

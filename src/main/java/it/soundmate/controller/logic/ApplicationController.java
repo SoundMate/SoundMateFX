@@ -8,6 +8,7 @@ package it.soundmate.controller.logic;
 
 import it.soundmate.bean.searchbeans.SoloResultBean;
 import it.soundmate.database.dao.ApplicationDao;
+import it.soundmate.database.dao.JoinRequestDao;
 import it.soundmate.database.dbexceptions.RepositoryException;
 import it.soundmate.model.Application;
 import it.soundmate.model.JoinRequest;
@@ -31,6 +32,15 @@ public class ApplicationController {
             return applicationDao.getApplicationByBandId(id);
         } catch (RepositoryException repositoryException) {
             throw new RepositoryException(repositoryException.getMessage());
+        }
+    }
+
+    public void acceptRequest(JoinRequest joinRequest) {
+        try {
+            JoinRequestDao joinRequestDao = new JoinRequestDao();
+            joinRequestDao.acceptRequest(joinRequest);
+        } catch (RepositoryException e) {
+            throw new RepositoryException(e.getMessage());
         }
     }
 

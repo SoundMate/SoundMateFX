@@ -14,6 +14,7 @@ public class Application {
     private List<String> instrumentsList = new ArrayList<>(); //instruments the band are looking for
     private String message;
     private List<SoloResultBean> appliedSoloList = new ArrayList<>();
+    private List<JoinRequest> joinRequestList = new ArrayList<>();
 
     public Application() {
     }
@@ -86,11 +87,11 @@ public class Application {
         this.appliedSoloList = appliedSoloList;
     }
 
-    public List<SoloResultBean> getAppliedSolosFromID() {
-        if (this.getAppliedSoloList() == null || this.getAppliedSoloList().isEmpty()) {
-            ApplicationController applicationController = new ApplicationController();
-            this.setAppliedSoloList( applicationController.getAppliedSoloBeans(this));
-        }
-        return this.getAppliedSoloList();
+    public List<JoinRequest> getJoinRequestList() {
+        return joinRequestList;
+    }
+
+    public void setJoinRequestList(List<JoinRequest> joinRequestList) {
+        this.joinRequestList = joinRequestList;
     }
 }

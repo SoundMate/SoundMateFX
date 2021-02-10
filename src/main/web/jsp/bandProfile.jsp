@@ -6,6 +6,8 @@
 <%@ page import="it.soundmate.view.uicomponents.InstrumentGraphics" %>
 <%@ page import="java.util.Arrays" %>
 <%@ page import="java.util.ArrayList" %>
+<%@ page import="it.soundmate.bean.searchbeans.SoloResultBean" %>
+<%@ page import="it.soundmate.model.JoinRequest" %>
 <%--
   ~ Copyright (c) 2021.
   ~ Created by Lorenzo Pantano on 02/02/21, 18:31
@@ -68,6 +70,19 @@
             System.out.println("Selected instruments: "+ instrumentsList);
         } else {
             System.out.println("Select at least one instrument");
+        }
+    }
+
+%>
+
+<!-- Accept Request action -->
+<%
+
+    for (Application application1: applicationList) {
+        for (JoinRequest joinRequest: application1.getJoinRequestList()) {
+            if (request.getParameter("acceptRequest"+joinRequest.getCode()) != null) {
+                applicationController.acceptRequest(joinRequest);
+            }
         }
     }
 
@@ -141,6 +156,44 @@
                                     <div class="form-group">
                                         <label for="exampleFormControlTextarea4">Instruments Wanted</label>
                                         <p class="form-control" id="exampleFormControlTextarea5">${application.instrumentsList}</p>
+                                    </div>
+                                    <div class="form-group">
+                                        <p>Candidates</p>
+                                        <c:forEach items="${application.joinRequestList}" var="joinRequest">
+                                                <p>${joinRequest.soloResultBean.name}</p>
+                                                <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModalCenterRequest">
+                                                    View Request
+                                                </button>
+                                            <div class="modal fade" id="exampleModalCenterRequest" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitleRequest" aria-hidden="true">
+                                                <div class="modal-dialog modal-dialog-centered" role="document">
+                                                    <div class="modal-content">
+                                                        <div class="modal-header">
+                                                            <h5 class="modal-title" id="exampleModalCenterTitleRequest">Join Request</h5>
+                                                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                                <span aria-hidden="true">&times;</span>
+                                                            </button>
+                                                        </div>
+                                                        <div class="modal-body">
+                                                            <form>
+                                                                <div class="mx-auto row">
+                                                                    <label for="message-request">Message: </label>
+                                                                    <p id="message-request">${joinRequest.message}</p>
+                                                                </div>
+                                                                <div class="mx-auto row">
+                                                                    <label for="request-instruments">Instruments: </label>
+                                                                    <p id="request-instruments">${joinRequest.soloResultBean.instrumentList}</p>
+                                                                </div>
+                                                                <div class="modal-footer">
+                                                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                                                    <input type="submit" class="btn btn-primary" name="acceptRequest${joinRequest.code}" value="Accept"/>
+                                                                </div>
+                                                            </form>
+
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </c:forEach>
                                     </div>
                                 </form>
                             </div>

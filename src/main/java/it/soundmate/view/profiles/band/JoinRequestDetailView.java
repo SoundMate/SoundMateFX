@@ -9,6 +9,7 @@ package it.soundmate.view.profiles.band;
 import it.soundmate.bean.searchbeans.SoloResultBean;
 import it.soundmate.constants.Style;
 import it.soundmate.controller.graphic.profiles.BandProfileGraphicController;
+import it.soundmate.controller.logic.ApplicationController;
 import it.soundmate.controller.logic.profiles.BandProfileController;
 import it.soundmate.database.dbexceptions.RepositoryException;
 import it.soundmate.model.Application;
@@ -96,8 +97,8 @@ public class JoinRequestDetailView extends VBox {
         @Override
         public void handle(ActionEvent event) {
             try {
-                BandProfileController bandProfileController = new BandProfileController();
-                bandProfileController.acceptRequest(joinRequest);
+                ApplicationController applicationController = new ApplicationController();
+                applicationController.acceptRequest(joinRequest);
                 Alert confirmation = new Alert(Alert.AlertType.INFORMATION);
                 confirmation.setContentText("Request accepted");
                 confirmation.showAndWait();
