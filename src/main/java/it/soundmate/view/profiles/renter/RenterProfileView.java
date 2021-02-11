@@ -150,7 +150,7 @@ public class RenterProfileView extends VBox {
         }
     }
 
-    private class ManageMediaAction implements EventHandler<ActionEvent> {
+    private static class ManageMediaAction implements EventHandler<ActionEvent> {
         @Override
         public void handle(ActionEvent event) {
             logger.info("Manage media click");

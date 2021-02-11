@@ -169,14 +169,14 @@
                                         <label for="exampleFormControlTextarea1">Price</label>
                                         <p class="form-control" id="exampleFormControlTextarea5">${room.price} $/hr</p>
                                     </div>
-                                    <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModalCenterRequest">
+                                    <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModalCenterRequest${room.code}">
                                        Book Room
                                     </button>
-                                    <div class="modal fade" id="exampleModalCenterRequest" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitleRequest" aria-hidden="true">
+                                    <div class="modal fade" id="exampleModalCenterRequest${room.code}" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitleRequest" aria-hidden="true">
                                         <div class="modal-dialog modal-dialog-centered" role="document">
                                             <div class="modal-content">
                                                 <div class="modal-header">
-                                                    <h5 class="modal-title" id="exampleModalCenterTitleRequest">Join Request</h5>
+                                                    <h5 class="modal-title" id="exampleModalCenterTitleRequest">Book Room</h5>
                                                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                                                         <span aria-hidden="true">&times;</span>
                                                     </button>

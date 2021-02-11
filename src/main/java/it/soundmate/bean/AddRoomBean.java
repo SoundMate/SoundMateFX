@@ -15,6 +15,8 @@ public class AddRoomBean {
     private String description;
     private String encodedImg;
 
+    public AddRoomBean(){}
+
     public AddRoomBean(String name, String price, String description, String encodedImg) {
         this.name = name;
         this.description = description;
