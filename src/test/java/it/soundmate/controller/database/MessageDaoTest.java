@@ -17,10 +17,6 @@ class MessageDaoTest {
     private static final MessageDao sut = new MessageDao();
     private static final UserDao userDao = new UserDao();
 
-
-
-
-
     @BeforeAll
     static void setUp(){
         RegisterSoloBean user1 = new RegisterSoloBean("pippo@", "asd", "pippo", "pluto", "Rome");

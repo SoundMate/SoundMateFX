@@ -406,7 +406,14 @@ public class UserDao implements Dao<User> {
 
     @Override
     public int delete(User user) {
-        return 0;
+        String sql = "delete from registered_users where id = (?);";
+        try (PreparedStatement preparedStatement = connector.getConnection().prepareStatement(sql)) {
+            preparedStatement.setInt(1, user.getId());
+            preparedStatement.executeUpdate();
+            return user.getId();
+        } catch (SQLException e) {
+            throw new RepositoryException("Unable to delete user");
+        }
     }
 
     @Override

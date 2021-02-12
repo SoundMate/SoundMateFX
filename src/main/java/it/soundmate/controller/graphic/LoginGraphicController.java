@@ -11,12 +11,6 @@ import it.soundmate.controller.logic.LoginController;
 import it.soundmate.database.dbexceptions.RepositoryException;
 import it.soundmate.database.dbexceptions.UserNotFoundException;
 import it.soundmate.model.User;
-import it.soundmate.view.main.MainView;
-import it.soundmate.view.registerview.ChooseRegisterView;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
-import javafx.stage.Stage;
-
 
 /**
  * Login Graphic Controller
@@ -30,20 +24,6 @@ import javafx.stage.Stage;
  * */
 
 public class LoginGraphicController {
-
-    public void navigateToRegisterView(Stage stage) {
-        Parent registerView = new ChooseRegisterView().getBorderPane();
-        Scene scene = new Scene(registerView, 800, 600);
-        stage.setScene(scene);
-        stage.show();
-    }
-
-    public void navigateToMainView(Stage stage, User user) {
-        Parent mainScreen = new MainView(user).getBorderPane();
-        Scene scene = new Scene(mainScreen, 800, 600);
-        stage.setScene(scene);
-        stage.show();
-    }
 
     /**
      * Login
