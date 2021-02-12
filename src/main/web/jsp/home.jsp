@@ -77,8 +77,8 @@
                 </li>
             </ul>
             <form class="form-inline my-2 my-lg-0">
-                <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search" name="searchString">
-                <input class="btn btn-outline-success my-2 my-sm-0" type="submit" value="Search" name="search"/>
+                <input id="searchBox" class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search" name="searchString">
+                <input id="searchBtn" class="btn btn-outline-success my-2 my-sm-0" type="submit" value="Search" name="search"/>
             </form>
         </div>
     </nav>
