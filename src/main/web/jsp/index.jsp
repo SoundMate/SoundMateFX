@@ -112,33 +112,37 @@
                     <input type="submit" name="login" value="Login" class="sign-in-form-button">
                 </form>
 
-                <form action="register.jsp" method="post" name="register-selection">
                     <div class="register-box">
                         <h3>Sign Up Now</h3>
                         <ul class="band-solo-boxes">
                             <li>
-                                <div class="container-band">
-                                    <img src="../../resources/soundmate/images/band-register.png" alt="Band Register" class="register-img-band">
-                                    <div class="centered"><input type="submit" value="Band" name="register-band"></div>
-                                </div>
+                                <form action="roomRenterSignUp.jsp">
+                                    <div class="container-band">
+                                        <img src="../../resources/soundmate/images/band-register.png" alt="Band Register" class="register-img-band">
+                                        <div class="centered"><input type="submit" value="Band" name="register-band"></div>
+                                    </div>
+                                </form>
                             </li>
 
                             <li>
-                                <div class="container-band">
-                                    <img src="../../resources/soundmate/images/band-room-register-2.png" alt="Band Room Register" class="register-img-band">
-                                    <div class="centered"><input type="submit" value="Room Renter" name="register-renter"></div>
-                                </div>
+                                <form action="bandSignUp.jsp">
+                                    <div class="container-band">
+                                        <img src="../../resources/soundmate/images/band-room-register-2.png" alt="Band Room Register" class="register-img-band">
+                                        <div class="centered"><input type="submit" value="Room Renter" name="register-renter"></div>
+                                    </div>
+                                </form>
                             </li>
 
                             <li>
-                                <div class="container-solo">
-                                    <img src="../../resources/soundmate/images/solo-register.png" alt="Solo Register" class="register-img-solo">
-                                    <div class="centered"><input type="submit" value="Solo" name="register-solo"></div>
-                                </div>
+                                <form action="soloSignUp.jsp">
+                                    <div class="container-solo">
+                                        <img src="../../resources/soundmate/images/solo-register.png" alt="Solo Register" class="register-img-solo">
+                                        <div class="centered"><input type="submit" value="Solo" name="register-solo"></div>
+                                    </div>
+                                </form>
                             </li>
                         </ul>
                     </div>
-                </form>
 
             </div>
 
