@@ -23,9 +23,9 @@ public class BookRoomController {
     private final RoomRenterDao roomRenterDao = new RoomRenterDao(userDao);
     private final BookingDao bookingDao = new BookingDao();
 
-    public Booking bookRoom(Booking booking) {
+    public void bookRoom(Booking booking) {
         try {
-            return bookingDao.sendBookingRequest(booking);
+            bookingDao.sendBookingRequest(booking);
         } catch (RepositoryException repositoryException) {
             throw new RepositoryException(repositoryException.getMessage());
         }

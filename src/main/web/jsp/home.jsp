@@ -109,6 +109,8 @@
         }
     %>
 
+    <h1 id="welcomeUser">Welcome, <c:out value="${loggedUser.name}"/></h1>
+
     <!-- Musicians you may know -->
 
     <h3>Musicians you may know</h3>

@@ -1,3 +1,4 @@
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ page import="it.soundmate.model.Solo" %><%--
   ~ Copyright (c) 2021.
   ~ Created by Lorenzo Pantano on 02/02/21, 18:30
@@ -25,6 +26,7 @@
 
     <%
         Solo solo = (Solo) session.getAttribute("loggedUser");
+        request.setAttribute("solo", solo);
     %>
 
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
@@ -58,10 +60,10 @@
                 <div class="bg-black shadow rounded overflow-hidden">
                     <div class="px-4 pt-0 pb-4 cover">
                         <div class="media align-items-end profile-head">
-                            <div class="profile mr-3"><img src="https://images.unsplash.com/photo-1522075469751-3a6694fb2f61?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=500&q=80" alt="..." width="130" class="rounded mb-2 img-thumbnail"><a href="#" class="btn btn-outline-dark btn-sm btn-block">Edit profile</a></div>
+                            <div class="profile mr-3"><c:out value="${solo.name}"/></div>
                             <div class="media-body mb-5 text-black">
                                 <h4 class="mt-0 mb-0"></h4>  <!--Non funziona così-->
-                                <p class="small mb-4"> <em class="fas fa-map-marker-alt mr-2"></em><%System.out.println(solo.getCity());%></p>
+                                <p class="small mb-4"> <em class="fas fa-map-marker-alt mr-2"></em></p>
                             </div>
                         </div>
                     </div>
