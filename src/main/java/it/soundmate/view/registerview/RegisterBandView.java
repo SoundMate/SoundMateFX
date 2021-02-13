@@ -37,15 +37,19 @@ public class RegisterBandView extends BorderPane {
 
     public RegisterBandView(){
         VBox fieldsVBox = buildFieldsVBox();
+        Label registrationLabel = initializeLabel(fieldsVBox, "Band Registration");
+        this.setTop(registrationLabel);
+        this.setCenter(fieldsVBox);
+    }
+
+    public static Label initializeLabel(VBox fieldsVBox, String registrationString) {
         UIUtils.setBackgroundPane("#232323", fieldsVBox);
 
         //Label
-        Label registrationLabel = new Label("Band Registration");
+        Label registrationLabel = new Label(registrationString);
         registrationLabel.setStyle(Style.HIGH_LABEL);
         registrationLabel.setPadding(new Insets(25));
-
-        this.setTop(registrationLabel);
-        this.setCenter(fieldsVBox);
+        return registrationLabel;
     }
 
     private VBox buildFieldsVBox() {

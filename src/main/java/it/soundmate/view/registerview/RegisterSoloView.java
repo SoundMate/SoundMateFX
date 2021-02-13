@@ -7,14 +7,12 @@
 package it.soundmate.view.registerview;
 
 import it.soundmate.bean.registerbeans.RegisterSoloBean;
-import it.soundmate.constants.Style;
 import it.soundmate.controller.graphic.register.RegisterSoloGraphicController;
 import it.soundmate.exceptions.InputException;
 import it.soundmate.model.User;
 import it.soundmate.view.UIUtils;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
-import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
@@ -40,13 +38,7 @@ public class RegisterSoloView extends BorderPane {
 
     public RegisterSoloView(){
         VBox fieldsVBox = buildFieldsVBox();
-        UIUtils.setBackgroundPane("#232323", fieldsVBox);
-
-        //Label
-        Label registrationLabel = new Label("Solo Registration");
-        registrationLabel.setStyle(Style.HIGH_LABEL);
-        registrationLabel.setPadding(new Insets(25));
-
+        Label registrationLabel = RegisterBandView.initializeLabel(fieldsVBox, "Solo Registration");
         this.setTop(registrationLabel);
         this.setCenter(fieldsVBox);
     }
