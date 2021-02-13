@@ -33,22 +33,7 @@ public class SoloProfileGraphicController extends EditGraphicController {
     }
 
     private Genre favGenreDialog() {
-        List<String> choices = new ArrayList<>();
-        for (Genre genre : Genre.values()) {
-            choices.add(genre.name());
-        }
-
-        ChoiceDialog<String> dialog = new ChoiceDialog<>("GENRE", choices);
-        dialog.setTitle("Add favourite genre");
-        dialog.setHeaderText("Add favourite genre");
-        dialog.setContentText("Choose genre:");
-
-        Optional<String> result = dialog.showAndWait();
-        if (result.isPresent()){
-            logger.info("Your choice: {}", result.get());
-            return Genre.returnGenre(result.get());
-        }
-        return null;
+        return BandProfileGraphicController.playedGenreDialog();
     }
 
     public InstrumentGraphics addInstrument(Solo solo) {

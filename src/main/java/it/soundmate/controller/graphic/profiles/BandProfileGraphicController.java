@@ -49,15 +49,15 @@ public class BandProfileGraphicController extends EditGraphicController {
         }
     }
 
-    private Genre playedGenreDialog() {
+    public static Genre playedGenreDialog() {
         List<String> choices = new ArrayList<>();
         for (Genre genre : Genre.values()) {
             choices.add(genre.name());
         }
 
         ChoiceDialog<String> dialog = new ChoiceDialog<>("GENRE", choices);
-        dialog.setTitle("Add played genre");
-        dialog.setHeaderText("Add played genre");
+        dialog.setTitle("Add genre");
+        dialog.setHeaderText("Add genre");
         dialog.setContentText("Choose genre:");
 
         Optional<String> result = dialog.showAndWait();
