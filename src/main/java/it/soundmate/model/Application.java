@@ -1,7 +1,6 @@
 package it.soundmate.model;
 
 import it.soundmate.bean.searchbeans.SoloResultBean;
-import it.soundmate.controller.logic.ApplicationController;
 
 import java.util.ArrayList;
 import java.util.List;

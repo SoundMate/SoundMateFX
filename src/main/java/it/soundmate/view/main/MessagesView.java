@@ -26,7 +26,6 @@ import java.util.List;
 public class MessagesView extends Pane {
 
     private static final Logger logger = LoggerFactory.getLogger(MessagesView.class);
-    private final User user;
 
 
     public VBox getContentVBox() {
@@ -39,7 +38,6 @@ public class MessagesView extends Pane {
     private final NotificationsResults notificationsResults = new NotificationsResults();
     private final NotificationsController notificationsController = new NotificationsController();
     private final MessagesController messagesController = new MessagesController();
-    private final ApplicationController applicationController = new ApplicationController();
 
     //UI
     private final Tab notificationsTab = new Tab("Notifications");
@@ -47,7 +45,6 @@ public class MessagesView extends Pane {
     private final TabPane messagesTabPane = new TabPane();
 
     public MessagesView(User user){
-        this.user = user;
         this.messageResults = new MessagesResults(this, user);
         Node top = buildTopNode();
         //Style
