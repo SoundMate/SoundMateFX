@@ -10,7 +10,6 @@ import it.soundmate.bean.searchbeans.SoloResultBean;
 import it.soundmate.constants.Style;
 import it.soundmate.controller.graphic.profiles.BandProfileGraphicController;
 import it.soundmate.controller.logic.ApplicationController;
-import it.soundmate.controller.logic.profiles.BandProfileController;
 import it.soundmate.database.dbexceptions.RepositoryException;
 import it.soundmate.model.Application;
 import it.soundmate.model.Band;

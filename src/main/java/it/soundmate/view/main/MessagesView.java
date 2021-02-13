@@ -1,7 +1,6 @@
 package it.soundmate.view.main;
 
 import it.soundmate.constants.Style;
-import it.soundmate.controller.logic.ApplicationController;
 import it.soundmate.controller.logic.MessagesController;
 import it.soundmate.controller.logic.NotificationsController;
 import it.soundmate.model.*;

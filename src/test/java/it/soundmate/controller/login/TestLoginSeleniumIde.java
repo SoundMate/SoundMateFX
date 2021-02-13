@@ -29,6 +29,8 @@ import java.util.*;
 import java.net.MalformedURLException;
 import java.net.URL;
 
+/*
+
 public class TestLoginSeleniumIde {
     private WebDriver driver;
     private Map<String, Object> vars;
@@ -55,4 +57,4 @@ public class TestLoginSeleniumIde {
         driver.findElement(By.cssSelector("html")).click();
         assertThat(driver.findElement(By.id("welcomeUser")).getText(), is("Welcome, Not Sober At All"));
     }
-}
+}*/

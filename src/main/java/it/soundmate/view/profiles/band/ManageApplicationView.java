@@ -94,13 +94,6 @@ public class ManageApplicationView extends VBox {
         return instrumentVBox;
     }
 
-    private class DeleteAction implements EventHandler<ActionEvent> {
-        @Override
-        public void handle(ActionEvent event) {
-            //Delete application
-        }
-    }
-
     private class BackAction implements EventHandler<ActionEvent> {
         @Override
         public void handle(ActionEvent event) {
