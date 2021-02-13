@@ -3,11 +3,15 @@ package it.soundmate.database.dao;
 import it.soundmate.bean.messagebeans.UserMessageBean;
 import it.soundmate.database.Connector;
 import it.soundmate.database.dbexceptions.RepositoryException;
+import it.soundmate.exceptions.InputException;
+import it.soundmate.exceptions.UpdateException;
 import it.soundmate.model.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.sql.*;
+import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -21,6 +25,31 @@ public class BookingDao {
     public static final String ID_RENTER = "id_renter";
     private final Connector connector = Connector.getInstance();
     private static final Logger log = LoggerFactory.getLogger(BookingDao.class);
+    private final RoomRenterDao roomRenterDao = new RoomRenterDao();
+
+
+    public Booking getBookingByID(int bookingID) {
+        String query = "SELECT * FROM booking WHERE code = (?)";
+        try (Connection conn = connector.getConnection();
+             PreparedStatement preparedStatement = conn.prepareStatement(query)) {
+            preparedStatement.setInt(1, bookingID);
+            ResultSet resultSet = preparedStatement.executeQuery();
+            if (resultSet.next()) {
+                int roomID = resultSet.getInt("room_code");
+                LocalDate date = resultSet.getDate("date").toLocalDate();
+                LocalTime startTime = resultSet.getTime(START_TIME).toLocalTime();
+                LocalTime endTime = resultSet.getTime(END_TIME).toLocalTime();
+                int booker = resultSet.getInt(BOOKER_ID);
+                int id = resultSet.getInt("code");
+                Room room = roomRenterDao.getRoomByID(roomID);
+                Booking booking = new Booking(room, booker, date, startTime, endTime);
+                booking.setCode(id);
+                return booking;
+            } else throw new InputException("Booking not found");
+        } catch (SQLException e) {
+            throw new UpdateException("Booking not found, SQLException: "+e.getMessage());
+        }
+    }
 
 
     //insert
@@ -89,7 +118,7 @@ public class BookingDao {
         booking.setEndTime(resultSet.getTime(END_TIME).toLocalTime());
         booking.setBookerUserId(resultSet.getInt(BOOKER_ID));
         booking.setAccepted(resultSet.getBoolean(IS_ACCEPTED));
-        Room room = userDao.getRoomByID(resultSet.getInt("room_code"));
+        Room room = roomRenterDao.getRoomByID(resultSet.getInt("room_code"));
         UserMessageBean userMessageBean = userDao.getSenderInfo(resultSet.getInt(BOOKER_ID));
         booking.setBooker(userMessageBean);
         booking.setRoom(room);

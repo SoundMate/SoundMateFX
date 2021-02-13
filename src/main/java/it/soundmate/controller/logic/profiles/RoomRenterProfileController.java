@@ -10,7 +10,6 @@ package it.soundmate.controller.logic.profiles;
 import com.google.gson.*;
 import it.soundmate.bean.AddRoomBean;
 import it.soundmate.database.dao.RoomRenterDao;
-import it.soundmate.database.dao.UserDao;
 import it.soundmate.exceptions.InputException;
 import it.soundmate.exceptions.UpdateException;
 import it.soundmate.model.RoomRenter;
@@ -28,7 +27,7 @@ import java.net.URL;
 public class RoomRenterProfileController extends EditController {
 
     private static final Logger logger = LoggerFactory.getLogger(RoomRenterProfileController.class);
-    private final RoomRenterDao roomRenterDao = new RoomRenterDao(new UserDao());
+    private final RoomRenterDao roomRenterDao = new RoomRenterDao();
     private static final String API_KEY = "zfE7Bgu4VoHQEIkULvSXcq8GN2eDfnF1";
     private static final String DEFAULT_URL = "https://www.mapquestapi.com/geocoding/v1/address?key="+API_KEY+"&inFormat=kvp&outFormat=json&location=";
     private static final String FILTER_RESULTS_URL = "&thumbMaps=false&maxResults=1";

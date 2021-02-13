@@ -62,7 +62,7 @@ public class RegisterController {
 
     public RoomRenter registerRoomRenter(RegisterRenterBean registerRenterBean) {
         try {
-            RoomRenterDao roomRenterDao = new RoomRenterDao(userDao);
+            RoomRenterDao roomRenterDao = new RoomRenterDao();
             int id = roomRenterDao.registerRoomRenter(registerRenterBean);
             LoginBean loginBean = new LoginBean(registerRenterBean.getEmail(), registerRenterBean.getPassword());
             LoginController loginController = new LoginController(loginBean);

@@ -19,25 +19,21 @@ import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 
-public class RoomRenterDao {
+public class RoomRenterDao extends UserDao {
 
     private static final String ACC_BANNED_ERR = "\t ***** THIS ACCOUNT HAS BEEN BANNED *****";
     private static final String EMAIL_EXISTS_ERR = "\t ***** THIS EMAIL ALREADY EXISTS *****";
     private static final String ERR_INSERT = "Error inserting user";
+    public static final String ROOM_CODE = "room_code";
     private final Connector connector = Connector.getInstance();
     private static final Logger log = LoggerFactory.getLogger(RoomRenterDao.class);
-    private final UserDao userDao;
-
-    public RoomRenterDao(UserDao userDao) {
-        this.userDao = userDao;
-    }
 
     public int registerRoomRenter(RegisterRenterBean rentBean){
         ResultSet resultSet;
-        if (userDao.checkIfBanned(rentBean.getEmail())){
+        if (this.checkIfBanned(rentBean.getEmail())){
             log.error(ACC_BANNED_ERR);
             throw new DBException("Account banned");
-        }else if (userDao.checkEmailBoolean(rentBean.getEmail())){
+        }else if (this.checkEmailBoolean(rentBean.getEmail())){
             log.error(EMAIL_EXISTS_ERR);
             throw new DuplicatedEmailException("Duplicated email "+rentBean.getEmail());
         } else {
@@ -189,13 +185,35 @@ public class RoomRenterDao {
                 String description = resultSet.getString("description");
                 int roomPrice = resultSet.getInt("room_price");
                 String encodedImg = resultSet.getString("photo");
-                int roomCode = resultSet.getInt("room_code");
+                int roomCode = resultSet.getInt(ROOM_CODE);
                 Room room = new Room(roomCode, name, (double) roomPrice, description, encodedImg);
                 roomList.add(room);
             }
             return roomList;
         } catch (SQLException sqlException) {
             throw new UpdateException("Error getting room, SQLException: "+sqlException.getMessage());
+        }
+    }
+
+    public Room getRoomByID(int roomID) {
+        String query = "SELECT * FROM room WHERE room_code = (?)";
+        try (Connection conn = connector.getConnection();
+             PreparedStatement preparedStatement = conn.prepareStatement(query)) {
+            preparedStatement.setInt(1, roomID);
+            ResultSet resultSet = preparedStatement.executeQuery();
+            if (resultSet.next()) {
+                int renterID = resultSet.getInt("id");
+                int roomCode = resultSet.getInt(ROOM_CODE);
+                double price = resultSet.getInt("room_price");
+                String encodedImg = resultSet.getString("photo");
+                String description = resultSet.getString("description");
+                String name = resultSet.getString("name");
+                Room room = new Room(roomCode, name, price, description, encodedImg);
+                room.setRenterID(renterID);
+                return room;
+            } else throw new InputException("Room not found");
+        } catch (SQLException e) {
+            throw new UpdateException("Room not found, SQLException: "+e.getMessage());
         }
     }
 
@@ -215,7 +233,7 @@ public class RoomRenterDao {
             if (rowAffected == 1) {
                 resultSet = preparedStatement.getGeneratedKeys();
                 if (resultSet.next())
-                    roomCode = resultSet.getInt("room_code");
+                    roomCode = resultSet.getInt(ROOM_CODE);
             }
         } catch (SQLException ex){
             throw new RepositoryException("Error inserting", ex);
@@ -274,26 +292,6 @@ public class RoomRenterDao {
         if (date.isEqual(resultDate)) {
             return start.isBefore(resultEndTime) && resultStartTime.isBefore(end);
         } else return false;
-    }
-
-    public void sendBookingMessageToRenter(BookingNotification message) {
-        String sql = "INSERT INTO notifications (sender, receiver, type, seen, booking_id) VALUES (?, ?, ?, ?, ?) RETURNING message_id";
-        try (Connection conn = connector.getConnection();
-             PreparedStatement preparedStatement = conn.prepareStatement(sql)) {
-
-            preparedStatement.setInt(1, message.getSender());
-            preparedStatement.setInt(2, message.getReceiver());
-            preparedStatement.setString(3, MessageType.BOOK_ROOM_CONFIRMATION.name());
-            preparedStatement.setBoolean(4, false);
-            preparedStatement.setInt(5, message.getBooking().getCode());
-            preparedStatement.execute();
-            ResultSet resultSet = preparedStatement.getResultSet();
-            if (resultSet.next()) {
-                message.setMessageId(resultSet.getInt("message_id"));
-            }
-        } catch (SQLException sqlException) {
-            throw new RepositoryException(sqlException.getMessage());
-        }
     }
 
     public void cancelBooking(BookingNotification bookingMessage) {

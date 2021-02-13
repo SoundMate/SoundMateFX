@@ -10,6 +10,7 @@ import it.soundmate.bean.AddRoomBean;
 import it.soundmate.bean.registerbeans.RegisterRenterBean;
 import it.soundmate.bean.registerbeans.RegisterSoloBean;
 import it.soundmate.controller.logic.RegisterController;
+import it.soundmate.database.dao.RoomRenterDao;
 import it.soundmate.database.dao.UserDao;
 import it.soundmate.model.Room;
 import it.soundmate.model.RoomRenter;
@@ -30,6 +31,7 @@ import static org.junit.jupiter.api.Assertions.*;
 class AddRoomTest {
 
     private final UserDao userDao = new UserDao();
+    private final RoomRenterDao roomRenterDao = new RoomRenterDao();
     private User testUser;
 
     @BeforeEach
@@ -50,7 +52,7 @@ class AddRoomTest {
         AddRoomBean addRoomBean = new AddRoomBean("Test Room", "50", "Test Description", "");
         RoomRenterProfileController roomRenterProfileController = new RoomRenterProfileController();
         int roomID = roomRenterProfileController.addRoom(addRoomBean, (RoomRenter) testUser);
-        Room room = userDao.getRoomByID(roomID);
+        Room room = roomRenterDao.getRoomByID(roomID);
         assertEquals(testUser.getId(), room.getRenterID());
     }
 }

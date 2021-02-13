@@ -11,7 +11,7 @@ import org.junit.jupiter.api.Test;
 class GenericTest {
 
     static UserDao userDao = new UserDao();
-    static RoomRenterDao renterDao = new RoomRenterDao(userDao);
+    static RoomRenterDao renterDao = new RoomRenterDao();
 
     @Test
     void codeReturnTest(){

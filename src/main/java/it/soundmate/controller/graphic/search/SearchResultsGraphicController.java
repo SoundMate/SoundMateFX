@@ -10,7 +10,6 @@ import it.soundmate.bean.searchbeans.BandResultBean;
 import it.soundmate.bean.searchbeans.RoomRenterResultBean;
 import it.soundmate.bean.searchbeans.SoloResultBean;
 import it.soundmate.database.dao.RoomRenterDao;
-import it.soundmate.database.dao.UserDao;
 import it.soundmate.database.dbexceptions.RepositoryException;
 import it.soundmate.model.Room;
 import it.soundmate.view.main.SearchingView;
@@ -35,7 +34,7 @@ public class SearchResultsGraphicController {
     }
 
     public List<Room> fetchRenterData(RoomRenterResultBean renterResultBean) {
-        RoomRenterDao roomRenterDao = new RoomRenterDao(new UserDao());
+        RoomRenterDao roomRenterDao = new RoomRenterDao();
         try {
             return roomRenterDao.getRenterRooms(renterResultBean.getId());
         } catch (RepositoryException repositoryException) {

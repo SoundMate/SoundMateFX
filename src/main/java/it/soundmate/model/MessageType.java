@@ -6,6 +6,8 @@
 
 package it.soundmate.model;
 
+import java.util.Arrays;
+
 public enum MessageType {
     JOIN_BAND_CONFIRMATION("Join Band Confirmation", "Joining request"),
     JOIN_BAND_CANCELED("Join Band Canceled", "Request has been canceled by the user"),
@@ -26,5 +28,15 @@ public enum MessageType {
 
     public String getMessageDesc() {
         return messageDesc;
+    }
+
+    public static MessageType returnMessageType(String type){
+        MessageType[] messageTypes = MessageType.values();
+        return Arrays.stream(messageTypes)
+                .filter(currentUser -> currentUser.toString().equals(type))
+                .findFirst()
+                .orElseThrow(()-> new IllegalArgumentException("Type not found: " + type));
+
+
     }
 }

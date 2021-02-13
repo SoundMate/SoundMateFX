@@ -23,7 +23,7 @@ import java.io.IOException;
 public class EditController {
 
     private final UserDao userDao = new UserDao();
-    private final RoomRenterDao roomRenterDao = new RoomRenterDao(userDao);
+    private final RoomRenterDao roomRenterDao = new RoomRenterDao();
     private final BandDao bandDao = new BandDao(userDao);
     private final SoloDao soloDao = new SoloDao(userDao);
 

@@ -6,7 +6,7 @@
 
 package it.soundmate.model;
 
-public class Notification {
+public abstract class Notification {
 
     private int sender;
     private int receiver;
@@ -14,7 +14,7 @@ public class Notification {
     private boolean seen;
     private int messageId;
 
-    public Notification(int sender, int receiver, MessageType messageType, boolean seen) {
+    protected Notification(int sender, int receiver, MessageType messageType, boolean seen) {
         this.sender = sender;
         this.receiver = receiver;
         this.messageType = messageType;

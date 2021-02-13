@@ -26,8 +26,6 @@ import java.io.IOException;
 import java.io.UncheckedIOException;
 import java.nio.file.Path;
 import java.sql.*;
-import java.time.LocalDate;
-import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -35,14 +33,12 @@ import java.util.List;
 public class UserDao implements Dao<User> {
 
 
-    public static final String BOOKING_ID = "booking_id";
     public static final String USER_TYPE = "user_type";
     private final Connector connector = Connector.getInstance();
     private static final Logger log = LoggerFactory.getLogger(UserDao.class);
     private static final String ERR_INSERT = "Error inserting user";
     private static final String EMAIL = "email";
     private static final String PASSWORD = "password";
-    private final JoinRequestDao joinRequestDao = new JoinRequestDao();
 
 
     @Override
@@ -223,98 +219,7 @@ public class UserDao implements Dao<User> {
         return genres;
     }
 
-    public List<Notification> getNotificationsForUser(int id) {
-        log.info("Getting messages for user {}", id);
-        List<Notification> notificationList = new ArrayList<>();
-        String query = "select * from notifications left join booking on notifications.booking_id = booking.code left join join_request jr on jr.code = notifications.join_request where receiver = (?)";
-        try (Connection conn = connector.getConnection(); PreparedStatement preparedStatement = conn.prepareStatement(query, Statement.RETURN_GENERATED_KEYS)) {
-            preparedStatement.setInt(1, id);
-            ResultSet resultSet = preparedStatement.executeQuery();
-            while (resultSet.next()) {
-                log.info("Result set");
-                int sender = resultSet.getInt("sender");
-                int receiver = resultSet.getInt("receiver");
-                boolean seen = resultSet.getBoolean("seen");
-                int messageID = resultSet.getInt("message_id");
-                if (resultSet.getString("type").equals(MessageType.BOOK_ROOM_CONFIRMATION.name())) {
-                    int bookingID = resultSet.getInt(BOOKING_ID);
-                    Booking booking = this.getBookingByID(bookingID);
-                    BookingNotification bookingMessage = new BookingNotification(sender,receiver, MessageType.BOOK_ROOM_CONFIRMATION, seen, booking);
-                    bookingMessage.setMessageId(messageID);
-                    notificationList.add(bookingMessage);
-                } else if (resultSet.getString("type").equals(MessageType.BOOK_ROOM_CANCELED.name())) {
-                    int bookingID = resultSet.getInt(BOOKING_ID);
-                    Booking booking = this.getBookingByID(bookingID);
-                    BookingNotification bookingMessage = new BookingNotification(sender,receiver, MessageType.BOOK_ROOM_CANCELED, seen, booking);
-                    bookingMessage.setMessageId(messageID);
-                    notificationList.add(bookingMessage);
-                } else if (resultSet.getString("type").equals(MessageType.JOIN_BAND_CONFIRMATION.toString())) {
-                    log.info("Found join request accepted");
-                    int requestID = resultSet.getInt("join_request");
-                    JoinRequest joinRequest = joinRequestDao.getJoinRequestByID(requestID);
-                    JoinRequestNotification joinRequestNotification = new JoinRequestNotification(sender, receiver, MessageType.JOIN_BAND_CONFIRMATION, seen);
-                    joinRequestNotification.setMessageId(messageID);
-                    joinRequestNotification.setJoinRequest(joinRequest);
-                    notificationList.add(joinRequestNotification);
-                } else {
-                    int requestID = resultSet.getInt("join_request");
-                    JoinRequest joinRequest = joinRequestDao.getJoinRequestByID(requestID);
-                    JoinRequestNotification joinRequestNotification = new JoinRequestNotification(sender, receiver, MessageType.JOIN_BAND_CANCELED, seen);
-                    joinRequestNotification.setMessageId(messageID);
-                    joinRequestNotification.setJoinRequest(joinRequest);
-                    notificationList.add(joinRequestNotification);
-                }
-            }
-            return notificationList;
-        } catch (SQLException e) {
-            throw new InputException("Unable to read messages: "+e.getMessage());
-        }
-    }
 
-    public Room getRoomByID(int roomID) {
-        String query = "SELECT * FROM room WHERE room_code = (?)";
-        try (Connection conn = connector.getConnection();
-             PreparedStatement preparedStatement = conn.prepareStatement(query)) {
-            preparedStatement.setInt(1, roomID);
-            ResultSet resultSet = preparedStatement.executeQuery();
-            if (resultSet.next()) {
-                int renterID = resultSet.getInt("id");
-                int roomCode = resultSet.getInt("room_code");
-                double price = resultSet.getInt("room_price");
-                String encodedImg = resultSet.getString("photo");
-                String description = resultSet.getString("description");
-                String name = resultSet.getString("name");
-                Room room = new Room(roomCode, name, price, description, encodedImg);
-                room.setRenterID(renterID);
-                return room;
-            } else throw new InputException("Room not found");
-        } catch (SQLException e) {
-            throw new UpdateException("Room not found, SQLException: "+e.getMessage());
-        }
-    }
-
-    private Booking getBookingByID(int bookingID) {
-        String query = "SELECT * FROM booking WHERE code = (?)";
-        try (Connection conn = connector.getConnection();
-             PreparedStatement preparedStatement = conn.prepareStatement(query)) {
-            preparedStatement.setInt(1, bookingID);
-            ResultSet resultSet = preparedStatement.executeQuery();
-            if (resultSet.next()) {
-                int roomID = resultSet.getInt("room_code");
-                LocalDate date = resultSet.getDate("date").toLocalDate();
-                LocalTime startTime = resultSet.getTime("start_time").toLocalTime();
-                LocalTime endTime = resultSet.getTime("end_time").toLocalTime();
-                int booker = resultSet.getInt("booker_id");
-                int id = resultSet.getInt("code");
-                Room room = this.getRoomByID(roomID);
-                Booking booking = new Booking(room, booker, date, startTime, endTime);
-                booking.setCode(id);
-                return booking;
-            } else throw new InputException("Booking not found");
-        } catch (SQLException e) {
-            throw new UpdateException("Booking not found, SQLException: "+e.getMessage());
-        }
-    }
 
     public void updateEmail(User user, String email) {
         String query = "update registered_users set email = ? where id = ?";
@@ -379,24 +284,6 @@ public class UserDao implements Dao<User> {
         }
     }
 
-    public void sendBookingMessageToUser(BookingNotification bookingMessage) {
-        String sql = "INSERT INTO notifications (sender, receiver, type, seen, booking_id) VALUES (?, ?, ?, ?, ?) RETURNING message_id";
-        try (Connection conn = connector.getConnection();
-             PreparedStatement preparedStatement = conn.prepareStatement(sql)) {
-            preparedStatement.setInt(1, bookingMessage.getSender());
-            preparedStatement.setInt(2, bookingMessage.getSender());
-            preparedStatement.setString(3, MessageType.BOOK_ROOM_CONFIRMATION.name());
-            preparedStatement.setBoolean(4, false);
-            preparedStatement.setInt(5, bookingMessage.getBooking().getCode());
-            preparedStatement.execute();
-            ResultSet resultSet = preparedStatement.getResultSet();
-            if (resultSet.next()) {
-                bookingMessage.setMessageId(resultSet.getInt("message_id"));
-            }
-        } catch (SQLException sqlException) {
-            throw new RepositoryException(sqlException.getMessage());
-        }
-    }
 
 
     @Override

@@ -7,8 +7,8 @@
 package it.soundmate.controller.logic;
 
 import it.soundmate.database.dao.BookingDao;
+import it.soundmate.database.dao.NotificationDao;
 import it.soundmate.database.dao.RoomRenterDao;
-import it.soundmate.database.dao.UserDao;
 import it.soundmate.database.dbexceptions.RepositoryException;
 import it.soundmate.exceptions.InputException;
 import it.soundmate.model.*;
@@ -19,8 +19,8 @@ import java.util.List;
 
 public class BookRoomController {
 
-    private final UserDao userDao = new UserDao();
-    private final RoomRenterDao roomRenterDao = new RoomRenterDao(userDao);
+    private final RoomRenterDao roomRenterDao = new RoomRenterDao();
+    private final NotificationDao notificationDao = new NotificationDao();
     private final BookingDao bookingDao = new BookingDao();
 
     public void bookRoom(Booking booking) {
@@ -42,8 +42,8 @@ public class BookRoomController {
     public void sendBookingInfo(Booking booking, int renterID) {
         try {
             BookingNotification message = new BookingNotification(booking.getBookerUserId(), renterID, MessageType.BOOK_ROOM_CONFIRMATION, false, booking);
-            roomRenterDao.sendBookingMessageToRenter(message);
-            userDao.sendBookingMessageToUser(message);
+            notificationDao.sendBookingMessageToRenter(message);
+            notificationDao.sendBookingMessageToUser(message);
         } catch (InputException inputException) {
             throw new InputException(inputException.getMessage());
         }

@@ -8,10 +8,7 @@ package it.soundmate.controller.logic;
 
 import it.soundmate.bean.LoggedBean;
 import it.soundmate.bean.LoginBean;
-import it.soundmate.database.dao.BandDao;
-import it.soundmate.database.dao.RoomRenterDao;
-import it.soundmate.database.dao.SoloDao;
-import it.soundmate.database.dao.UserDao;
+import it.soundmate.database.dao.*;
 import it.soundmate.database.dbexceptions.RepositoryException;
 import it.soundmate.database.dbexceptions.UserNotFoundException;
 import it.soundmate.model.Band;
@@ -28,6 +25,7 @@ public class LoginController {
     private LoginBean loginBean;
     private static final Logger logger = LoggerFactory.getLogger(LoginController.class);
     private final UserDao userDao = new UserDao();
+    private final NotificationDao notificationDao = new NotificationDao();
 
     public LoginController(LoginBean loginBean) {
         this.loginBean = loginBean;
@@ -68,7 +66,7 @@ public class LoginController {
             Solo soloUser = soloDao.getSoloByID(id);
             soloUser.setFavGenres(soloDao.getGenres(id));
             soloUser.setInstruments(soloDao.getInstruments(id));
-            soloUser.setMessages(userDao.getNotificationsForUser(id));
+            soloUser.setMessages(notificationDao.getNotificationsForUser(id));
             return soloUser;
         } catch (RepositoryException repositoryException) {
             throw new RepositoryException(repositoryException.getMessage());
@@ -79,14 +77,14 @@ public class LoginController {
         BandDao bandDao = new BandDao(userDao);
         Band band = bandDao.getBandByID(id);
         band.setGenres(bandDao.getGenres(id));
-        band.setMessages(userDao.getNotificationsForUser(id));
+        band.setMessages(notificationDao.getNotificationsForUser(id));
         return band;
     }
 
     public RoomRenter getFullRenter(int id){
-        RoomRenterDao renterDao = new RoomRenterDao(userDao);
+        RoomRenterDao renterDao = new RoomRenterDao();
         RoomRenter roomRenter = renterDao.getRenterByID(id);
-        roomRenter.setMessages(userDao.getNotificationsForUser(id));
+        roomRenter.setMessages(notificationDao.getNotificationsForUser(id));
         return roomRenter;
     }
 
