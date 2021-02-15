@@ -38,7 +38,7 @@
         } else {
             RegisterController registerController = new RegisterController();
             Solo solo = registerController.registerSolo(soloRegBean);
-            session.setAttribute("soloUser", solo);
+            session.setAttribute("user", solo);
             response.sendRedirect("home.jsp");
         }
     }
