@@ -65,6 +65,11 @@ public class NewMessageView extends Pane {
                 confirmedDialog.setContentText("Message has been sent to "+userResultBean.getName());
                 confirmedDialog.showAndWait();
             } catch (RepositoryException repositoryException) {
+                Alert confirmedDialog = new Alert(Alert.AlertType.INFORMATION);
+                confirmedDialog.setTitle("Message NOT sent");
+                confirmedDialog.setHeaderText(null);
+                confirmedDialog.setContentText("Message has not been sent because of Repository Exception: "+repositoryException.getMessage());
+                confirmedDialog.showAndWait();
                 logger.error("Repository Exception: {}", repositoryException.getMessage());
             }
         }

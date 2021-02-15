@@ -9,6 +9,8 @@ package it.soundmate.view;
 import it.soundmate.bean.LoginBean;
 import it.soundmate.constants.Style;
 import it.soundmate.controller.graphic.LoginGraphicController;
+import it.soundmate.database.dbexceptions.RepositoryException;
+import it.soundmate.database.dbexceptions.UserNotFoundException;
 import it.soundmate.model.User;
 import it.soundmate.view.main.MainView;
 import it.soundmate.view.registerview.ChooseRegisterView;
@@ -142,22 +144,26 @@ public class LoginView extends BorderPane {
             logger.info("Login Action Button");
             LoginBean loginBean = new LoginBean(emailTextField.getText(), passwordField.getText());
             LoginGraphicController loginGraphicController = new LoginGraphicController();
-            User loggedUser = loginGraphicController.login(loginBean); //tranquillo, qui già sto modificando per farti tornare l'user che ti serve.
-
-            //View Update (qua o nel controller?)
-
-            if (loggedUser != null) {
-                logger.info("Fields Okay");
-                logger.info("Logged in: {} {}", loggedUser.getEmail(), loggedUser.getPassword());
-                Parent mainScreen = new MainView(loggedUser).getBorderPane();
-                Stage stage = (Stage) emailTextField.getScene().getWindow();
-                Scene scene = new Scene(mainScreen, 800, 600);
-                stage.setScene(scene);
-                stage.show();
-            } else {
-                logger.info("One or more fields are empty");
+            try {
+                User loggedUser = loginGraphicController.login(loginBean);
+                //View Update (qua o nel controller?)
+                if (loggedUser != null) {
+                    logger.info("Fields Okay");
+                    logger.info("Logged in: {} {}", loggedUser.getEmail(), loggedUser.getPassword());
+                    Parent mainScreen = new MainView(loggedUser).getBorderPane();
+                    Stage stage = (Stage) emailTextField.getScene().getWindow();
+                    Scene scene = new Scene(mainScreen, 800, 600);
+                    stage.setScene(scene);
+                    stage.show();
+                } else {
+                    logger.info("One or more fields are empty");
+                    errorLabel.setVisible(true);
+                }
+            } catch (RepositoryException | UserNotFoundException repositoryException) {
+                errorLabel.setText(repositoryException.getMessage());
                 errorLabel.setVisible(true);
             }
+
         }
     }
 
