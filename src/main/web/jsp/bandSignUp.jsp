@@ -38,7 +38,7 @@
         } else {
             RegisterController registerController = new RegisterController();
             Band band = registerController.registerBand(bandRegBean);
-            session.setAttribute("bandUser", band);
+            session.setAttribute("user", band);
             response.sendRedirect("home.jsp");
         }
     }

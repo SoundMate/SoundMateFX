@@ -38,7 +38,7 @@
         } else {
             RegisterController registerController = new RegisterController();
             RoomRenter renter = registerController.registerRoomRenter(renterRegBean);
-            session.setAttribute("renterUser", renter);
+            session.setAttribute("user", renter);
             response.sendRedirect("home.jsp");
         }
     }
