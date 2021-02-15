@@ -62,7 +62,7 @@
                         <div class="media align-items-end profile-head">
                             <div class="profile mr-3"><c:out value="${solo.name}"/></div>
                             <div class="media-body mb-5 text-black">
-                                <h4 class="mt-0 mb-0"></h4>  <!--Non funziona così-->
+                                <h4 class="mt-0 mb-0"></h4>
                                 <p class="small mb-4"> <em class="fas fa-map-marker-alt mr-2"></em></p>
                             </div>
                         </div>
