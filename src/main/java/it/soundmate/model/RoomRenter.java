@@ -57,8 +57,6 @@ public class RoomRenter extends User {
         this.rooms = new ArrayList<>(rooms);
     }
 
-
-
     @Override
     public UserType getUserType() {
         return userType;

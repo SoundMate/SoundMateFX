@@ -28,8 +28,9 @@ class JoinRequestDaoTest {
     @AfterAll
     static void tearDown() {
         userDao.deleteAll();
-        applicationDao.deleteApplications();
-        sut.deleteJoinRequests();
+        PowerUserDao powerUserDao = new PowerUserDao();
+        powerUserDao.delete("DELETE FROM applications", "ALTER SEQUENCE applications_code_seq RESTART WITH 1");
+        powerUserDao.delete("DELETE FROM join_request", "ALTER SEQUENCE join_request_code_seq RESTART WITH 1");
 
     }
 

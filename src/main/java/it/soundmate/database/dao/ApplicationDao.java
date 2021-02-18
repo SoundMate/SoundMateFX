@@ -6,8 +6,6 @@ import it.soundmate.database.dbexceptions.RepositoryException;
 import it.soundmate.model.Application;
 import it.soundmate.model.JoinRequest;
 import it.soundmate.model.RequestState;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -17,7 +15,6 @@ public class ApplicationDao {
 
     public static final String INSTRUMENTS = "instruments";
     private final Connector connector = Connector.getInstance();
-    private static final Logger log = LoggerFactory.getLogger(ApplicationDao.class);
     private static final String ERROR = "Error updating entry. The error was: \n";
 
     //crud
@@ -165,38 +162,6 @@ public class ApplicationDao {
 
         } catch (SQLException ex) {
             throw new RepositoryException("Error deleting entry. The error was: \n" + ex.getMessage(), ex);
-        }
-    }
-
-
-
-    //testing purpose
-    public void deleteApplications() {
-        String sql = "DELETE FROM applications";
-        int delRecs;
-
-        try (Connection conn = connector.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(sql)) {
-
-            delRecs = stmt.executeUpdate();
-            if (delRecs >= 1) log.info("\t ***** Application Entries Successfully Cleaned! *****");
-            resetCode();
-
-        } catch (SQLException ex) {
-            throw new RepositoryException("Error Deleting Applications", ex);
-        }
-    }
-
-    private void resetCode() {
-        String sql = "ALTER SEQUENCE applications_code_seq RESTART WITH 1";
-
-        try (Connection conn = connector.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(sql)) {
-
-            stmt.executeUpdate();
-            log.info("\t ***** Code Values reset successfully! *****");
-        } catch (SQLException ex) {
-            throw new RepositoryException("Error ResetCode", ex);
         }
     }
 

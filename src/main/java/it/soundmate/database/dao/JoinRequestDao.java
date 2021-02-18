@@ -139,37 +139,6 @@ public class JoinRequestDao {
     }
 
 
-    //testing purpose
-    public void deleteJoinRequests() {
-        String sql = "DELETE FROM join_request";
-        int delRecs;
-
-        try (Connection conn = connector.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(sql)) {
-
-            delRecs = stmt.executeUpdate();
-            if (delRecs >= 1) log.info("\t ***** join Request Entries Successfully Cleaned! *****");
-            resetCode();
-
-        } catch (SQLException ex) {
-            throw new RepositoryException("Error Deleting Join Requests", ex);
-        }
-    }
-
-    private void resetCode() {
-        String sql = "ALTER SEQUENCE join_request_code_seq RESTART WITH 1";
-
-        try (Connection conn = connector.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(sql)) {
-
-            stmt.executeUpdate();
-            log.info("\t ***** Code Values reset successfully! *****");
-        } catch (SQLException ex) {
-            throw new RepositoryException("Error ResetCode", ex);
-        }
-    }
-
-
     public SoloResultBean getSoloFromJoinRequest(JoinRequest joinRequest) {
         String sql = "SELECT * from join_request join solo s on s.id = join_request.id_solo join users u on u.id = s.id join registered_users ru on ru.id = u.id join played_instruments pi on s.id = pi.id where code = (?)";
         try (Connection conn = connector.getConnection();
