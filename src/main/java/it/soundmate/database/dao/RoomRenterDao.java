@@ -242,29 +242,8 @@ public class RoomRenterDao extends UserDao {
 
 
     public void deleteAllRoom() {
-        String sql = "DELETE FROM room";
-        int delRecs;
-        try (Connection conn = connector.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(sql)) {
-
-            delRecs = stmt.executeUpdate();
-            if (delRecs >= 1) log.info("\t ***** user entries successfully cleaned! *****");
-            resetCode();
-
-        } catch (SQLException ex) {
-            throw new RepositoryException("Error Delete All", ex);
-        }
-    }
-
-    private void resetCode() {
-        String sql = "ALTER SEQUENCE room_room_code_seq RESTART WITH 1";
-        try (Connection conn = connector.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(sql)) {
-            stmt.executeUpdate();
-            log.info("\t ***** RoomCode Values reset successfully! *****");
-        } catch (SQLException ex) {
-            throw new RepositoryException("Error ResetID", ex);
-        }
+        PowerUserDao powerUserDao = new PowerUserDao();
+        powerUserDao.delete("DELETE FROM room", "ALTER SEQUENCE room_room_code_seq RESTART WITH 1");
     }
 
 
