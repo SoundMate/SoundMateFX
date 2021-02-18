@@ -99,26 +99,8 @@ public class MessageDao {
 
     //testing purpose
     public void deleteAllMessages() {
-        String sql = "DELETE FROM messages";
-        int delRecs;
-        try (Connection conn = connector.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(sql)) {
-            delRecs = stmt.executeUpdate();
-            if (delRecs >= 1) log.info("\t ***** Messages Entries Successfully Cleaned! *****");
-            resetCode();
-        } catch (SQLException ex) {
-            throw new RepositoryException("Error Deleting Messages", ex);
-        }
-    }
-    private void resetCode() {
-        String sql = "ALTER SEQUENCE messages_code_seq RESTART WITH 1";
-        try (Connection conn = connector.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(sql)) {
-            stmt.executeUpdate();
-            log.info("\t ***** Code Values reset successfully! *****");
-        } catch (SQLException ex) {
-            throw new RepositoryException("Error ResetCode", ex);
-        }
+        PowerUserDao powerUserDao = new PowerUserDao();
+        powerUserDao.delete("DELETE FROM messages", "ALTER SEQUENCE messages_code_seq RESTART WITH 1");
     }
 
 }

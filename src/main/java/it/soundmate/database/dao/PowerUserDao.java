@@ -113,5 +113,31 @@ public class PowerUserDao {
 
     }
 
+    //testing purpose
+    public void delete(String query, String resetCodeQuery) {
+        int delRecs;
+
+        try (Connection conn = connector.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(query)) {
+
+            delRecs = stmt.executeUpdate();
+            if (delRecs >= 1) log.info("\t ***** Application Entries Successfully Cleaned! *****");
+            resetCode(resetCodeQuery);
+
+        } catch (SQLException ex) {
+            throw new RepositoryException("Error Deleting Applications", ex);
+        }
+    }
+
+    private void resetCode(String query) {
+        try (Connection conn = connector.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(query)) {
+
+            stmt.executeUpdate();
+            log.info("\t ***** Code Values reset successfully! *****");
+        } catch (SQLException ex) {
+            throw new RepositoryException("Error ResetCode", ex);
+        }
+    }
 
 }
