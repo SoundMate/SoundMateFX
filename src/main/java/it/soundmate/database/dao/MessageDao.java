@@ -15,8 +15,6 @@ public class MessageDao {
 
     private final Connector connector = Connector.getInstance();
     private static final Logger log = LoggerFactory.getLogger(MessageDao.class);
-    private static final String SUCCESS = "Entry successfully modified!";
-    private static final String FAILED = "ERR: Operation Failed!";
     //insert
     //delete
     //get
@@ -82,14 +80,7 @@ public class MessageDao {
              PreparedStatement preparedStatement = conn.prepareStatement(sql)) {
             preparedStatement.setBoolean(1, true);
             preparedStatement.setInt(2, message.getMessageCode());
-            int rowAffected = preparedStatement.executeUpdate();
-            if (rowAffected == 1) {
-                log.info(SUCCESS);
-                return true;
-            } else {
-                log.info(FAILED);
-                return false;
-            }
+            return preparedStatement.executeUpdate() == 1;
         } catch (SQLException ex) {
             throw new RepositoryException("Operation failed. The error was: \n" + ex.getMessage(), ex);
         }
@@ -100,14 +91,7 @@ public class MessageDao {
         try (Connection conn = connector.getConnection();
              PreparedStatement preparedStatement = conn.prepareStatement(sql)) {
             preparedStatement.setInt(1, message.getMessageCode());
-            int rowAffected = preparedStatement.executeUpdate();
-            if (rowAffected == 1) {
-                log.info(SUCCESS);
-                return true;
-            } else {
-                log.info(FAILED);
-                return false;
-            }
+            return preparedStatement.executeUpdate() == 1;
         } catch (SQLException ex) {
             throw new RepositoryException("Operation failed. The error was: \n" + ex.getMessage(), ex);
         }
